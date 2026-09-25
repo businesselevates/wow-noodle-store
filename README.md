@@ -47,13 +47,7 @@ Upload `roca-two-regular.woff2`, `roca-two-bold.woff2` and `roca-two-black.woff2
 
 ### Using the sections in Horizon
 
-The store runs Horizon. The sections work there as they are; the layout needs one line in `<head>`, after Horizon's own stylesheets:
-
-```liquid
-{%- if request.design_mode or content_for_layout contains 'hlt-section' or content_for_layout contains 'elv-trusted-section' -%}
-  {%- render 'hlt-assets' -%}
-{%- endif -%}
-```
+The store runs Horizon. The sections work there without touching any of Horizon's own files: the "HLT Page settings" section at the top of the template, and the buy box, load the fonts, `hlt-home.css` and `hlt-home.js` themselves. Keep "HLT Page settings" at the top of any template that uses these sections.
 
 Files to copy: `sections/hlt-{page-settings,buy-box,logos,hero,media-text,stats,compare,steps,reviews,faq}.liquid`, `sections/elv-trusted-marquee.liquid`, `snippets/hlt-{assets,icon,block}.liquid`, `assets/hlt-{home.css,home.js,buy-box.css}` and `templates/product.pdp-lander.json`. Add to cart goes through Horizon's `Shopify.actions.updateCart`, so the cart drawer and cart count update as they do for Horizon's own button.
 

@@ -1,7 +1,8 @@
 {%- comment -%}
   Loads the HLT page system: the ProTEGO(R) web fonts, hlt-home.css and hlt-home.js.
-  Render it once, in the layout's <head>, after the theme's own stylesheets:
-    {%- render 'hlt-assets' -%}
+  The HLT theme renders it in the layout's <head>. In other themes (Horizon) the
+  'HLT Page settings' section and the buy box render it, so no layout edit is
+  needed. Rendering it more than once is harmless: the script runs only once.
 
   Montserrat comes from Google Fonts. Roca Two is licensed, so it loads only once its
   files are in the theme's assets and 'Roca Two font files are uploaded' is ticked in the

@@ -1,3 +1,9 @@
+{%- comment -%}
+  Loads the HLT page system for this page, so the sections work in any theme
+  without editing its layout (Horizon included). Keep this section at the top of
+  a template that uses HLT sections. Loading it twice is harmless.
+{%- endcomment -%}
+{%- render 'hlt-assets' -%}
 {%- if section.settings.hide_menu -%}
   <style>
     .section-header .header__inline-menu,
