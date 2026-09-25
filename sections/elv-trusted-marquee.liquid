@@ -73,7 +73,7 @@
     --t-bg: {{ section.settings.bg_color }};
     --t-ink: {{ section.settings.ink_color }};
     --t-gold: {{ section.settings.gold_color }};
-    --t-cream: #f6f3ec;
+    --t-cream: #fbf1e3;
     --t-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --t-serif: {{ section.settings.serif_font | default: "var(--hlt-font-display, var(--font-heading-family))" }}, Georgia, serif;
     --t-sans: var(--hlt-font-body, var(--font-body-family)), -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
@@ -260,9 +260,9 @@
     width: 100%;
     border-radius: 20px;
     overflow: hidden;
-    background: linear-gradient(165deg, rgba(31, 77, 58, 0.35) 0%, rgba(20, 38, 31, 0.5) 100%);
-    border: 1px solid rgba(31, 77, 58, 0.15);
-    box-shadow: 0 8px 32px rgba(31, 77, 58, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(165deg, rgba(59, 77, 56, 0.35) 0%, rgba(46, 60, 44, 0.5) 100%);
+    border: 1px solid rgba(59, 77, 56, 0.15);
+    box-shadow: 0 8px 32px rgba(59, 77, 56, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.6s var(--t-ease), border-color 0.6s var(--t-ease);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -272,8 +272,8 @@
     color: inherit;
   }
   .elv-trusted__card:hover {
-    box-shadow: 0 0 60px rgba(200, 100, 30, 0.08), 0 0 30px rgba(200, 100, 30, 0.04), 0 20px 50px rgba(0, 0, 0, 0.35);
-    border-color: rgba(200, 100, 30, 0.25);
+    box-shadow: 0 0 60px rgba(174, 68, 37, 0.08), 0 0 30px rgba(174, 68, 37, 0.04), 0 20px 50px rgba(0, 0, 0, 0.35);
+    border-color: rgba(174, 68, 37, 0.25);
   }
   /* thin gold line on top edge on hover */
   .elv-trusted__card::before {
@@ -295,7 +295,7 @@
     min-height: 460px;
     flex: 1;
     overflow: hidden;
-    background: linear-gradient(135deg, #14261f 0%, #1f4d3a 50%, #14261f 100%);
+    background: linear-gradient(135deg, #2e3c2c 0%, #3b4d38 50%, #2e3c2c 100%);
   }
   .elv-trusted__card-media video,
   .elv-trusted__card-media img,
@@ -322,7 +322,7 @@
     position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 55%;
-    background: linear-gradient(180deg, transparent 0%, rgba(20, 38, 31, 0.65) 70%, rgba(20, 38, 31, 0.85) 100%);
+    background: linear-gradient(180deg, transparent 0%, rgba(46, 60, 44, 0.65) 70%, rgba(46, 60, 44, 0.85) 100%);
     pointer-events: none;
     z-index: 1;
     transition: opacity 0.45s var(--t-ease);
@@ -367,7 +367,7 @@
     justify-content: flex-end;
     text-align: left;
     padding: 34px 30px 32px;
-    background: linear-gradient(180deg, rgba(20, 38, 31, 0) 0%, rgba(20, 38, 31, 0.35) 35%, rgba(20, 38, 31, 0.82) 70%, rgba(20, 38, 31, 0.96) 100%);
+    background: linear-gradient(180deg, rgba(46, 60, 44, 0) 0%, rgba(46, 60, 44, 0.35) 35%, rgba(46, 60, 44, 0.82) 70%, rgba(46, 60, 44, 0.96) 100%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s var(--t-ease);
@@ -629,15 +629,15 @@
 {
   "name": "Trusted-by marquee",
   "tag": "div",
-  "class": "section elv-trusted-section",
+  "class": "elv-trusted-section",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow (pill)", "default": "Trusted by the best" },
     { "type": "inline_richtext", "id": "title", "label": "Title", "info": "Select text and press italic to get the serif italic style.", "default": "Athletes, Physicians, Dietitians, Biohackers and <em>1M+ Customer Purchases.</em>" },
     { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "1M+ Customer Purchases, 64M+ Servings Worldwide" },
     { "type": "header", "content": "Style" },
-    { "type": "color", "id": "bg_color", "label": "Background", "default": "#f6f3ec" },
-    { "type": "color", "id": "ink_color", "label": "Headline / text color", "default": "#1f4d3a" },
-    { "type": "color", "id": "gold_color", "label": "Accent (gold)", "default": "#c8641e" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#fbf1e3" },
+    { "type": "color", "id": "ink_color", "label": "Headline / text color", "default": "#3b4d38" },
+    { "type": "color", "id": "gold_color", "label": "Accent (gold)", "default": "#ae4425" },
     { "type": "text", "id": "serif_font", "label": "Serif font family (optional)", "info": "Leave blank to use the theme heading font. Example: 'Playfair Display'. The font must already be loaded on the store." },
     { "type": "header", "content": "Marquee" },
     { "type": "range", "id": "speed", "label": "Seconds per card (higher = slower)", "min": 3, "max": 15, "step": 1, "default": 7 },

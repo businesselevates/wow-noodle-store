@@ -4,7 +4,8 @@
       "type": "hlt-page-settings",
       "settings": {
         "hide_menu": false,
-        "hide_announcement": false
+        "hide_announcement": false,
+        "roca_files": false
       }
     },
     "hlt_buy_box": {
@@ -36,13 +37,15 @@
           "settings": {
             "title": "10 packs",
             "line": "Trial size. Shipping at checkout",
+            "product": "10-individual-pack-80g-w0w®-protego™",
             "option_value": "",
             "selected": false,
             "featured": false,
             "tag": "",
             "save": "",
             "price": "",
-            "per": "S$3.70 a pack",
+            "pack_count": 10,
+            "per": "",
             "bullets": "",
             "fallback_price": "37"
           }
@@ -58,7 +61,8 @@
             "tag": "",
             "save": "",
             "price": "",
-            "per": "S$3.70 a pack",
+            "pack_count": 20,
+            "per": "",
             "bullets": "",
             "fallback_price": "74"
           }
@@ -74,7 +78,8 @@
             "tag": "Most popular",
             "save": "",
             "price": "",
-            "per": "S$3.29 a pack",
+            "pack_count": 45,
+            "per": "",
             "bullets": "",
             "fallback_price": "148"
           }
@@ -90,7 +95,8 @@
             "tag": "",
             "save": "",
             "price": "",
-            "per": "S$3.22 a pack",
+            "pack_count": 115,
+            "per": "",
             "bullets": "",
             "fallback_price": "370"
           }
@@ -300,6 +306,7 @@
         "add_label": "Add to cart",
         "sold_out_label": "Sold out",
         "button_note": "Contains gluten and peanut. Manufactured on shared equipment with soy and sesame.",
+        "per_pack_label": "a pack",
         "show_gift": false,
         "background": "paper",
         "padding_top": 32,
@@ -949,8 +956,8 @@
         "title": "<strong>People who have actually eaten it.</strong>",
         "subtitle": "",
         "bg_color": "#ffffff",
-        "ink_color": "#1f4d3a",
-        "gold_color": "#c8641e",
+        "ink_color": "#3b4d38",
+        "gold_color": "#f0a81f",
         "serif_font": "",
         "speed": 7,
         "button_label": "Choose your pack size",
@@ -1368,60 +1375,6 @@
         "padding_top": 88,
         "padding_bottom": 88
       }
-    },
-    "main": {
-      "type": "main-product",
-      "blocks": {
-        "title": {
-          "type": "title",
-          "settings": {}
-        },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": false,
-            "show_gift_card_recipient": false
-          }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "title",
-        "price",
-        "variant_picker",
-        "buy_buttons",
-        "description"
-      ],
-      "disabled": true,
-      "settings": {
-        "enable_sticky_info": true,
-        "color_scheme": "scheme-1",
-        "media_size": "small",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "gallery_layout": "thumbnail_slider",
-        "mobile_thumbnails": "hide",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "hide_variants": false,
-        "enable_video_looping": false,
-        "padding_top": 36,
-        "padding_bottom": 16
-      }
     }
   },
   "order": [
@@ -1441,7 +1394,6 @@
     "wow_second_life",
     "wow_awards",
     "wow_faq",
-    "wow_final_cta",
-    "main"
+    "wow_final_cta"
   ]
 }

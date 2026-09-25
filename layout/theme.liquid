@@ -18,9 +18,6 @@
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <title>
       {{ page_title }}
@@ -263,12 +260,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'hlt-home.css' | asset_url | stylesheet_tag }}
-    <script>
-      document.documentElement.classList.add('hlt-js');
-      setTimeout(function () { if (!window.HLT) document.documentElement.classList.add('hlt-anim-off'); }, 3000);
-    </script>
-    <script src="{{ 'hlt-home.js' | asset_url }}" defer="defer"></script>
+    {%- render 'hlt-assets' -%}
     <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
 
     {%- if settings.cart_type == 'drawer' -%}

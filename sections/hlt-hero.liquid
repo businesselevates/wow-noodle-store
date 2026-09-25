@@ -124,13 +124,13 @@
   .hlt-hero__bg picture, .hlt-hero__media picture { display: contents; }
   .hlt-hero__bg { position: absolute; inset: 0; overflow: hidden; }
   .hlt-hero__bg img, .hlt-hero__bg svg { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; }
-  .hlt-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(var(--hlt-overlay-rgb, 20, 38, 31), calc(var(--hlt-overlay) + .15)) 0%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), 0) 80%); }
+  .hlt-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(var(--hlt-overlay-rgb, 46, 60, 44), calc(var(--hlt-overlay) + .15)) 0%, rgba(var(--hlt-overlay-rgb, 46, 60, 44), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 46, 60, 44), 0) 80%); }
   /* Phones: with 'Text at the bottom' the copy sits on the empty lower part of
      the phone crop, and the shade runs bottom to top so light text never
      lands on an unshaded part of the photo. */
   @media (max-width: 749px) {
     .hlt-hero--overlay.hlt-hero--m-bottom { align-items: flex-end; min-height: min(92vh, 720px); }
-    .hlt-hero--m-bottom .hlt-hero__bg::after { background: linear-gradient(0deg, rgba(var(--hlt-overlay-rgb, 20, 38, 31), calc(var(--hlt-overlay) + .3)) 0%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), 0) 75%); }
+    .hlt-hero--m-bottom .hlt-hero__bg::after { background: linear-gradient(0deg, rgba(var(--hlt-overlay-rgb, 46, 60, 44), calc(var(--hlt-overlay) + .3)) 0%, rgba(var(--hlt-overlay-rgb, 46, 60, 44), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 46, 60, 44), 0) 75%); }
   }
 {% endstylesheet %}
 

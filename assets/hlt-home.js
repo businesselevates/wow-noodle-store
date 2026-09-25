@@ -3,6 +3,10 @@
 (function () {
   'use strict';
 
+  /* Safe to include more than once: only the first copy runs. */
+  if (window.__hltBooted) return;
+  window.__hltBooted = true;
+
   var doc = document;
   var root = doc.documentElement;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -59,7 +63,9 @@
     parallaxEls = Array.prototype.slice.call(doc.querySelectorAll('[data-hlt-parallax]'));
     updateParallax();
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
+  /* Captured on the document so it also hears themes that scroll an inner
+     wrapper instead of the window (Horizon scrolls .page-wrapper on desktop). */
+  doc.addEventListener('scroll', onScroll, { passive: true, capture: true });
   window.addEventListener('resize', onScroll);
 
   /* ---------------- Sliders ---------------- */
@@ -196,15 +202,39 @@
   }
 
   /* ---------------- Smooth scroll to buy box ---------------- */
+  /* The element that actually scrolls: the window in most themes, an inner
+     wrapper in others. */
+  function scrollerOf(el) {
+    for (var p = el && el.parentElement; p && p !== doc.body && p !== root; p = p.parentElement) {
+      var oy = window.getComputedStyle(p).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && p.scrollHeight > p.clientHeight + 1) return p;
+    }
+    return null;
+  }
+  /* Only a header that stays on screen needs room kept for it. */
+  function stickyHeaderHeight() {
+    var headers = doc.querySelectorAll('.section-header, #header-group .header-section, #header-component');
+    for (var i = 0; i < headers.length; i++) {
+      var pos = window.getComputedStyle(headers[i]).position;
+      if (pos === 'sticky' || pos === 'fixed') return headers[i].offsetHeight;
+    }
+    return 0;
+  }
   doc.addEventListener('click', function (e) {
     var link = e.target.closest('[data-hlt-scroll-to]');
     if (!link) return;
     var target = doc.querySelector(link.getAttribute('data-hlt-scroll-to'));
     if (!target) return;
     e.preventDefault();
-    var header = doc.querySelector('.section-header');
-    var offset = header ? header.offsetHeight + 16 : 16;
-    window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - offset, behavior: reduceMotion ? 'auto' : 'smooth' });
+    var offset = stickyHeaderHeight() + 16;
+    var behavior = reduceMotion ? 'auto' : 'smooth';
+    var scroller = scrollerOf(target);
+    var rectTop = target.getBoundingClientRect().top;
+    if (scroller) {
+      scroller.scrollTo({ top: scroller.scrollTop + rectTop - scroller.getBoundingClientRect().top - offset, behavior: behavior });
+    } else {
+      window.scrollTo({ top: rectTop + window.pageYOffset - offset, behavior: behavior });
+    }
     var focusEl = target.querySelector('[data-hlt-age][aria-pressed="true"], [data-hlt-age][aria-checked="true"]') || target;
     setTimeout(function () { focusEl.focus({ preventScroll: true }); }, 600);
   });
@@ -216,6 +246,35 @@
   function addToCart(variantId, button, errorEl) {
     if (!variantId) return Promise.resolve();
     var cart = cartElement();
+    var actions = window.Shopify && window.Shopify.actions;
+    function showError(message) {
+      if (errorEl) { errorEl.textContent = message || 'Something went wrong. Please try again.'; errorEl.hidden = false; }
+    }
+    function busy(on) {
+      if (!button) return;
+      if (on) { button.setAttribute('aria-busy', 'true'); button.classList.add('is-loading'); }
+      else { button.removeAttribute('aria-busy'); button.classList.remove('is-loading'); }
+    }
+
+    /* Horizon and other themes built on Shopify's standard actions: the action
+       updates the cart, tells the cart drawer and the cart icon, and opens the
+       drawer if the theme has not already done so. */
+    if (!cart && actions && typeof actions.updateCart === 'function') {
+      busy(true);
+      if (errorEl) { errorEl.hidden = true; errorEl.textContent = ''; }
+      return actions.updateCart({ lines: [{ merchandiseId: String(variantId), quantity: 1 }] }, { event: { context: 'product' } })
+        .then(function (res) {
+          var errors = (res && res.userErrors) || [];
+          if (errors.length) { showError(errors[0].message); return; }
+          var drawer = doc.querySelector('theme-drawer#cart-drawer');
+          var open = drawer && (drawer.isOpen || drawer.hasAttribute('open'));
+          if (!open && typeof actions.openCart === 'function') actions.openCart();
+          doc.dispatchEvent(new CustomEvent('hlt:cart-added', { detail: res }));
+        })
+        .catch(function (err) { showError(err && err.message); })
+        .finally(function () { busy(false); });
+    }
+
     var body = { id: Number(variantId), quantity: 1 };
     if (cart && typeof cart.getSectionsToRender === 'function') {
       body.sections = cart.getSectionsToRender().map(function (s) { return s.id; });
@@ -282,6 +341,13 @@
     /* Pack mode names the card that starts selected; the other modes start
        on the first entry. */
     var startKey = ages.some(function (a) { return a.key === data.initial; }) ? data.initial : ages[0].key;
+    /* If the pack meant to start selected cannot be bought yet (no variant, or
+       sold out), start on the first pack that can, so the button works on load. */
+    function buyable(a) { return a && a.standard && a.standard.id && a.standard.available !== false; }
+    if (data.initial && !buyable(ages.filter(function (a) { return a.key === startKey; })[0])) {
+      var firstBuyable = ages.filter(buyable)[0];
+      if (firstBuyable) startKey = firstBuyable.key;
+    }
     var state = { age: startKey, size: 'standard' };
     var addBtn = box.querySelector('[data-hlt-add-bundle]');
     /* Single-product mode prints the price twice, on its own line and on the

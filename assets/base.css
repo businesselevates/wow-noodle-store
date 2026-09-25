@@ -2,8 +2,8 @@ html {
   scroll-behavior: smooth;
 }
 :root {
-  --font-heading-family: 'Inter', sans-serif;
-  --font-body-family: 'Inter', sans-serif;
+  --font-heading-family: 'Roca Two', 'Fraunces', Georgia, serif;
+  --font-body-family: 'Montserrat', sans-serif;
   --alpha-button-background: 1;
   --alpha-button-border: 1;
   --alpha-link: 0.85;
@@ -15,7 +15,7 @@ html {
 .mono,
 .nutritional,
 .batch-code {
-  font-family: 'DM Mono', monospace;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .product-card-wrapper .card,

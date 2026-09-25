@@ -38,14 +38,57 @@
     The pack that is chosen when the page loads: the first one ticked as
     selected, otherwise the first pack.
   endcomment
+  comment
+    Which pack cards can be bought: each needs a variant, either from the
+    product picked on the card or from the page's own product. On the live
+    store a card without one is left out, so nobody meets a pack that does not
+    exist yet; the theme editor shows every card so it can be set up. If no
+    card has a variant, all of them show.
+  endcomment
+  assign live_pack_ids = ','
+  for pack in pack_blocks
+    assign pv = nil
+    if pack.settings.product != blank
+      assign pv = pack.settings.product.selected_or_first_available_variant
+    elsif product != blank
+      if pack.settings.option_value != blank
+        for v in product.variants
+          if v.title == pack.settings.option_value or v.option1 == pack.settings.option_value
+            assign pv = v
+            break
+          endif
+        endfor
+      else
+        assign pv = product.variants[forloop.index0]
+      endif
+    endif
+    if pv
+      assign live_pack_ids = live_pack_ids | append: pack.id | append: ','
+    endif
+  endfor
+  assign show_all_packs = false
+  if request.design_mode or live_pack_ids == ','
+    assign show_all_packs = true
+  endif
+
   assign initial_key = ''
   for pack in pack_blocks
+    assign pack_needle = ',' | append: pack.id | append: ','
+    unless show_all_packs or live_pack_ids contains pack_needle
+      continue
+    endunless
     if pack.settings.selected and initial_key == ''
       assign initial_key = pack.id
     endif
   endfor
-  if initial_key == '' and pack_blocks.size > 0
-    assign initial_key = pack_blocks.first.id
+  if initial_key == ''
+    for pack in pack_blocks
+      assign pack_needle = ',' | append: pack.id | append: ','
+      if show_all_packs or live_pack_ids contains pack_needle
+        assign initial_key = pack.id
+        break
+      endif
+    endfor
   endif
   assign initial_price = ''
   assign use_product_images = section.settings.gallery_from_product
@@ -127,11 +170,16 @@
         One entry per pack card, keyed by the block, with its variant under
         both keys like simple mode. Whole-dollar prices drop the ".00".
       {%- endcomment -%}
+      {%- assign pack_json_n = 0 -%}
       {%- for pack in pack_blocks -%}
+        {%- assign pack_needle = ',' | append: pack.id | append: ',' -%}
+        {%- unless show_all_packs or live_pack_ids contains pack_needle -%}{%- continue -%}{%- endunless -%}
         {%- liquid
           assign pv = nil
           assign pack_index = forloop.index0
-          if product != blank
+          if pack.settings.product != blank
+            assign pv = pack.settings.product.selected_or_first_available_variant
+          elsif product != blank
             if pack.settings.option_value != blank
               for v in product.variants
                 if v.title == pack.settings.option_value or v.option1 == pack.settings.option_value
@@ -164,11 +212,13 @@
           "compare": {% if p_compare %}{{ p_compare | json }}{% else %}null{% endif %},
           "save": {% if p_save %}{{ p_save | json }}{% else %}null{% endif %}
         {%- endcapture -%}
+        {%- if pack_json_n > 0 -%},{%- endif -%}
+        {%- assign pack_json_n = pack_json_n | plus: 1 -%}
         {
           "key": {{ pack.id | json }},
           "standard": { {{ p_money }} },
           "value": { {{ p_money }} }
-        }{% unless forloop.last %},{% endunless %}
+        }
       {%- endfor -%}
     {%- else -%}
     {%- for age in age_blocks -%}
@@ -283,10 +333,23 @@
               {%- endunless -%}
             {%- endfor -%}
           {%- endif -%}
+          {%- comment -%}
+            A photo block with no image of its own shows the product's image in
+            the same position, so the gallery fills from the product until the
+            page's own photos are uploaded.
+          {%- endcomment -%}
+          {%- assign photo_n = 0 -%}
           {%- for block in section.blocks -%}
             {%- if block.type == 'gallery_image' and block.settings.show -%}
               {%- if use_product_images and block.settings.style != 'quote' -%}{%- continue -%}{%- endif -%}
               {%- liquid
+                assign slot_image = block.settings.image
+                if block.settings.style != 'quote'
+                  if slot_image == blank and product != blank
+                    assign slot_image = product.images[photo_n]
+                  endif
+                  assign photo_n = photo_n | plus: 1
+                endif
                 assign hlt_tile_n = hlt_tile_n | plus: 1
                 assign caption = block.settings.image_text
                 if block.settings.use_pending_text and block.settings.pending_text != blank
@@ -313,8 +376,15 @@
                   <div class="hlt-media" style="--hlt-ratio: 1 / 1;">
                     {%- if block.settings.video != blank -%}
                       {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1100x' }}
-                    {%- elsif block.settings.image != blank -%}
-                      {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+                    {%- elsif slot_image != blank -%}
+                      {%- liquid
+                        assign slot_loading = 'lazy'
+                        if hlt_tile_n == 1
+                          assign slot_loading = 'eager'
+                        endif
+                        assign slot_alt = slot_image.alt | default: caption
+                      -%}
+                      {{ slot_image | image_url: width: 1400 | image_tag: loading: slot_loading, widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw', alt: slot_alt }}
                     {%- else -%}
                       {{ 'product-2' | placeholder_svg_tag: 'hlt-placeholder' }}
                     {%- endif -%}
@@ -366,14 +436,24 @@
             {%- endunless -%}
           {%- endfor -%}
         {%- endif -%}
+        {%- assign thumb_n = 0 -%}
         {%- for block in section.blocks -%}
           {%- if block.type == 'gallery_image' and block.settings.show -%}
             {%- if use_product_images and block.settings.style != 'quote' -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign thumb_image = block.settings.image
+              if block.settings.style != 'quote'
+                if thumb_image == blank and product != blank
+                  assign thumb_image = product.images[thumb_n]
+                endif
+                assign thumb_n = thumb_n | plus: 1
+              endif
+            -%}
             <button type="button" class="hlt-bb__thumb{% if block.settings.style == 'quote' %} hlt-bb__thumb--quote{% endif %}" role="listitem" data-hlt-thumb="{{ block.id }}" {% if block.settings.only_for == 'value' %}data-hlt-size-only="value" hidden{% endif %} aria-label="Image">
               {%- if block.settings.style == 'quote' -%}
                 <span aria-hidden="true">“ ”</span>
-              {%- elsif block.settings.image != blank -%}
-                {{ block.settings.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
+              {%- elsif thumb_image != blank -%}
+                {{ thumb_image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
               {%- else -%}
                 {{ 'product-2' | placeholder_svg_tag: 'hlt-placeholder' }}
               {%- endif -%}
@@ -603,10 +683,14 @@
           {%- if section.settings.bundle_label != blank -%}<p class="hlt-bb__label">{{ section.settings.bundle_label }}</p>{%- endif -%}
           <div class="hlt-bb__cards hlt-bb__cards--packs" role="radiogroup" aria-label="{{ section.settings.bundle_label | default: section.settings.variant_label | default: 'Pack size' | escape }}">
             {%- for pack in pack_blocks -%}
+              {%- assign pack_needle = ',' | append: pack.id | append: ',' -%}
+              {%- unless show_all_packs or live_pack_ids contains pack_needle -%}{%- continue -%}{%- endunless -%}
               {%- liquid
                 assign pv = nil
                 assign pack_index = forloop.index0
-                if product != blank
+                if pack.settings.product != blank
+                  assign pv = pack.settings.product.selected_or_first_available_variant
+                elsif product != blank
                   if pack.settings.option_value != blank
                     for v in product.variants
                       if v.title == pack.settings.option_value or v.option1 == pack.settings.option_value
@@ -635,6 +719,21 @@
                   assign card_on = true
                 endif
                 assign pack_bullets = pack.settings.bullets | newline_to_br | split: '<br />'
+
+                comment
+                  The per-pack line follows the real price when the card knows how
+                  many packs arrive, so it never drifts from the price above it.
+                endcomment
+                assign per_text = pack.settings.per
+                if per_text == blank and pack.settings.pack_count > 0
+                  if pv
+                    assign price_cents = pv.price
+                  else
+                    assign price_cents = pack.settings.fallback_price | times: 100
+                  endif
+                  assign per_cents = price_cents | times: 1.0 | divided_by: pack.settings.pack_count | round
+                  assign per_text = per_cents | money_without_currency | prepend: prefix | append: ' ' | append: section.settings.per_pack_label
+                endif
               -%}
               <div
                 class="hlt-bb__card hlt-bb__card--pack{% if pack.settings.featured %} hlt-bb__card--featured{% endif %}{% if card_on %} is-selected{% endif %}"
@@ -656,7 +755,7 @@
                     <div>
                       <p class="hlt-bb__price">{{ card_price }}</p>
                       {%- if card_compare != blank -%}<p class="hlt-bb__was">{{ section.settings.compare_label | default: 'was' }} {{ card_compare }}</p>{%- endif -%}
-                      {%- if pack.settings.per != blank -%}<p class="hlt-bb__per">{{ pack.settings.per }}</p>{%- endif -%}
+                      {%- if per_text != blank -%}<p class="hlt-bb__per">{{ per_text }}</p>{%- endif -%}
                     </div>
                   </div>
                 </div>
@@ -888,7 +987,10 @@
       <label class="hlt-sticky__field">
         <span class="visually-hidden">{{ section.settings.bundle_label | default: section.settings.variant_label | default: 'Pack size' }}</span>
         <select data-hlt-sticky-age>
-          {%- for pack in pack_blocks -%}<option value="{{ pack.id }}"{% if pack.id == initial_key %} selected{% endif %}>{{ pack.settings.title }}</option>{%- endfor -%}
+          {%- for pack in pack_blocks -%}
+            {%- assign pack_needle = ',' | append: pack.id | append: ',' -%}
+            {%- if show_all_packs or live_pack_ids contains pack_needle -%}<option value="{{ pack.id }}"{% if pack.id == initial_key %} selected{% endif %}>{{ pack.settings.title }}</option>{%- endif -%}
+          {%- endfor -%}
         </select>
       </label>
       {%- elsif buy_mode == 'simple' and product.variants.size > 1 -%}
@@ -1137,7 +1239,7 @@
     { "type": "text", "id": "price_prefix", "label": "Price prefix", "default": "S$" },
     { "type": "text", "id": "anchor_id", "label": "Anchor ID", "info": "Buttons elsewhere scroll to #this-id.", "default": "hlt-buy-box" },
     { "type": "checkbox", "id": "age_image_first", "label": "Show each age's bundle image first in the gallery", "default": true },
-    { "type": "checkbox", "id": "gallery_from_product", "label": "Take the gallery images from the product", "info": "The main image follows the chosen age and pack, using each variant's own image. The product's remaining images become the smaller tiles, and the uploaded photo blocks below are ignored while this is on. Quote blocks still show.", "default": true },
+    { "type": "checkbox", "id": "gallery_from_product", "label": "Take the gallery images from the product", "info": "The main image follows the chosen age and pack, using each variant's own image. The product's remaining images become the smaller tiles, and the uploaded photo blocks below are ignored while this is on. Quote blocks still show. When it is off, a photo block with no image shows the product's image in the same position.", "default": true },
     { "type": "text", "id": "view_all_label", "label": "Gallery 'View all' label", "info": "Shown on desktop when there are more than 4 gallery images under the main image.", "default": "View all" },
     { "type": "text", "id": "view_less_label", "label": "Gallery 'View less' label", "default": "View less" },
     { "type": "checkbox", "id": "tile_captions", "label": "Show text on the smaller gallery images", "info": "The main bundle image always keeps its text.", "default": false },
@@ -1164,6 +1266,7 @@
     { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
     { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
     { "type": "text", "id": "button_note", "label": "Small print under Add to cart", "info": "For example an allergen line. Leave empty to hide it." },
+    { "type": "text", "id": "per_pack_label", "label": "Per-pack wording", "info": "Follows the worked-out price on each pack card.", "default": "a pack" },
     { "type": "header", "content": "Card 1 (Standard)" },
     { "type": "text", "id": "card1_title", "label": "Title", "default": "Standard" },
     { "type": "text", "id": "card1_tag", "label": "Corner tag" },
@@ -1214,13 +1317,15 @@
         { "type": "paragraph", "content": "Used when the buy box is set to 'Pack sizes'. One card per variant, in the order of these blocks." },
         { "type": "text", "id": "title", "label": "Title", "default": "10 packs" },
         { "type": "text", "id": "line", "label": "Line", "info": "Under the title, for example what arrives and how it ships." },
-        { "type": "text", "id": "option_value", "label": "Matching variant", "info": "The variant's name or first option value, for example: 10 packs. Leave empty to use the variant in the same position as this card." },
+        { "type": "product", "id": "product", "label": "Product for this card", "info": "Pick a product when each pack size is its own product. Leave empty to use a variant of the page's product." },
+        { "type": "text", "id": "option_value", "label": "Matching variant", "info": "Used when no product is picked above. The variant's name or first option value, for example: 10 packs. Leave empty to use the variant in the same position as this card." },
         { "type": "checkbox", "id": "selected", "label": "Selected when the page loads", "default": false },
         { "type": "checkbox", "id": "featured", "label": "Highlight this card", "info": "Gives the savings badge the accent colour.", "default": false },
         { "type": "text", "id": "tag", "label": "Corner tag", "info": "Top right, for example: Most popular." },
         { "type": "text", "id": "save", "label": "Savings badge", "info": "Top left on the card's border. Leave empty to hide it." },
         { "type": "text", "id": "price", "label": "Price text", "info": "Leave empty to show the variant's own price, which keeps the card and the button in step." },
-        { "type": "text", "id": "per", "label": "Per-pack line", "info": "Under the price, for example: S$3.70 a pack." },
+        { "type": "number", "id": "pack_count", "label": "Packs that arrive", "info": "Works out the per-pack line from the price, for example 45 for 40 packs plus 5 extra." },
+        { "type": "text", "id": "per", "label": "Per-pack line (typed)", "info": "Replaces the worked-out line. Leave empty to keep it in step with the price." },
         { "type": "textarea", "id": "bullets", "label": "Bullets", "info": "One per line. Leave empty for a compact card." },
         { "type": "text", "id": "fallback_price", "label": "Button price if the variant is missing", "info": "Without the prefix, for example: 37." }
       ]

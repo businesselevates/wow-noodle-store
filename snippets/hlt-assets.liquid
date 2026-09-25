@@ -1,0 +1,19 @@
+{%- comment -%}
+  Loads the HLT page system: the ProTEGO(R) web fonts, hlt-home.css and hlt-home.js.
+  Render it once, in the layout's <head>, after the theme's own stylesheets:
+    {%- render 'hlt-assets' -%}
+
+  Montserrat comes from Google Fonts. Roca Two is licensed, so it loads only once its
+  files are in the theme's assets and 'Roca Two font files are uploaded' is ticked in the
+  'HLT Page settings' section. Until then Fraunces, a soft serif close to Roca Two,
+  stands in for the headings.
+{%- endcomment -%}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..800,100,0&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{{ 'hlt-home.css' | asset_url | stylesheet_tag }}
+<script>
+  document.documentElement.classList.add('hlt-js');
+  setTimeout(function () { if (!window.HLT) document.documentElement.classList.add('hlt-anim-off'); }, 3000);
+</script>
+<script src="{{ 'hlt-home.js' | asset_url }}" defer="defer"></script>
