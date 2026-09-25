@@ -1,0 +1,189 @@
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-mt hlt-mt--{{ section.settings.style }}{% if section.settings.media_side == 'left' %} hlt-mt--left{% endif %}"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-copy-gap: {{ section.settings.copy_gap }}px; --hlt-after-heading: {{ section.settings.space_after_heading }}px; --hlt-row-gap: {{ section.settings.icon_row_gap }}px; --hlt-after-rows: {{ section.settings.space_after_icon_rows }}px; --hlt-before-button: {{ section.settings.space_before_button }}px;"
+>
+  {%- if section.settings.wave_top -%}
+    <div class="hlt-wave hlt-wave--top" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_top_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+
+  <div class="{% if section.settings.style == 'card' %}hlt__inner {% endif %}hlt-mt__grid">
+    <div class="hlt-mt__media-wrap" data-hlt-reveal="{% if section.settings.media_side == 'left' %}left{% else %}right{% endif %}">
+      <div class="hlt-media hlt-mt__media" style="--hlt-ratio: {{ section.settings.ratio }};">
+        {%- if section.settings.video != blank -%}
+          {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1400x' }}
+        {%- elsif section.settings.image != blank -%}
+          <div class="hlt-par" {% if section.settings.parallax_speed != '0' %}data-hlt-parallax="{{ section.settings.parallax_speed }}"{% endif %}>
+            {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+          </div>
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'hlt-placeholder' }}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.sparkles -%}
+        <span class="hlt-sparkle" style="top: -8px; left: 12%;" aria-hidden="true">✦</span>
+        <span class="hlt-sparkle" style="bottom: 12%; right: -6px; animation-delay: 1.2s; font-size: 16px;" aria-hidden="true">✦</span>
+      {%- endif -%}
+    </div>
+
+    <div class="hlt-mt__copy">
+      <div class="hlt-stack hlt-mt__copy-inner" data-hlt-stagger>
+        {%- for block in section.blocks -%}{% render 'hlt-block', block: block %}{%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.wave_bottom -%}
+    <div class="hlt-wave hlt-wave--bottom" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_bottom_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .hlt-mt__grid { display: grid; gap: 32px; align-items: center; }
+  .hlt-mt__media-wrap { position: relative; }
+  @media (min-width: 990px) {
+    .hlt-mt__grid { grid-template-columns: 1fr 1fr; gap: 72px; }
+    .hlt-mt--left .hlt-mt__media-wrap { order: -1; }
+    .hlt-mt:not(.hlt-mt--left) .hlt-mt__media-wrap { order: 2; }
+  }
+  .hlt-mt--card .hlt-mt__media { box-shadow: var(--hlt-shadow); }
+
+  /* Breathing room in the copy column. Every value below is a section
+     setting now, with the old hard-coded number as the CSS fallback, so a
+     section saved before these settings existed still looks the same. */
+  .hlt-mt__copy-inner { --hlt-gap: var(--hlt-copy-gap, 28px); }
+  .hlt-mt__copy-inner > h2 + * { margin-top: var(--hlt-after-heading, 36px); }
+  .hlt-mt__copy-inner .hlt-list { gap: 22px; }
+  .hlt-mt__copy-inner .hlt-list li { line-height: 1.6; }
+  .hlt-mt__copy-inner .hlt-body { line-height: 1.7; }
+
+  /* Icon rows: a pale disc beside one line of copy, three of them telling a
+     short story down the column. */
+  .hlt-row { display: flex; align-items: center; gap: 18px; }
+  .hlt-row__ic {
+    flex: 0 0 64px; height: 64px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--hlt-splash-pale); color: var(--hlt-navy);
+  }
+  .hlt--splash-pale .hlt-row__ic { background: var(--hlt-paper); }
+  .hlt--navy .hlt-row__ic, .hlt--deep-navy .hlt-row__ic { background: rgba(255, 255, 255, 0.1); color: var(--hlt-sky); }
+  .hlt-row__ic .hlt-icon { width: 38px; height: 38px; }
+  .hlt-row__text { font-size: 18px; line-height: 1.45; color: var(--hlt-heading); }
+  /* Between two icon rows, and then between the last icon row and whatever
+     follows it (a small print line, a body paragraph, a quote). */
+  .hlt-mt__copy-inner .hlt-row + .hlt-row { margin-top: var(--hlt-row-gap, 18px); }
+  .hlt-mt__copy-inner .hlt-row + *:not(.hlt-row) { margin-top: var(--hlt-after-rows, 0px); }
+  /* Listed last so the button keeps its own setting even when it follows an
+     icon row. */
+  .hlt-mt__copy-inner .hlt-btn-row { margin-top: var(--hlt-before-button, 0px); }
+  @media (max-width: 749px) {
+    .hlt-row { gap: 14px; }
+    .hlt-row__ic { flex-basis: 54px; height: 54px; }
+    .hlt-row__ic .hlt-icon { width: 32px; height: 32px; }
+    .hlt-row__text { font-size: 16px; }
+  }
+
+  /* Bleed: image fills half the screen edge to edge, like Bloom's founder section */
+  .hlt-mt--bleed { padding: 0; }
+  .hlt-mt--bleed .hlt-mt__grid { gap: 0; }
+  .hlt-mt--bleed .hlt-mt__media { border-radius: 0; height: 100%; min-height: 360px; aspect-ratio: auto; }
+  .hlt-mt--bleed .hlt-mt__copy { padding: var(--hlt-pt) 20px var(--hlt-pb); }
+  @media (min-width: 990px) {
+    .hlt-mt--bleed .hlt-mt__grid { align-items: stretch; }
+    .hlt-mt--bleed .hlt-mt__media { min-height: 560px; }
+    .hlt-mt--bleed .hlt-mt__copy { display: flex; align-items: center; padding: var(--hlt-pt) clamp(40px, 6vw, 96px) var(--hlt-pb); }
+    .hlt-mt--bleed .hlt-mt__copy-inner { max-width: 560px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Image with text",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "select", "id": "style", "label": "Style", "default": "card", "options": [ { "value": "card", "label": "Rounded image in page width" }, { "value": "bleed", "label": "Image fills half the screen" } ] },
+    { "type": "select", "id": "media_side", "label": "Image side", "default": "right", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ] },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" },
+      { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }, { "value": "deep-navy", "label": "Deep navy" }
+    ] },
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "video", "id": "video", "label": "Video (replaces image, plays muted on loop)" },
+    { "type": "select", "id": "ratio", "label": "Shape", "default": "1 / 1", "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" } ] },
+    { "type": "text", "id": "parallax_speed", "label": "Parallax strength", "info": "0 turns it off.", "default": "0.12" },
+    { "type": "checkbox", "id": "sparkles", "label": "Twinkling sparkles", "default": false },
+    { "type": "header", "content": "Text spacing" },
+    { "type": "range", "id": "copy_gap", "label": "Space between blocks", "info": "The base gap between every block in the text column.", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 28 },
+    { "type": "range", "id": "space_after_heading", "label": "Extra space after the heading", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "icon_row_gap", "label": "Extra space between icon rows", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 18 },
+    { "type": "range", "id": "space_after_icon_rows", "label": "Extra space after the last icon row", "info": "Adds to the base gap, for the line that follows the icon rows.", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "space_before_button", "label": "Extra space above the button", "min": 0, "max": 80, "step": 2, "unit": "px", "default": 0 },
+    { "type": "header", "content": "Edges and spacing" },
+    { "type": "checkbox", "id": "wave_top", "label": "Wavy top edge", "default": false },
+    { "type": "select", "id": "wave_top_color", "label": "Top wave colour", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "checkbox", "id": "wave_bottom", "label": "Wavy bottom edge", "default": false },
+    { "type": "select", "id": "wave_bottom_color", "label": "Bottom wave colour", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    { "type": "overline", "name": "Overline", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Overline" } ] },
+    { "type": "heading", "name": "Heading", "settings": [
+      { "type": "textarea", "id": "text", "label": "Heading", "default": "Heading" },
+      { "type": "select", "id": "size", "label": "Size", "default": "hlt-h2", "options": [ { "value": "hlt-h1", "label": "Extra large" }, { "value": "hlt-h2", "label": "Large" }, { "value": "hlt-h3", "label": "Medium" } ] }
+    ] },
+    { "type": "subheading", "name": "Subheading", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Subheading" } ] },
+    { "type": "body", "name": "Body", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Body text</p>" },
+      { "type": "checkbox", "id": "large", "label": "Larger text", "default": false }
+    ] },
+    { "type": "list", "name": "List", "settings": [
+      { "type": "textarea", "id": "items", "label": "Items, one per line" },
+      { "type": "checkbox", "id": "bold_lead", "label": "Bold the words before the first full stop", "default": true },
+      { "type": "header", "content": "Waiting on HLT One" },
+      { "type": "textarea", "id": "pending_last_line", "label": "Replacement for the last item" },
+      { "type": "checkbox", "id": "show_pending", "label": "Use the replacement", "default": false }
+    ] },
+    { "type": "icon_row", "name": "Icon row", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "snack-bag-question", "options": [
+        { "value": "snack-bag-question", "label": "Snack bag with a question" },
+        { "value": "snack-bag-soft", "label": "Open bag going soft" },
+        { "value": "bin", "label": "Bin" },
+        { "value": "package", "label": "Sealed pack" },
+        { "value": "stroller", "label": "Stroller" },
+        { "value": "clock", "label": "Clock" },
+        { "value": "smile", "label": "Smile" },
+        { "value": "heart", "label": "Heart" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "sugar-off", "label": "No added sugar" },
+        { "value": "truck", "label": "Delivery" },
+        { "value": "gift", "label": "Gift" },
+        { "value": "check", "label": "Tick" }
+      ] },
+      { "type": "textarea", "id": "text", "label": "Text", "default": "One line of the story." }
+    ] },
+    { "type": "badges", "name": "Badges", "settings": [ { "type": "text", "id": "items", "label": "Badges, separated by |", "default": "Organic | Halal certified" } ] },
+    { "type": "small_print", "name": "Small print", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "quote", "name": "Quote", "settings": [ { "type": "textarea", "id": "text", "label": "Quote" }, { "type": "text", "id": "attribution", "label": "Attribution" } ] },
+    { "type": "button", "name": "Button", "settings": [
+      { "type": "text", "id": "label", "label": "Label", "default": "Choose their bundle" },
+      { "type": "checkbox", "id": "scroll", "label": "Scroll to the buy box", "default": true },
+      { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
+      { "type": "url", "id": "link", "label": "Link (when not scrolling)" },
+      { "type": "select", "id": "style", "label": "Style", "default": "navy", "options": [ { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "outline", "label": "Outline" } ] }
+    ] },
+    { "type": "spacer", "name": "Spacer", "settings": [ { "type": "range", "id": "height", "label": "Height", "min": 8, "max": 96, "step": 8, "unit": "px", "default": 24 } ] }
+  ],
+  "presets": [ { "name": "HLT Image with text", "blocks": [ { "type": "heading" }, { "type": "body" }, { "type": "button" } ] } ]
+}
+{% endschema %}

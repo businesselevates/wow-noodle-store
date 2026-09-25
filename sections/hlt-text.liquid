@@ -1,0 +1,133 @@
+{%- liquid
+  assign layout = section.settings.layout
+-%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-text hlt-text--{{ layout }}"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+>
+  {%- if section.settings.wave_top -%}
+    <div class="hlt-wave hlt-wave--top" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_top_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.sparkles -%}
+    <span class="hlt-sparkle" style="top: 18%; left: 7%;" aria-hidden="true">✦</span>
+    <span class="hlt-sparkle" style="top: 30%; right: 9%; animation-delay: 1s; font-size: 16px;" aria-hidden="true">✦</span>
+    <span class="hlt-sparkle" style="bottom: 16%; right: 16%; animation-delay: 2s;" aria-hidden="true">✦</span>
+  {%- endif -%}
+
+  <div class="hlt__inner{% if section.settings.width == 'narrow' %} hlt__inner--narrow{% endif %}">
+    {%- if layout == 'split' -%}
+      <div class="hlt-text__split">
+        <div class="hlt-stack hlt-text__aside" data-hlt-stagger>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'overline' or block.type == 'heading' -%}{% render 'hlt-block', block: block %}{%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="hlt-stack" data-hlt-stagger>
+          {%- for block in section.blocks -%}
+            {%- unless block.type == 'overline' or block.type == 'heading' -%}{% render 'hlt-block', block: block %}{%- endunless -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="hlt-stack hlt-text__col{% if layout == 'center' %} hlt-center{% endif %}{% if layout == 'card' %} hlt-text__card{% endif %}" data-hlt-stagger>
+        {%- for block in section.blocks -%}{% render 'hlt-block', block: block %}{%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.wave_bottom -%}
+    <div class="hlt-wave hlt-wave--bottom" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_bottom_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .hlt-text__col { max-width: 820px; }
+  /* Same breathing room as the image-with-text sections: wider gap between
+     blocks, more under the heading, and looser list items. */
+  .hlt-text .hlt-stack { --hlt-gap: 28px; }
+  .hlt-text .hlt-stack > h2 + * { margin-top: 36px; }
+  .hlt-text .hlt-list { gap: 22px; }
+  .hlt-text .hlt-list li { line-height: 1.6; }
+  .hlt-text .hlt-body { line-height: 1.7; }
+  .hlt-text--center .hlt-text__col { margin: 0 auto; }
+  .hlt-text__col .hlt-list { text-align: left; max-width: 680px; margin-left: auto; margin-right: auto; }
+  .hlt-text__card { margin: 0 auto; padding: clamp(28px, 5vw, 64px); border-radius: 28px; background: var(--hlt-paper); box-shadow: var(--hlt-shadow); }
+  .hlt-text__split { display: grid; gap: 28px; }
+  @media (min-width: 990px) {
+    .hlt-text__split { grid-template-columns: 5fr 7fr; gap: 72px; align-items: start; }
+    .hlt-text__aside { position: sticky; top: calc(var(--header-height, 80px) + 24px); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Text",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "select", "id": "layout", "label": "Layout", "default": "center", "options": [
+      { "value": "center", "label": "Centred" }, { "value": "left", "label": "Left aligned" },
+      { "value": "split", "label": "Heading left, text right" }, { "value": "card", "label": "White card" }
+    ] },
+    { "type": "select", "id": "width", "label": "Width", "default": "wide", "options": [ { "value": "wide", "label": "Wide" }, { "value": "narrow", "label": "Narrow" } ] },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" },
+      { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }, { "value": "deep-navy", "label": "Deep navy" }
+    ] },
+    { "type": "checkbox", "id": "sparkles", "label": "Twinkling sparkles", "default": false },
+    { "type": "header", "content": "Edges" },
+    { "type": "checkbox", "id": "wave_top", "label": "Wavy top edge", "default": false },
+    { "type": "select", "id": "wave_top_color", "label": "Top wave colour (match the section above)", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "checkbox", "id": "wave_bottom", "label": "Wavy bottom edge", "default": false },
+    { "type": "select", "id": "wave_bottom_color", "label": "Bottom wave colour (match the section below)", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    { "type": "overline", "name": "Overline", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Overline" } ] },
+    { "type": "heading", "name": "Heading", "settings": [
+      { "type": "textarea", "id": "text", "label": "Heading", "default": "Heading" },
+      { "type": "select", "id": "size", "label": "Size", "default": "hlt-h2", "options": [ { "value": "hlt-h1", "label": "Extra large" }, { "value": "hlt-h2", "label": "Large" }, { "value": "hlt-h3", "label": "Medium" } ] }
+    ] },
+    { "type": "subheading", "name": "Subheading", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Subheading" } ] },
+    { "type": "body", "name": "Body", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Body text</p>" },
+      { "type": "checkbox", "id": "large", "label": "Larger text", "default": false }
+    ] },
+    { "type": "list", "name": "List", "settings": [
+      { "type": "textarea", "id": "items", "label": "Items, one per line" },
+      { "type": "checkbox", "id": "bold_lead", "label": "Bold the words before the first full stop", "default": true },
+      { "type": "header", "content": "Waiting on HLT One" },
+      { "type": "textarea", "id": "pending_last_line", "label": "Replacement for the last item" },
+      { "type": "checkbox", "id": "show_pending", "label": "Use the replacement", "default": false }
+    ] },
+    { "type": "badges", "name": "Badges", "settings": [ { "type": "text", "id": "items", "label": "Badges, separated by |", "default": "Organic | Halal certified" } ] },
+    { "type": "small_print", "name": "Small print", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "quote", "name": "Quote", "settings": [ { "type": "textarea", "id": "text", "label": "Quote" }, { "type": "text", "id": "attribution", "label": "Attribution" } ] },
+    { "type": "button", "name": "Button", "settings": [
+      { "type": "text", "id": "label", "label": "Label", "default": "Choose their bundle" },
+      { "type": "checkbox", "id": "scroll", "label": "Scroll to the buy box", "default": true },
+      { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
+      { "type": "url", "id": "link", "label": "Link (when not scrolling)" },
+      { "type": "select", "id": "style", "label": "Style", "default": "navy", "options": [ { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "outline", "label": "Outline" } ] }
+    ] },
+    { "type": "image", "name": "Image", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "select", "id": "ratio", "label": "Shape", "default": "4 / 3", "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" } ] }
+    ] },
+    { "type": "spacer", "name": "Spacer", "settings": [ { "type": "range", "id": "height", "label": "Height", "min": 8, "max": 96, "step": 8, "unit": "px", "default": 24 } ] }
+  ],
+  "presets": [ { "name": "HLT Text", "blocks": [ { "type": "heading" }, { "type": "body" } ] } ]
+}
+{% endschema %}
+

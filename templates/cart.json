@@ -1,0 +1,56 @@
+{
+  "sections": {
+    "cart-items": {
+      "type": "main-cart-items",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "eyebrow": "Your basket",
+        "back_link_label": "Keep shopping",
+        "empty_heading": "Nothing in here yet",
+        "empty_text": "Pick a snack your little one will love and we will keep it safe right here.",
+        "empty_button": "Start shopping",
+        "show_cross_sell": true,
+        "cross_sell_heading": "Add to your order",
+        "cross_sell_subheading": "Popular with parents buying this.",
+        "cross_sell_product_1": "qiu-tian-man-man-baby-a2-probiotic-yogurt-melts-18g-3-packs",
+        "cross_sell_product_2": "qiu-tian-man-man-aerobaby-germrice-puffs-32g",
+        "cross_sell_button": "Add",
+        "cross_sell_hide_in_cart": true,
+        "show_note": false,
+        "note_heading": "Anything we should know?",
+        "note_help": "Delivery instructions, a gift message, an allergy - type it here and it travels with your order.",
+        "note_placeholder": "Leave the parcel with my neighbour at 12B...",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "cart-footer": {
+      "type": "main-cart-footer",
+      "blocks": {
+        "subtotal": { "type": "subtotal", "settings": {} },
+        "buttons": { "type": "buttons", "settings": {} }
+      },
+      "block_order": ["subtotal", "buttons"],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "summary_heading": "Order summary",
+        "subtotal_label": "Subtotal",
+        "shipping_label": "Shipping",
+        "shipping_value": "Calculated at checkout",
+        "total_label": "Total",
+        "savings_label": "You save",
+        "show_secure_note": true,
+        "secure_text": "Secure checkout",
+        "secure_subtext": "Encrypted payment, handled by Shopify.",
+        "show_payment_icons": true,
+        "show_trust": true,
+        "trust_1": "Tracked delivery across Singapore",
+        "trust_2": "Easy returns within 14 days",
+        "trust_3": "Lab tested, SFA compliant batches",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": ["cart-items", "cart-footer"]
+}

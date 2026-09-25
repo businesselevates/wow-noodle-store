@@ -1,0 +1,1263 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "order": [
+    "hlt_page_settings",
+    "hlt_buy_box",
+    "featured_collection_34NAQ9",
+    "178952848870002bae",
+    "shop_products_chips",
+    "blocks_qTDqhU",
+    "hlt_hook",
+    "blocks_DNfkqw",
+    "hlt_promises_strip",
+    "hlt_problem",
+    "hlt_belief",
+    "hlt_benefit_age",
+    "hlt_benefit_feel",
+    "hlt_benefit_take",
+    "blocks_9gETXV",
+    "hlt_reviews",
+    "hlt_why_bundle",
+    "hlt_faq",
+    "hlt_final_cta",
+    "main",
+    "related-products"
+  ],
+  "sections": {
+    "hlt_page_settings": {
+      "type": "hlt-page-settings",
+      "settings": {
+        "hide_menu": false,
+        "hide_announcement": false
+      }
+    },
+    "hlt_buy_box": {
+      "type": "hlt-buy-box",
+      "blocks": {
+        "tag_1": {
+          "type": "tag",
+          "settings": {
+            "text": "Easy for little mouths",
+            "icon": "smile"
+          }
+        },
+        "tag_2": {
+          "type": "tag",
+          "settings": {
+            "text": "No added sugar or salt",
+            "icon": "sugar-off"
+          }
+        },
+        "tag_3": {
+          "type": "tag",
+          "settings": {
+            "text": "Sealed one by one",
+            "icon": "package"
+          }
+        },
+        "gallery_image_4": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image": "shopify://shop_images/Yummybara_Snack_Explorer_Kit_Yummybara_a2c3ba5b7c4a4684.webp",
+            "image_text": "Every snack in every bundle: organic, no preservatives, no added refined sugar or salt, halal.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_5": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image": "shopify://shop_images/Rice_Rusks_Listing_img.webp",
+            "image_text": "Easy for little mouths. Melts at 8 months. Bites at 10. Crunch at 12.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_6": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image": "shopify://shop_images/Yummybara_On-The-Go_Snack_Kit_Yummybara_1c71d816e4c7df2e.webp",
+            "image_text": "Snack-sized packs, sealed one by one.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_7": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image": "shopify://shop_images/LittleTreats21.webp",
+            "image_text": "At least 10 different snacks in every bundle.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_8": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image": "shopify://shop_images/Main_YummybaraShrimpWaferCrisps.webp",
+            "image_text": "Turn any box over.",
+            "only_for": "all",
+            "pending_text": "Made with simple ingredients",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_9": {
+          "type": "gallery_image",
+          "settings": {
+            "show": false,
+            "style": "photo",
+            "image": "shopify://shop_images/Habibara_Pure_Gentle_Baby_Wet_Wipes_with_5_Botanical_Extracts_Extra_Thick_Sensitive_Skin_80_sheets_Value_Pack_Habibara.webp",
+            "image_text": "Free Habibara wipes with every Value pack.",
+            "only_for": "value",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_10": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "quote",
+            "image_text": "Baby loves it so much that I had to find it online!",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "badge_11": {
+          "type": "badge",
+          "settings": {
+            "icon": "certificate",
+            "text": "Halal certified"
+          }
+        },
+        "badge_12": {
+          "type": "badge",
+          "settings": {
+            "icon": "leaf",
+            "text": "Organic"
+          }
+        },
+        "badge_13": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "text": "Free delivery"
+          }
+        },
+        "badge_14": {
+          "type": "badge",
+          "settings": {
+            "icon": "return",
+            "text": "14-day replacement"
+          }
+        },
+        "badge_15": {
+          "type": "badge",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "dropdown_16": {
+          "type": "dropdown",
+          "settings": {
+            "show": false,
+            "title": "Tell me more",
+            "text": "<p>Most snacks packed for a day out are a compromise, given because there is nothing else to hand. Yummybara is made to be the snack you are glad to hand over. Each age gets a texture it can manage: melts that soften as soon as they touch saliva at 8 months+, baked rusks that hold their shape at 10 months+, and real crunch at 12 months+. Every snack is organic, halal certified, and made with no preservatives and no added refined sugar or salt. Each one comes in its own snack-sized pack, sealed one by one, so a few go in the bag for the zoo or a long car ride.</p>",
+            "open": false,
+            "link_label": "",
+            "link": "",
+            "pending_text": "",
+            "show_pending": false
+          }
+        },
+        "dropdown_17": {
+          "type": "dropdown",
+          "settings": {
+            "show": false,
+            "title": "What's inside",
+            "text": "<p><strong>First Melts, 8 months+:</strong> yoghurt, cereal, coconut milk and cheese melts, plus freeze-dried rice rusks.</p><p><strong>First Bites, 10 months+:</strong> baked rice rusks, plus the melts from First Melts.</p><p><strong>Big Crunch, 12 months+:</strong> filled rice sticks, puff pops, DHA puff rice sticks, shrimp wafer crisps, dark chocolate melts, triangle corn puffs and freeze-dried fruit.</p>",
+            "open": false,
+            "link_label": "See every box in this bundle",
+            "link": "",
+            "pending_text": "<p><strong>Allergens:</strong> the melts contain milk. The Jumbo Filled Rice Sticks contain wheat, milk and egg. The Shrimp Wafer Crisps contain crustaceans. Some products are made in a facility that also handles soybean, peanuts, tree nuts, fish and crustaceans. Every box lists them.</p>",
+            "show_pending": false
+          }
+        },
+        "dropdown_18": {
+          "type": "dropdown",
+          "settings": {
+            "show": false,
+            "title": "How to serve",
+            "text": "<p>Pick the bundle for your child's age. If they are between two ages, pick the younger one.</p><p>Always stay with your child while they eat.</p>",
+            "open": false,
+            "link_label": "",
+            "link": "",
+            "pending_text": "<p>Keep in a cool, dry place, away from heat and sunlight.</p>",
+            "show_pending": false
+          }
+        },
+        "pair_product_1": {
+          "type": "pair_product",
+          "settings": {
+            "product": "habibara-pure-gentle-baby-wipes-100-food-grade-oral-safe-with-xylitol-extra-thick-3d-embossed-sensitive-skin",
+            "variant_title": "3 Packs",
+            "title": "Habibara Pure & Gentle Baby Wipes 10s, 3 packs",
+            "line": "Small enough for the stroller bag.",
+            "hide_on_value": true
+          }
+        },
+        "pair_product_2": {
+          "type": "pair_product",
+          "settings": {
+            "product": "habibara-pure-gentle-baby-mouth-hand-wipes-80-sheets",
+            "variant_title": "1 Pack",
+            "title": "Habibara Pure & Gentle Baby Wet Wipes, 80 sheets",
+            "line": "For hands and faces after snack time.",
+            "hide_on_value": true
+          }
+        }
+      },
+      "block_order": [
+        "tag_1",
+        "tag_2",
+        "tag_3",
+        "gallery_image_4",
+        "gallery_image_5",
+        "gallery_image_6",
+        "gallery_image_7",
+        "gallery_image_8",
+        "gallery_image_9",
+        "gallery_image_10",
+        "badge_11",
+        "badge_12",
+        "badge_13",
+        "badge_14",
+        "badge_15",
+        "dropdown_16",
+        "dropdown_17",
+        "dropdown_18",
+        "pair_product_1",
+        "pair_product_2"
+      ],
+      "settings": {
+        "product": "",
+        "standard_value": "Standard",
+        "value_value": "Value Pack",
+        "price_prefix": "S$",
+        "anchor_id": "hlt-buy-box",
+        "age_image_first": true,
+        "gallery_from_product": true,
+        "view_all_label": "View all",
+        "view_less_label": "View less",
+        "tile_captions": false,
+        "sticky_bar": true,
+        "pair_heading": "Pair it with",
+        "pair_next_tab": "The next age bundle",
+        "show_rating": true,
+        "rating_value": 5,
+        "rating_text": "4.9",
+        "show_badge2": false,
+        "badge2_text": "",
+        "show_eyebrow": false,
+        "eyebrow": "Yummybara by HLT One",
+        "title": "",
+        "title_size": 36,
+        "body": "<p>Snacks you can hand over anywhere: no added refined sugar or salt, in snack-sized packs sealed one by one.</p>",
+        "tags": "Easy for little mouths | No added sugar or salt | Sealed one by one",
+        "age_label": "Pick your child's age",
+        "bundle_label": "Pick your bundle",
+        "add_label": "Add to cart",
+        "sold_out_label": "Sold out",
+        "card1_title": "Standard",
+        "card1_tag": "",
+        "card1_bullets": "About two months of one snack a day\nFree delivery",
+        "card2_title": "Value pack",
+        "card2_tag": "Best value",
+        "card2_bullets": "Made for homes with two or more little ones\nFree delivery",
+        "show_gift": false,
+        "gift_bullet": "Free gift: Habibara wet wipes (80 sheets) and a 3-pack of Habibara baby wipes, worth S$8.75",
+        "background": "paper",
+        "padding_top": 32,
+        "padding_bottom": 40,
+        "buy_mode": "simple",
+        "variant_label": "",
+        "compare_label": "was",
+        "solo_title": "",
+        "solo_line": "",
+        "solo_bullets": "Free delivery",
+        "save_label": "Save",
+        "solo_description": true,
+        "solo_description_title": "What's inside",
+        "solo_description_open": true
+      }
+    },
+    "featured_collection_34NAQ9": {
+      "type": "featured-collection",
+      "disabled": true,
+      "name": "t:sections.featured-collection.presets.name",
+      "settings": {
+        "collection": "yummybara",
+        "products_to_show": 4,
+        "title": "Our Yummybara Products",
+        "heading_size": "h1",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": true,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "link",
+        "color_scheme": "",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "178952848870002bae": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_29a8d20_BEGige": {
+          "type": "ai_gen_block_29a8d20",
+          "settings": {
+            "heading": "Shop our products",
+            "collection": "yummybara",
+            "products_to_show": 4,
+            "button_label": "Add to cart",
+            "variant_style": "icon",
+            "desktop_width_percent": 100,
+            "cards_visible": 4,
+            "gap": 16,
+            "card_radius": 12,
+            "image_radius": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_29a8d20_BEGige"
+      ],
+      "disabled": true,
+      "name": "Shop our products (icon swatches)",
+      "settings": {}
+    },
+    "shop_products_chips": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_29a8d20_chips": {
+          "type": "ai_gen_block_29a8d20",
+          "settings": {
+            "heading": "Shop our products",
+            "collection": "yummybara",
+            "products_to_show": 4,
+            "button_label": "Add to cart",
+            "variant_style": "chip",
+            "desktop_width_percent": 100,
+            "cards_visible": 4,
+            "gap": 16,
+            "card_radius": 12,
+            "image_radius": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_29a8d20_chips"
+      ],
+      "disabled": true,
+      "name": "Shop our products (text chips)",
+      "settings": {}
+    },
+    "blocks_qTDqhU": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_9ee722a_WnDyM4": {
+          "type": "ai_gen_block_9ee722a",
+          "settings": {
+            "heading": "<strong>Parents Have Seen Us On</strong>",
+            "subheading": "",
+            "text_alignment": "center",
+            "marquee_enabled": true,
+            "marquee_speed": 40,
+            "marquee_item_width": 120,
+            "marquee_fade": 40,
+            "marquee_pause_hover": true,
+            "logo_1": "shopify://shop_images/Rectangle_2.webp",
+            "logo_2": "shopify://shop_images/Rectangle_4.webp",
+            "logo_3": "shopify://shop_images/Rectangle_6.webp",
+            "logo_4": "shopify://shop_images/Rectangle_5.webp",
+            "logo_5": "shopify://shop_images/Rectangle_3.webp",
+            "logo_6": "shopify://shop_images/Screenshot_54_2.webp",
+            "logo_7": "shopify://shop_images/My_Chemist_Logo_2.webp",
+            "logo_8": "shopify://shop_images/Screenshot_53_1_1.webp",
+            "logo_max_height": 40,
+            "logo_grayscale": 0,
+            "logo_opacity": 1,
+            "show_card_style": false,
+            "card_background": "#ffffff",
+            "card_padding": 5,
+            "card_min_height": 60,
+            "card_border_radius": 12,
+            "card_border_width": 1,
+            "card_border_color": "#ffffff",
+            "card_shadow_opacity": 0.1,
+            "card_shadow_horizontal": -3,
+            "card_shadow_vertical": 4,
+            "card_shadow_blur": 10,
+            "grid_columns": 6,
+            "container_width": 1200,
+            "logo_spacing": 10,
+            "header_spacing": 20,
+            "subheading_spacing": 10,
+            "section_padding_top": 30,
+            "section_padding_bottom": 20,
+            "section_padding_horizontal": 20,
+            "background_color": "#ecf5fb",
+            "heading_color": "#1b2e5c",
+            "heading_size": 32,
+            "subheading_color": "#1b2e5c",
+            "subheading_size": 16
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_9ee722a_WnDyM4"
+      ],
+      "name": "Brand logo",
+      "settings": {}
+    },
+    "hlt_hook": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "split",
+        "media_side": "left",
+        "background": "splash-pale",
+        "image": "shopify://shop_images/section-02_hook_hand-over_1bc44fc5-21e5-4d56-b6f2-49b689d2c21b.webp",
+        "ratio": "4 / 3",
+        "overlay": 45,
+        "parallax_speed": "0.15",
+        "show_sparkles": true,
+        "overline": "",
+        "heading": "Snacks you can hand over anywhere.",
+        "use_h1": false,
+        "subheading": "Easy for little mouths. Easy to feel good about. Easy to take anywhere.",
+        "body": "<p>For the zoo, the car, the plane and the afternoon at home: baby and toddler snacks made for your child's age, with no added refined sugar or salt, in snack-sized packs sealed one by one.</p>",
+        "body_color": "default",
+        "button_label": "Choose their bundle",
+        "button_scroll": true,
+        "scroll_target": "#hlt-buy-box",
+        "button_link": "",
+        "button_style": "navy",
+        "wave_bottom": true,
+        "wave_color": "splash",
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    },
+    "blocks_DNfkqw": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_deb9e49_Hx9DBE": {
+          "type": "ai_gen_block_deb9e49",
+          "settings": {
+            "background_color": "#75bfe4",
+            "text_color": "#1b2e5c",
+            "scroll_speed": "medium",
+            "divider_symbol": "♦",
+            "item_1": "No Added Refined Sugar or Salt",
+            "item_2": "No Preservatives",
+            "item_3": "Age-Specific Formulation",
+            "item_4": "Brand of Singapore",
+            "item_5": "Powered by StageWise™",
+            "item_6": "Freeze-Dried Nutrition",
+            "item_7": "",
+            "item_8": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_deb9e49_Hx9DBE"
+      ],
+      "disabled": true,
+      "name": "Marquee ticker",
+      "settings": {}
+    },
+    "hlt_promises_strip": {
+      "type": "hlt-marquee",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "No added refined sugar or salt",
+            "icon": "sugar-off"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "Organic",
+            "icon": "leaf"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "No preservatives",
+            "icon": "flask-off"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Halal certified",
+            "icon": "certificate"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4"
+      ],
+      "settings": {
+        "background": "splash",
+        "speed": 34,
+        "text_size": 16,
+        "gap": 20,
+        "text_color": "white",
+        "separator": "✦",
+        "reverse": false,
+        "tilt": false
+      }
+    },
+    "hlt_problem": {
+      "type": "hlt-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "Most snacks packed for a day out are a compromise.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_2": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Parents in Singapore say it plainly: \"These are basically junk food tbh but they have their uses.\" You pack them anyway, because a hungry toddler halfway round the zoo will not wait.</p>",
+            "large": true
+          }
+        },
+        "body_3": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Then the open bag rolls around at the bottom of the stroller, goes soft, and ends up in the bin. One parent put it this way: other brands \"always got wasted because they couldn't keep.\"</p>",
+            "large": true
+          }
+        },
+        "body_4": {
+          "type": "body",
+          "settings": {
+            "text": "<p><strong>The fault sits with the snack you had to settle for, not with you.</strong></p>",
+            "large": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "body_2",
+        "body_3",
+        "body_4"
+      ],
+      "settings": {
+        "layout": "split",
+        "width": "wide",
+        "background": "cream",
+        "sparkles": false,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_belief": {
+      "type": "hlt-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "A snack for the bag can be one you are happy to give.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_2": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Three questions decide it. Can your child eat it easily at the age they are now? Are you happy with what is in it? Will it still be good when you open it at four in the afternoon?</p>",
+            "large": true
+          }
+        },
+        "body_3": {
+          "type": "body",
+          "settings": {
+            "text": "<p><strong>Yummybara was made to answer yes to all three.</strong></p>",
+            "large": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "body_2",
+        "body_3"
+      ],
+      "settings": {
+        "layout": "card",
+        "width": "narrow",
+        "background": "splash-pale",
+        "sparkles": true,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_benefit_age": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "Easy for little mouths, because the texture matches their age.",
+            "size": "hlt-h2"
+          }
+        },
+        "list_2": {
+          "type": "list",
+          "settings": {
+            "items": "8 months+, First Melts. Freeze-dried melts that soften as soon as they touch saliva, for babies still learning to chew.\n10 months+, First Bites. Baked rice rusks that hold their shape in a small hand, alongside the melts they already know.\n12 months+, Big Crunch. Real crunch: filled rice sticks, puff pops, shrimp wafer crisps, freeze-dried fruit.",
+            "bold_lead": true,
+            "pending_last_line": "",
+            "show_pending": false
+          }
+        },
+        "small_print_3": {
+          "type": "small_print",
+          "settings": {
+            "text": "Always stay with your child while they eat."
+          }
+        },
+        "button_4": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "label": "Find the bundle for their age",
+            "scroll": true,
+            "scroll_target": "#hlt-buy-box",
+            "link": "",
+            "style": "navy"
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "list_2",
+        "small_print_3",
+        "button_4"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "left",
+        "background": "cream",
+        "image": "shopify://shop_images/Rectangle_8_ee743172-cd7f-4cec-8bc6-b07ec820854a.webp",
+        "ratio": "1 / 1",
+        "parallax_speed": "0.12",
+        "sparkles": true,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_benefit_feel": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "Easy to feel good about. Turn the box over.",
+            "size": "hlt-h2"
+          }
+        },
+        "badges_2": {
+          "type": "badges",
+          "settings": {
+            "items": "No added refined sugar or salt | Organic | No preservatives | Halal certified"
+          }
+        },
+        "body_3": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Every snack in every bundle carries the same four promises, from the yoghurt, cheese and coconut milk melts to the rice rusks, rice sticks and wafer crisps. One parent says the freeze-dried fruit has \"no ingredients other than the fruit itself.\"</p>",
+            "large": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "badges_2",
+        "body_3"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "paper",
+        "image": "shopify://shop_images/Yummybara_Freeze_Dried_Fruits_20g_8_months_Yummybara.webp",
+        "ratio": "1 / 1",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_benefit_take": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "Easy to take anywhere, in snack-sized packs sealed one by one.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_2": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Drop a few packs in the bag for the zoo or a long car ride. One pack is one snack, so there is no big bag to open and no half-eaten bag to carry home.</p>",
+            "large": true
+          }
+        },
+        "button_3": {
+          "type": "button",
+          "settings": {
+            "label": "Pack your first bundle",
+            "scroll": true,
+            "scroll_target": "#hlt-buy-box",
+            "link": "",
+            "style": "navy"
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "body_2",
+        "button_3"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "left",
+        "background": "splash-pale",
+        "image": "shopify://shop_images/hf_20260528_081153_2_e4c73b72-324e-481d-aca1-49c9ef45c103.webp",
+        "ratio": "4 / 3",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "blocks_9gETXV": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_37dd2d5_yTrrNX": {
+          "type": "ai_gen_block_37dd2d5",
+          "settings": {
+            "heading": "What Singapore parents <em>are saying</em>.",
+            "description": "<p>★★★★★ 4.9 average</p>",
+            "text_alignment": "center",
+            "container_width": 1340,
+            "container_horizontal_padding": 20,
+            "card_max_width": 427,
+            "section_padding": 40,
+            "header_spacing": 40,
+            "card_gap": 16,
+            "card_padding": 32,
+            "footer_spacing": 18,
+            "show_stars": true,
+            "star_size": 16,
+            "stars_spacing": 14,
+            "stars_color": "#1b2e5c",
+            "background_color": "#fffbf1",
+            "heading_color": "#1b2e5c",
+            "text_color": "#192e59",
+            "card_background": "#ffffff",
+            "card_border_color": "#e0e0e0",
+            "divider_color": "#e0e0e0",
+            "quote_color": "#1b2e5c",
+            "body_color": "#3c4d6b",
+            "name_color": "#1b2e5c",
+            "meta_color": "#8fa3c8",
+            "heading_size": 36,
+            "text_size": 16,
+            "quote_size": 20,
+            "body_size": 15,
+            "name_size": 15,
+            "meta_size": 11,
+            "card_border_radius": 12,
+            "card_border_thickness": 2,
+            "card_shadow_opacity": 10,
+            "card_shadow_vertical": 4,
+            "card_shadow_blur": 10,
+            "quote_1": "\"Our house only has HLT One snacks now.\"",
+            "body_1": "<p> Trust me, my house only has HLT One snacks now. No more other biscuits. We used to buy fish or animal biscuits and ended up stopping. We changed everything to HLT.</p>",
+            "name_1": "Verified Customer",
+            "meta_1": "via WhatsApp",
+            "quote_2": "\"Baby loves it so much I had to find it online.\"",
+            "body_2": "<p>Tastes good even for adults, not too sweet, and melts in the mouth. Baby loves it so much that I had to find it online!</p>",
+            "name_2": "Verified Buyer",
+            "meta_2": "Shopee",
+            "quote_3": "\"So crunchy my baby can't get enough.\"",
+            "body_3": "<p>These are so good and so crunchy! My baby absolutely adores them and just can't get enough. Definitely recommend.</p>",
+            "name_3": "Verified Buyer",
+            "meta_3": "Shopee",
+            "quote_4": "\"Just fruit, nothing else.\"",
+            "body_4": "<p>Easy for a 1-year-old to eat, with no ingredients other than the fruit itself.</p>",
+            "name_4": "Verified Buyer · Mum of 1-year-old",
+            "meta_4": "Shopee",
+            "quote_5": "\"Still crispy days after opening.\"",
+            "body_5": "<p>He loves it, and it stays crispy even when it's been opened for days, unlike other brands we'd tried, which always got wasted because they couldn't keep.</p>",
+            "name_5": "Verified Customer",
+            "meta_5": "via WhatsApp",
+            "quote_6": "\"One of her almost-daily snacks.\"",
+            "body_6": "<p>I've been ordering this almost every other week with the rate my toddler is going. It's one of her almost-daily snacks! Fast delivery as always.</p>",
+            "name_6": "Verified Customer",
+            "meta_6": "via Messenger"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_37dd2d5_yTrrNX"
+      ],
+      "disabled": true,
+      "name": "Testimonial",
+      "settings": {}
+    },
+    "hlt_reviews": {
+      "type": "hlt-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "text": "I've been ordering this almost every other week with the rate my toddler is going. It's one of her almost-daily snacks! Fast delivery as always.",
+            "name": "",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "text": "Tastes good even for adults, not too sweet, and melts in the mouth. Baby loves it so much that I had to find it online!",
+            "name": "",
+            "tag": "",
+            "lead_for": "1"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "text": "These are so good and so crunchy! My baby absolutely adores them and just can't get enough. Definitely recommend.",
+            "name": "",
+            "tag": "",
+            "lead_for": "3"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "text": "Easy for a 1-year-old to eat, with no ingredients other than the fruit itself.",
+            "name": "",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "text": "He loves it, and it stays crispy even when it's been opened for days, unlike other brands we'd tried, which always got wasted because they couldn't keep.",
+            "name": "",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_6": {
+          "type": "review",
+          "settings": {
+            "text": "Trust me, my house only has HLT One snacks now. No more other biscuits. We used to buy fish or animal biscuits and ended up stopping. We changed everything to HLT.",
+            "name": "",
+            "tag": "",
+            "lead_for": "0"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5",
+        "review_6"
+      ],
+      "settings": {
+        "heading": "Parents say their children can't get enough.",
+        "subheading": "",
+        "show_stars": false,
+        "background": "navy",
+        "wave_top": true,
+        "wave_top_color": "splash-pale",
+        "padding_top": 112,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_why_bundle": {
+      "type": "hlt-text",
+      "blocks": {
+        "heading_1": {
+          "type": "heading",
+          "settings": {
+            "text": "Why a bundle beats buying a box at a time.",
+            "size": "hlt-h2"
+          }
+        },
+        "list_2": {
+          "type": "list",
+          "settings": {
+            "items": "More to try. At least 10 different snacks in one delivery, so if one doesn't win them over, there are plenty more.\nLess per snack. About 10% below buying the same boxes one by one, and 15 to 17% with the Value pack.\nEnough for every bag. The stroller bag and the kitchen cupboard, from one order.\nThe Value pack is made for two or more little ones.",
+            "bold_lead": true,
+            "pending_last_line": "The Value pack is made for two or more little ones, and comes with free Habibara wipes.",
+            "show_pending": false
+          }
+        },
+        "button_3": {
+          "type": "button",
+          "settings": {
+            "label": "Choose their bundle",
+            "scroll": true,
+            "scroll_target": "#hlt-buy-box",
+            "link": "",
+            "style": "navy"
+          }
+        }
+      },
+      "block_order": [
+        "heading_1",
+        "list_2",
+        "button_3"
+      ],
+      "settings": {
+        "layout": "split",
+        "width": "wide",
+        "background": "cream",
+        "sparkles": false,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_faq": {
+      "type": "hlt-faq",
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "My child is 9 months. Which bundle?",
+            "answer": "<p>First Melts, 8 months+. Everything in it melts. Move up to First Bites when your child is holding food and gnawing on it, usually around 10 months. If you are between two ages, pick the younger one.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "My child is 11 months. First Bites or Big Crunch?",
+            "answer": "<p>First Bites. Big Crunch has filled sticks and wafers that need proper chewing. Move up at 12 months, or later if your child is still working on chewing.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Aren't baby snacks just carbs?",
+            "answer": "<p>Some are. The rusks, rice sticks and puffs are rice snacks, and we say so. The melts are made with yoghurt, cheese or coconut milk, and the freeze-dried fruit is made from fruit. Every one is made with no added refined sugar or salt.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Why not just bring fruit?",
+            "answer": "<p>Fruit is a great snack. A sealed pack just needs less fuss on the go: no washing or cutting, and nothing bruises at the bottom of the bag.</p>"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "What if my child doesn't like a flavour?",
+            "answer": "<p>Every bundle has at least 10 different snacks, so one miss still leaves plenty to try.</p>"
+          }
+        },
+        "question_6": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Are the melts right for a baby who is just starting?",
+            "answer": "<p>First Melts is made for 8 months+. The melts are freeze-dried, so they soften as soon as they touch saliva. As with any food, stay with your child while they eat.</p>"
+          }
+        },
+        "question_7": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it organic and halal?",
+            "answer": "<p>Yes. Every Yummybara snack is organic, halal certified, and made with no preservatives and no added refined sugar or salt.</p>"
+          }
+        },
+        "question_8": {
+          "type": "question",
+          "settings": {
+            "show": false,
+            "question": "Does it contain allergens?",
+            "answer": "<p>Yes, and every box lists them. The melts contain milk. The Jumbo Filled Rice Sticks contain wheat, milk and egg. The Shrimp Wafer Crisps contain crustaceans. Some products are made in a facility that also handles soybean, peanuts, tree nuts, fish and crustaceans. Check the box for your child's allergy before serving.</p>"
+          }
+        },
+        "question_9": {
+          "type": "question",
+          "settings": {
+            "show": false,
+            "question": "How do I store it, and how long does it keep?",
+            "answer": "<p>Cool, dry place, away from heat and sunlight. Unopened, the melts keep 18 months and most other products 12 months.</p>"
+          }
+        },
+        "question_10": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How fast is delivery?",
+            "answer": "<p>Free on every bundle. We pack your order in 1 to 2 business days, and J&amp;T delivers in another 1 to 2. Singapore only.</p>"
+          }
+        },
+        "question_11": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is a bundle cheaper than buying the boxes one by one?",
+            "answer": "<p>Yes. About 10% less for Standard and about 15 to 17% less for the Value pack. The bought separately price sits beside every size.</p>"
+          }
+        },
+        "question_12": {
+          "type": "question",
+          "settings": {
+            "show": false,
+            "question": "What is the free gift with the Value pack?",
+            "answer": "<p>One pack of Habibara Pure &amp; Gentle Baby Wet Wipes (80 sheets) and a 3-pack of Habibara Pure &amp; Gentle Baby Wipes (25 sheets each), worth S$8.75. It comes in the same delivery.</p>"
+          }
+        },
+        "question_13": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Can I choose my own boxes?",
+            "answer": "<p>Not for now. The bundles are set for each age, so every box suits your child.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4",
+        "question_5",
+        "question_6",
+        "question_7",
+        "question_8",
+        "question_9",
+        "question_10",
+        "question_11",
+        "question_12",
+        "question_13"
+      ],
+      "settings": {
+        "heading": "Questions parents ask",
+        "text": "",
+        "layout": "stacked",
+        "background": "paper",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "hlt_final_cta": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "overlay",
+        "media_side": "right",
+        "background": "cream",
+        "image": "shopify://shop_images/yummybara-hero-v3-wide-3to1.webp",
+        "ratio": "16 / 9",
+        "overlay": 10,
+        "parallax_speed": "0.12",
+        "show_sparkles": false,
+        "overline": "",
+        "heading": "Snacks you can hand over anywhere, made for the age they are now.",
+        "use_h1": false,
+        "subheading": "",
+        "body": "<p>Free delivery on every bundle.</p>",
+        "body_color": "white",
+        "button_label": "Choose their bundle",
+        "button_scroll": true,
+        "scroll_target": "#hlt-buy-box",
+        "button_link": "",
+        "button_style": "splash",
+        "wave_bottom": false,
+        "wave_color": "navy",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description"
+      ],
+      "disabled": true,
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 16
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "disabled": true,
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": false,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 32,
+        "padding_bottom": 64
+      }
+    }
+  }
+}

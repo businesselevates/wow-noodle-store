@@ -1,0 +1,171 @@
+{% doc %}
+  @prompt
+    Heading, text, image card centered inside a colored card, which sits on an
+    outer section background (navy frame). All colors, sizes, paddings editable.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-content-card-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.section_bg }};
+    padding: {{ block.settings.section_padding_vertical }}px {{ block.settings.section_padding_horizontal }}px;
+  }
+
+  .ai-content-card-container-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    border-radius: {{ block.settings.border_radius }}px;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: {{ block.settings.card_max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-content-card-inner-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_gap }}px;
+    align-items: {{ block.settings.alignment }};
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-content-card-heading-{{ ai_gen_id }} {
+    margin: 0;
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+  }
+
+  .ai-content-card-text-{{ ai_gen_id }} {
+    margin: 0 auto;
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.5;
+    max-width: {{ block.settings.text_max_width }}px;
+  }
+
+  .ai-content-card-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: {{ block.settings.image_max_width }}px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-content-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-content-card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .ai-content-card-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-content-card-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_vertical | times: 0.6 | round }}px {{ block.settings.section_padding_horizontal | times: 0.5 | round }}px;
+    }
+    .ai-content-card-container-{{ ai_gen_id }} {
+      width: 100%;
+      padding: {{ block.settings.padding_vertical | times: 0.7 | round }}px {{ block.settings.padding_horizontal | times: 0.6 | round }}px;
+    }
+    .ai-content-card-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.72 | round }}px;
+    }
+    .ai-content-card-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.95 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-content-card-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-content-card-container-{{ ai_gen_id }}">
+    <div class="ai-content-card-inner-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-content-card-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+
+      {% if block.settings.text != blank %}
+        <div class="ai-content-card-text-{{ ai_gen_id }}">{{ block.settings.text }}</div>
+      {% endif %}
+
+      <div class="ai-content-card-image-wrapper-{{ ai_gen_id }}">
+        {% if block.settings.image %}
+          <img
+            src="{{ block.settings.image | image_url: width: 1600 }}"
+            alt="{{ block.settings.image.alt | escape }}"
+            loading="lazy"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            class="ai-content-card-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-content-card-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Content card",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Every Pantry Comes With A Little Extra." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Because snack time can get messy. Every pantry includes a little something extra to help parents handle sticky fingers and messy mouths.</p>" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "alignment", "label": "Content alignment", "options": [ { "value": "flex-start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Right" } ], "default": "center" },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "content_gap", "label": "Content spacing", "min": 8, "max": 48, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "desktop_width_percent", "label": "Card width (% of available)", "min": 50, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "card_max_width", "label": "Card max width", "min": 400, "max": 1400, "step": 20, "unit": "px", "default": 1000 },
+    { "type": "range", "id": "text_max_width", "label": "Text container width", "min": 300, "max": 1200, "step": 20, "unit": "px", "default": 760 },
+
+    { "type": "header", "content": "Outer section (navy frame)" },
+    { "type": "color", "id": "section_bg", "label": "Section background", "default": "#192e59" },
+    { "type": "range", "id": "section_padding_vertical", "label": "Section vertical padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "section_padding_horizontal", "label": "Section horizontal padding (side frame)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Card style" },
+    { "type": "color", "id": "background_color", "label": "Card background", "default": "#d3ebfb" },
+    { "type": "range", "id": "padding_vertical", "label": "Card vertical padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "padding_horizontal", "label": "Card horizontal padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "border_radius", "label": "Card border radius", "min": 0, "max": 60, "step": 2, "unit": "px", "default": 32 },
+
+    { "type": "header", "content": "Heading style" },
+    { "type": "color", "id": "heading_color", "label": "Color", "default": "#192e59" },
+    { "type": "range", "id": "heading_size", "label": "Size", "min": 16, "max": 64, "step": 2, "unit": "px", "default": 34 },
+
+    { "type": "header", "content": "Text style" },
+    { "type": "color", "id": "text_color", "label": "Color", "default": "#3c4d6b" },
+    { "type": "range", "id": "text_size", "label": "Size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Image style" },
+    { "type": "range", "id": "image_max_width", "label": "Max width", "min": 200, "max": 1200, "step": 50, "unit": "px", "default": 650 },
+    { "type": "range", "id": "image_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 }
+  ],
+  "presets": [
+    { "name": "Content card" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,495 @@
+{% doc %}
+  @prompt
+    Create a section called "Snacks Made Easy" with a centered heading and a row of 4 icon columns. Each column has: a small baby/character icon image (uploaded by merchant), a bold age label (e.g. "4 Months +"), and a subtitle in small caps (e.g. "TUMMY TIME"). Each icon should be clickable and link to a collection page. The background is a warm off-white/cream color. The layout should be evenly spaced horizontally, responsive on mobile (2x2 grid or stacked), with a thin decorative top border or divider. All text is dark navy. Each column's image, label, subtitle, and collection link should be configurable in the theme editor. Support up to 4 icon items.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-snacks-made-easy-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-snacks-made-easy-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-snacks-made-easy-divider-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.divider_thickness }}px;
+    background-color: {{ block.settings.divider_color }};
+    margin-bottom: {{ block.settings.heading_spacing }}px;
+  }
+
+  .ai-snacks-made-easy-heading-{{ ai_gen_id }} {
+    text-align: center;
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 {{ block.settings.columns_spacing }}px;
+    font-weight: 600;
+  }
+
+  .ai-snacks-made-easy-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: {{ block.settings.column_gap }}px;
+  }
+
+  .ai-snacks-made-easy-column-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+  }
+
+  .ai-snacks-made-easy-column-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+  }
+
+  .ai-snacks-made-easy-icon-wrapper-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin-bottom: {{ block.settings.icon_spacing }}px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-snacks-made-easy-icon-wrapper-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-snacks-made-easy-icon-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-snacks-made-easy-icon-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-snacks-made-easy-label-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.label_size }}px;
+    font-weight: 700;
+    margin: 0 0 {{ block.settings.label_spacing }}px;
+  }
+
+  .ai-snacks-made-easy-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.subtitle_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-snacks-made-easy-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+
+    .ai-snacks-made-easy-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-snacks-made-easy-icon-wrapper-{{ ai_gen_id }} {
+      width: calc({{ block.settings.icon_size }}px * 0.8);
+      height: calc({{ block.settings.icon_size }}px * 0.8);
+    }
+  }
+{% endstyle %}
+
+<snacks-made-easy-{{ ai_gen_id }} class="ai-snacks-made-easy-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-snacks-made-easy-container-{{ ai_gen_id }}">
+    {% if block.settings.show_divider %}
+      <div class="ai-snacks-made-easy-divider-{{ ai_gen_id }}"></div>
+    {% endif %}
+
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-snacks-made-easy-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ai-snacks-made-easy-grid-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% liquid
+          assign icon_key = 'icon_' | append: i
+          assign label_key = 'label_' | append: i
+          assign subtitle_key = 'subtitle_' | append: i
+          assign collection_key = 'collection_' | append: i
+
+          assign icon = block.settings[icon_key]
+          assign label = block.settings[label_key]
+          assign subtitle = block.settings[subtitle_key]
+          assign collection = block.settings[collection_key]
+        %}
+
+        {% if collection != blank %}
+          <a href="{{ collection.url }}" class="ai-snacks-made-easy-column-{{ ai_gen_id }}">
+        {% else %}
+          <div class="ai-snacks-made-easy-column-{{ ai_gen_id }}">
+        {% endif %}
+
+          <div class="ai-snacks-made-easy-icon-wrapper-{{ ai_gen_id }}">
+            {% if icon != blank %}
+              <img
+                src="{{ icon | image_url: width: 200 }}"
+                alt="{{ label | escape }}"
+                loading="lazy"
+                width="200"
+                height="200"
+              >
+            {% else %}
+              <div class="ai-snacks-made-easy-icon-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+
+          {% if label != blank %}
+            <div class="ai-snacks-made-easy-label-{{ ai_gen_id }}">{{ label }}</div>
+          {% endif %}
+
+          {% if subtitle != blank %}
+            <div class="ai-snacks-made-easy-subtitle-{{ ai_gen_id }}">{{ subtitle }}</div>
+          {% endif %}
+
+        {% if collection != blank %}
+          </a>
+        {% else %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</snacks-made-easy-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Snacks made easy",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Snacks Made Easy"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#1b2e5c"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Space below divider",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "columns_spacing",
+      "label": "Space below heading",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Divider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show top divider",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "divider_thickness",
+      "label": "Thickness",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Color",
+      "default": "#1b2e5c"
+    },
+    {
+      "type": "header",
+      "content": "Icon column 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_1",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "label_1",
+      "label": "Age label",
+      "default": "4 Months +"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_1",
+      "label": "Subtitle",
+      "default": "TUMMY TIME"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection link"
+    },
+    {
+      "type": "header",
+      "content": "Icon column 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_2",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "label_2",
+      "label": "Age label",
+      "default": "6 Months +"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_2",
+      "label": "Subtitle",
+      "default": "SITTING UP"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection link"
+    },
+    {
+      "type": "header",
+      "content": "Icon column 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_3",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "label_3",
+      "label": "Age label",
+      "default": "9 Months +"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_3",
+      "label": "Subtitle",
+      "default": "CRAWLING"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection link"
+    },
+    {
+      "type": "header",
+      "content": "Icon column 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_4",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "label_4",
+      "label": "Age label",
+      "default": "12 Months +"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_4",
+      "label": "Subtitle",
+      "default": "WALKING"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection link"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fffbf1"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1b2e5c"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Space below icon",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "label_spacing",
+      "label": "Space below label",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Snacks made easy"
+    }
+  ]
+}
+{% endschema %}

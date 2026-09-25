@@ -1,0 +1,362 @@
+{% comment %}
+  Age Bundle: "How GentleMelt works" (Block 07).
+  Heading plus a step-by-step cutaway diagram (3 to 5 steps). Each step has a
+  time mark, a title, a text, and an optional uploaded image. Steps 1 to 3 fall
+  back to built-in SVG illustrations; steps 4 and 5 show a placeholder until an
+  image is uploaded.
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign step_count = block.settings.step_count | plus: 0 %}
+{% capture grid_cols %}{% for i in (1..step_count) %}1fr{% if i < step_count %} auto{% endif %} {% endfor %}{% endcapture %}
+
+{% style %}
+  .gm-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.section_bg }};
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+  }
+  .gm-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+  }
+  .gm-header-{{ ai_gen_id }} {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto {{ block.settings.header_spacing }}px;
+  }
+  .gm-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 12px;
+  }
+  .gm-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.15;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 14px;
+  }
+  .gm-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+  .gm-steps-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ grid_cols | strip }};
+    gap: {{ block.settings.step_gap }}px;
+    align-items: stretch;
+  }
+  .gm-step-{{ ai_gen_id }} {
+    background: {{ block.settings.card_bg }};
+    border-radius: {{ block.settings.card_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .gm-step-top-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .gm-step-num-{{ ai_gen_id }} {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: {{ block.settings.accent_color }};
+  }
+  .gm-step-time-{{ ai_gen_id }} {
+    font-size: 13px;
+    font-weight: 700;
+    color: {{ block.settings.ink_color }};
+    background: {{ block.settings.time_bg }};
+    border-radius: 999px;
+    padding: 4px 12px;
+    white-space: nowrap;
+  }
+  .gm-step-art-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: {{ block.settings.art_max_width }}px;
+    margin: 4px auto 16px;
+  }
+  .gm-step-art-{{ ai_gen_id }} svg,
+  .gm-step-art-{{ ai_gen_id }} img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .gm-step-art-{{ ai_gen_id }} img {
+    border-radius: {{ block.settings.image_radius }}px;
+    {% if block.settings.image_square %}aspect-ratio: 1 / 1; object-fit: cover;{% endif %}
+  }
+  .gm-step-art-{{ ai_gen_id }} .gm-placeholder-{{ ai_gen_id }} {
+    aspect-ratio: 1 / 1;
+    border-radius: {{ block.settings.image_radius }}px;
+    background: {{ block.settings.time_bg }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ block.settings.ink_color }};
+    opacity: 0.6;
+  }
+  .gm-step-art-{{ ai_gen_id }} .gm-placeholder-{{ ai_gen_id }} svg { width: 40%; height: auto; }
+  .gm-step-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_title_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 8px;
+  }
+  .gm-step-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.step_text_size }}px;
+    line-height: 1.55;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+  .gm-arrow-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    color: {{ block.settings.accent_color }};
+  }
+  .gm-arrow-{{ ai_gen_id }} svg { width: 24px; height: 24px; }
+  .gm-footnote-{{ ai_gen_id }} {
+    margin: 20px 0 0;
+    text-align: center;
+    font-size: {{ block.settings.footnote_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.text_color }};
+    opacity: 0.75;
+  }
+  @media screen and (max-width: 1100px) {
+    .gm-step-{{ ai_gen_id }} { padding: {{ block.settings.card_padding | times: 0.7 | round }}px; }
+    .gm-step-title-{{ ai_gen_id }} { font-size: {{ block.settings.step_title_size | times: 0.9 | round }}px; }
+  }
+  @media screen and (max-width: 989px) {
+    .gm-steps-{{ ai_gen_id }} { grid-template-columns: 1fr; }
+    .gm-arrow-{{ ai_gen_id }} { justify-content: center; }
+    .gm-arrow-{{ ai_gen_id }} svg { transform: rotate(90deg); }
+    .gm-step-{{ ai_gen_id }} { padding: {{ block.settings.card_padding }}px; }
+    .gm-step-title-{{ ai_gen_id }} { font-size: {{ block.settings.step_title_size }}px; }
+  }
+  @media screen and (max-width: 749px) {
+    .gm-{{ ai_gen_id }} { padding: {{ block.settings.padding_top | times: 0.6 | round }}px 16px {{ block.settings.padding_bottom | times: 0.6 | round }}px; }
+    .gm-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size | times: 0.75 | round }}px; }
+    .gm-step-{{ ai_gen_id }} { padding: {{ block.settings.card_padding | times: 0.7 | round }}px; }
+  }
+{% endstyle %}
+
+{% liquid
+  assign ink = block.settings.ink_color
+  assign snack = block.settings.snack_color
+  assign snack_dark = block.settings.snack_shade_color
+  assign saliva = block.settings.saliva_color
+  assign gum = block.settings.gum_color
+%}
+
+{% capture arrow %}
+  <div class="gm-arrow-{{ ai_gen_id }}" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </div>
+{% endcapture %}
+
+{% capture art_1 %}
+  <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="130" cy="100" r="86" fill="#ffffff" stroke="{{ ink }}" stroke-width="3"/>
+    <path d="M62 62 C80 30 180 28 200 66 C222 104 200 170 130 174 C74 178 44 108 62 62 Z" fill="{{ snack }}" stroke="{{ snack_dark }}" stroke-width="2"/>
+    <g fill="#ffffff" stroke="{{ snack_dark }}" stroke-width="1.5">
+      <circle cx="92" cy="78" r="9"/><circle cx="122" cy="62" r="7"/><circle cx="154" cy="72" r="11"/>
+      <circle cx="182" cy="96" r="8"/><circle cx="108" cy="108" r="12"/><circle cx="142" cy="118" r="8"/>
+      <circle cx="170" cy="134" r="10"/><circle cx="90" cy="140" r="7"/><circle cx="124" cy="150" r="9"/>
+      <circle cx="146" cy="94" r="5"/><circle cx="76" cy="108" r="5"/>
+    </g>
+    <line x1="192" y1="162" x2="236" y2="196" stroke="{{ ink }}" stroke-width="10" stroke-linecap="round"/>
+  </svg>
+{% endcapture %}
+{% capture art_2 %}
+  <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="130" cy="100" r="86" fill="#ffffff" stroke="{{ ink }}" stroke-width="3"/>
+    <g fill="{{ saliva }}">
+      <path d="M96 26 c-8 12 -8 22 0 22 s8 -10 0 -22z"/>
+      <path d="M130 18 c-9 13 -9 24 0 24 s9 -11 0 -24z"/>
+      <path d="M166 30 c-7 11 -7 20 0 20 s7 -9 0 -20z"/>
+    </g>
+    <path d="M64 92 C90 74 176 74 198 92 C214 118 196 160 130 166 C68 170 46 124 64 92 Z" fill="{{ snack }}" stroke="{{ snack_dark }}" stroke-width="2" stroke-dasharray="6 5"/>
+    <path d="M74 118 C100 106 160 106 188 118 C196 138 176 156 130 158 C82 160 66 138 74 118 Z" fill="{{ saliva }}" opacity="0.55"/>
+    <g fill="#ffffff" stroke="{{ snack_dark }}" stroke-width="1.5" opacity="0.7">
+      <circle cx="104" cy="98" r="7"/><circle cx="140" cy="92" r="9"/><circle cx="170" cy="104" r="6"/><circle cx="118" cy="126" r="5"/>
+    </g>
+    <line x1="192" y1="162" x2="236" y2="196" stroke="{{ ink }}" stroke-width="10" stroke-linecap="round"/>
+  </svg>
+{% endcapture %}
+{% capture art_3 %}
+  <svg viewBox="0 0 260 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="130" cy="100" r="86" fill="#ffffff" stroke="{{ ink }}" stroke-width="3"/>
+    <clipPath id="gm-clip-{{ ai_gen_id }}"><circle cx="130" cy="100" r="84"/></clipPath>
+    <g clip-path="url(#gm-clip-{{ ai_gen_id }})">
+      <path d="M30 122 C70 96 190 96 230 122 L230 200 L30 200 Z" fill="{{ gum }}"/>
+      <path d="M30 122 C70 96 190 96 230 122" fill="none" stroke="{{ ink }}" stroke-width="2.5" opacity="0.5"/>
+      <path d="M86 116 C100 92 160 92 174 116 C184 132 170 140 130 140 C92 140 78 132 86 116 Z" fill="{{ snack }}" stroke="{{ snack_dark }}" stroke-width="2"/>
+      <path d="M98 122 C110 114 150 114 162 122" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    </g>
+    <line x1="192" y1="162" x2="236" y2="196" stroke="{{ ink }}" stroke-width="10" stroke-linecap="round"/>
+  </svg>
+{% endcapture %}
+{% capture art_placeholder %}
+  <div class="gm-placeholder-{{ ai_gen_id }}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>
+  </div>
+{% endcapture %}
+
+<div class="gm-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="gm-inner-{{ ai_gen_id }}">
+    {% if block.settings.subheading != blank or block.settings.heading != blank or block.settings.text != blank %}
+      <div class="gm-header-{{ ai_gen_id }}">
+        {% if block.settings.subheading != blank %}<div class="gm-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>{% endif %}
+        {% if block.settings.heading != blank %}<h2 class="gm-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>{% endif %}
+        {% if block.settings.text != blank %}<p class="gm-text-{{ ai_gen_id }}">{{ block.settings.text }}</p>{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="gm-steps-{{ ai_gen_id }}">
+      {% for i in (1..step_count) %}
+        {% liquid
+          assign k_label = 'step_' | append: i | append: '_label'
+          assign k_time = 'step_' | append: i | append: '_time'
+          assign k_title = 'step_' | append: i | append: '_title'
+          assign k_text = 'step_' | append: i | append: '_text'
+          assign k_image = 'step_' | append: i | append: '_image'
+          assign s_label = block.settings[k_label]
+          assign s_time = block.settings[k_time]
+          assign s_title = block.settings[k_title]
+          assign s_text = block.settings[k_text]
+          assign s_image = block.settings[k_image]
+        %}
+        <div class="gm-step-{{ ai_gen_id }}">
+          <div class="gm-step-top-{{ ai_gen_id }}">
+            <span class="gm-step-num-{{ ai_gen_id }}">{{ s_label | default: 'Step' }}</span>
+            {% if s_time != blank %}<span class="gm-step-time-{{ ai_gen_id }}">{{ s_time }}</span>{% endif %}
+          </div>
+          <div class="gm-step-art-{{ ai_gen_id }}">
+            {% if s_image %}
+              <img
+                src="{{ s_image | image_url: width: 800 }}"
+                srcset="{{ s_image | image_url: width: 400 }} 400w, {{ s_image | image_url: width: 800 }} 800w"
+                sizes="(max-width: 749px) 80vw, {{ block.settings.art_max_width }}px"
+                alt="{{ s_image.alt | default: s_title | escape }}"
+                loading="lazy"
+                width="{{ s_image.width }}"
+                height="{{ s_image.height }}"
+              >
+            {% else %}
+              {%- case i -%}
+                {%- when 1 -%}{{ art_1 }}
+                {%- when 2 -%}{{ art_2 }}
+                {%- when 3 -%}{{ art_3 }}
+                {%- else -%}{{ art_placeholder }}
+              {%- endcase -%}
+            {% endif %}
+          </div>
+          {% if s_title != blank %}<h3 class="gm-step-title-{{ ai_gen_id }}">{{ s_title }}</h3>{% endif %}
+          {% if s_text != blank %}<p class="gm-step-text-{{ ai_gen_id }}">{{ s_text }}</p>{% endif %}
+        </div>
+        {% if i < step_count %}{{ arrow }}{% endif %}
+      {% endfor %}
+    </div>
+
+    {% if block.settings.footnote != blank %}
+      <p class="gm-footnote-{{ ai_gen_id }}">{{ block.settings.footnote }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "GentleMelt diagram",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "step_count", "label": "Number of steps", "options": [ { "value": "3", "label": "3" }, { "value": "4", "label": "4" }, { "value": "5", "label": "5" } ], "default": "5" },
+    { "type": "range", "id": "container_width", "min": 800, "max": 1400, "step": 20, "unit": "px", "label": "Container width", "default": 1200 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top", "default": 56 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom", "default": 64 },
+    { "type": "range", "id": "header_spacing", "min": 8, "max": 80, "step": 4, "unit": "px", "label": "Space under heading", "default": 36 },
+    { "type": "range", "id": "step_gap", "min": 4, "max": 48, "step": 2, "unit": "px", "label": "Gap between steps", "default": 12 },
+    { "type": "range", "id": "card_padding", "min": 12, "max": 48, "step": 2, "unit": "px", "label": "Step card padding", "default": 24 },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 32, "step": 2, "unit": "px", "label": "Step card radius", "default": 16 },
+    { "type": "range", "id": "art_max_width", "min": 120, "max": 320, "step": 10, "unit": "px", "label": "Illustration max width", "default": 220 },
+    { "type": "range", "id": "image_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Uploaded image radius", "default": 16 },
+    { "type": "checkbox", "id": "image_square", "label": "Crop uploaded images to a square", "default": true },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "section_bg", "label": "Section background", "default": "#ffffff" },
+    { "type": "color", "id": "card_bg", "label": "Step card background", "default": "#f4fbfe" },
+    { "type": "color", "id": "heading_color", "label": "Headings", "default": "#192e59" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading", "default": "#1b2e5c" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1b2e5c" },
+    { "type": "color", "id": "accent_color", "label": "Accent (step labels, arrows)", "default": "#5ec2e7" },
+    { "type": "color", "id": "time_bg", "label": "Time pill and placeholder background", "default": "#e4f8ff" },
+    { "type": "color", "id": "ink_color", "label": "Illustration outline", "default": "#1b2e5c" },
+    { "type": "color", "id": "snack_color", "label": "Illustration snack fill", "default": "#f3e2b8" },
+    { "type": "color", "id": "snack_shade_color", "label": "Illustration snack outline", "default": "#c9a96a" },
+    { "type": "color", "id": "saliva_color", "label": "Illustration saliva", "default": "#8fd6f2" },
+    { "type": "color", "id": "gum_color", "label": "Illustration gums", "default": "#f6b8c1" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "subheading_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Subheading size", "default": 14 },
+    { "type": "range", "id": "heading_size", "min": 20, "max": 56, "step": 1, "unit": "px", "label": "Heading size", "default": 40 },
+    { "type": "range", "id": "text_size", "min": 14, "max": 22, "step": 1, "unit": "px", "label": "Text size", "default": 17 },
+    { "type": "range", "id": "step_title_size", "min": 14, "max": 30, "step": 1, "unit": "px", "label": "Step title size", "default": 18 },
+    { "type": "range", "id": "step_text_size", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Step text size", "default": 14 },
+    { "type": "range", "id": "footnote_size", "min": 11, "max": 16, "step": 1, "unit": "px", "label": "Footnote size", "default": 13 },
+
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "GentleMelt" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "It softens the moment it touches saliva." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Freeze-drying at low temperature leaves the snack light and porous, so a baby with no teeth can manage it with gums alone." },
+    { "type": "text", "id": "footnote", "label": "Footnote (optional)" },
+
+    { "type": "header", "content": "Step 1" },
+    { "type": "image_picker", "id": "step_1_image", "label": "Image (replaces the drawing)" },
+    { "type": "text", "id": "step_1_label", "label": "Label", "default": "Step 1" },
+    { "type": "text", "id": "step_1_time", "label": "Time mark", "default": "0 sec" },
+    { "type": "text", "id": "step_1_title", "label": "Title", "default": "Light and porous" },
+    { "type": "textarea", "id": "step_1_text", "label": "Text", "default": "Freeze-drying pulls the water out and leaves thousands of tiny air pockets behind." },
+
+    { "type": "header", "content": "Step 2" },
+    { "type": "image_picker", "id": "step_2_image", "label": "Image (replaces the drawing)" },
+    { "type": "text", "id": "step_2_label", "label": "Label", "default": "Step 2" },
+    { "type": "text", "id": "step_2_time", "label": "Time mark", "default": "1–2 sec" },
+    { "type": "text", "id": "step_2_title", "label": "Title", "default": "Saliva fills the pockets" },
+    { "type": "textarea", "id": "step_2_text", "label": "Text", "default": "On contact, the structure starts to collapse from the outside in." },
+
+    { "type": "header", "content": "Step 3" },
+    { "type": "image_picker", "id": "step_3_image", "label": "Image (replaces the drawing)" },
+    { "type": "text", "id": "step_3_label", "label": "Label", "default": "Step 3" },
+    { "type": "text", "id": "step_3_time", "label": "Time mark", "default": "About 5 sec" },
+    { "type": "text", "id": "step_3_title", "label": "Title", "default": "A soft paste on the gums" },
+    { "type": "textarea", "id": "step_3_text", "label": "Text", "default": "No teeth needed. Gums alone can manage it." },
+
+    { "type": "header", "content": "Step 4" },
+    { "type": "image_picker", "id": "step_4_image", "label": "Image" },
+    { "type": "text", "id": "step_4_label", "label": "Label", "default": "Step 4" },
+    { "type": "text", "id": "step_4_time", "label": "Time mark" },
+    { "type": "text", "id": "step_4_title", "label": "Title" },
+    { "type": "textarea", "id": "step_4_text", "label": "Text" },
+
+    { "type": "header", "content": "Step 5" },
+    { "type": "image_picker", "id": "step_5_image", "label": "Image" },
+    { "type": "text", "id": "step_5_label", "label": "Label", "default": "Step 5" },
+    { "type": "text", "id": "step_5_time", "label": "Time mark" },
+    { "type": "text", "id": "step_5_title", "label": "Title" },
+    { "type": "textarea", "id": "step_5_text", "label": "Text" }
+  ],
+  "presets": [ { "name": "GentleMelt diagram" } ]
+}
+{% endschema %}

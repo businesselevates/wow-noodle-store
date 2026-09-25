@@ -1,0 +1,248 @@
+{% comment %}
+  Age Bundle: "Two sizes" (Block 10). Two cards: Standard and Value pack.
+  Same card frame as the pantry cards block: image, eyebrow, title, price,
+  qualifier line, button. Carries the #buy-section anchor.
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ts-{{ ai_gen_id }} {
+    display: block;
+    scroll-margin-top: 100px;
+    background-color: {{ block.settings.section_background }};
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+  }
+  .ts-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+  }
+  .ts-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .ts-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 12px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .ts-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+  .ts-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: {{ block.settings.card_gap }}px;
+    max-width: {{ block.settings.cards_max_width }}px;
+    margin: 0 auto;
+  }
+  .ts-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    background: {{ block.settings.card_background }};
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+    border-radius: {{ block.settings.card_radius }}px;
+    overflow: hidden;
+  }
+  .ts-image-{{ ai_gen_id }} img,
+  .ts-image-{{ ai_gen_id }} svg {
+    display: block;
+    width: 100%;
+    height: {{ block.settings.image_height }}px;
+    object-fit: cover;
+  }
+  .ts-image-{{ ai_gen_id }} svg { background: #f1ede6; }
+  .ts-body-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding: {{ block.settings.card_padding }}px;
+    color: {{ block.settings.text_color }};
+  }
+  .ts-eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.eyebrow_size }}px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin: 0 0 6px;
+  }
+  .ts-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .ts-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 12px;
+  }
+  .ts-quote-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.55;
+    margin: 0 0 20px;
+  }
+  .ts-note-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size | minus: 1 }}px;
+    line-height: 1.5;
+    margin: 0 0 20px;
+    opacity: 0.85;
+  }
+  .ts-button-{{ ai_gen_id }} {
+    margin-top: auto;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: {{ block.settings.button_size }}px;
+    padding: 14px 24px;
+    border-radius: {{ block.settings.button_radius }}px;
+    background: {{ block.settings.button_background }};
+    color: {{ block.settings.button_text_color }};
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .ts-button-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.button_hover_background }};
+    color: {{ block.settings.button_hover_text_color }};
+  }
+  @media screen and (max-width: 749px) {
+    .ts-{{ ai_gen_id }} { padding: {{ block.settings.padding_top | times: 0.6 | round }}px 16px {{ block.settings.padding_bottom | times: 0.6 | round }}px; }
+    .ts-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size | times: 0.7 | round }}px; }
+    .ts-grid-{{ ai_gen_id }} { grid-template-columns: 1fr; }
+    .ts-image-{{ ai_gen_id }} img, .ts-image-{{ ai_gen_id }} svg { height: {{ block.settings.image_height | times: 0.8 | round }}px; }
+  }
+{% endstyle %}
+
+<div id="buy-section" class="ts-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ts-inner-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank or block.settings.text != blank %}
+      <div class="ts-header-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ts-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+        {% endif %}
+        {% if block.settings.text != blank %}
+          <div class="ts-text-{{ ai_gen_id }}">{{ block.settings.text }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ts-grid-{{ ai_gen_id }}">
+      {% for i in (1..2) %}
+        {% liquid
+          assign k_image = 'card_' | append: i | append: '_image'
+          assign k_eyebrow = 'card_' | append: i | append: '_eyebrow'
+          assign k_title = 'card_' | append: i | append: '_title'
+          assign k_price = 'card_' | append: i | append: '_price'
+          assign k_quote = 'card_' | append: i | append: '_quote'
+          assign k_note = 'card_' | append: i | append: '_note'
+          assign k_btn = 'card_' | append: i | append: '_button_text'
+          assign k_link = 'card_' | append: i | append: '_button_link'
+          assign c_image = block.settings[k_image]
+          assign c_eyebrow = block.settings[k_eyebrow]
+          assign c_title = block.settings[k_title]
+          assign c_price = block.settings[k_price]
+          assign c_quote = block.settings[k_quote]
+          assign c_note = block.settings[k_note]
+          assign c_btn = block.settings[k_btn]
+          assign c_link = block.settings[k_link]
+        %}
+        <div class="ts-card-{{ ai_gen_id }}">
+          <div class="ts-image-{{ ai_gen_id }}">
+            {% if c_image %}
+              <img
+                src="{{ c_image | image_url: width: 900 }}"
+                srcset="{{ c_image | image_url: width: 600 }} 600w, {{ c_image | image_url: width: 900 }} 900w"
+                sizes="(max-width: 749px) 100vw, 50vw"
+                alt="{{ c_image.alt | default: c_title | escape }}"
+                loading="lazy"
+                width="{{ c_image.width }}"
+                height="{{ c_image.height }}"
+              >
+            {% else %}
+              {{ 'product-2' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+          <div class="ts-body-{{ ai_gen_id }}">
+            {% if c_eyebrow != blank %}<div class="ts-eyebrow-{{ ai_gen_id }}">{{ c_eyebrow }}</div>{% endif %}
+            {% if c_title != blank %}<h3 class="ts-title-{{ ai_gen_id }}">{{ c_title }}</h3>{% endif %}
+            {% if c_price != blank %}<div class="ts-price-{{ ai_gen_id }}">{{ c_price }}</div>{% endif %}
+            {% if c_quote != blank %}<p class="ts-quote-{{ ai_gen_id }}">{{ c_quote }}</p>{% endif %}
+            {% if c_note != blank %}<p class="ts-note-{{ ai_gen_id }}">{{ c_note }}</p>{% endif %}
+            {% if c_btn != blank %}
+              <a class="ts-button-{{ ai_gen_id }}" href="{{ c_link | default: '#MainContent' }}">{{ c_btn }}</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Two sizes cards",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "container_width", "min": 800, "max": 1400, "step": 20, "unit": "px", "label": "Container width", "default": 1100 },
+    { "type": "range", "id": "cards_max_width", "min": 600, "max": 1200, "step": 20, "unit": "px", "label": "Cards max width", "default": 900 },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom", "default": 64 },
+    { "type": "range", "id": "card_gap", "min": 8, "max": 60, "step": 2, "unit": "px", "label": "Gap between cards", "default": 24 },
+    { "type": "range", "id": "card_padding", "min": 8, "max": 48, "step": 2, "unit": "px", "label": "Card padding", "default": 24 },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Card corner radius", "default": 20 },
+    { "type": "range", "id": "card_border_width", "min": 0, "max": 4, "step": 1, "unit": "px", "label": "Card border width", "default": 2 },
+    { "type": "range", "id": "image_height", "min": 120, "max": 480, "step": 10, "unit": "px", "label": "Image height", "default": 260 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "section_background", "label": "Section background", "default": "#fffbf1" },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_border_color", "label": "Card border", "default": "#1b2e5c" },
+    { "type": "color", "id": "heading_color", "label": "Headings", "default": "#1b2e5c" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1b2e5c" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#192e59" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#ffffff" },
+    { "type": "color", "id": "button_hover_background", "label": "Button hover background", "default": "#f2b544" },
+    { "type": "color", "id": "button_hover_text_color", "label": "Button hover text", "default": "#192e59" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_size", "min": 20, "max": 64, "step": 1, "unit": "px", "label": "Heading size", "default": 40 },
+    { "type": "range", "id": "text_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "Text size", "default": 16 },
+    { "type": "range", "id": "eyebrow_size", "min": 10, "max": 18, "step": 1, "unit": "px", "label": "Eyebrow size", "default": 12 },
+    { "type": "range", "id": "title_size", "min": 16, "max": 40, "step": 1, "unit": "px", "label": "Card title size", "default": 26 },
+    { "type": "range", "id": "price_size", "min": 14, "max": 36, "step": 1, "unit": "px", "label": "Price size", "default": 22 },
+    { "type": "range", "id": "button_size", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Button text size", "default": 15 },
+    { "type": "range", "id": "button_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Button corner radius", "default": 40 },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Two sizes. Same snacks, more of them." },
+    { "type": "richtext", "id": "text", "label": "Text" },
+
+    { "type": "header", "content": "Card 1" },
+    { "type": "image_picker", "id": "card_1_image", "label": "Image" },
+    { "type": "text", "id": "card_1_eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "card_1_title", "label": "Title", "default": "Standard" },
+    { "type": "text", "id": "card_1_price", "label": "Price" },
+    { "type": "textarea", "id": "card_1_quote", "label": "Qualifier line" },
+    { "type": "textarea", "id": "card_1_note", "label": "Extra note (optional)" },
+    { "type": "text", "id": "card_1_button_text", "label": "Button text", "default": "Buy now" },
+    { "type": "url", "id": "card_1_button_link", "label": "Button link" },
+
+    { "type": "header", "content": "Card 2" },
+    { "type": "image_picker", "id": "card_2_image", "label": "Image" },
+    { "type": "text", "id": "card_2_eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "card_2_title", "label": "Title", "default": "Value pack" },
+    { "type": "text", "id": "card_2_price", "label": "Price" },
+    { "type": "textarea", "id": "card_2_quote", "label": "Qualifier line" },
+    { "type": "textarea", "id": "card_2_note", "label": "Extra note (optional)" },
+    { "type": "text", "id": "card_2_button_text", "label": "Button text", "default": "Buy now" },
+    { "type": "url", "id": "card_2_button_link", "label": "Button link" }
+  ],
+  "presets": [ { "name": "Two sizes cards" } ]
+}
+{% endschema %}

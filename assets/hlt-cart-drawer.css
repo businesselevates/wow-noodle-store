@@ -1,0 +1,499 @@
+/* ==========================================================================
+   HLT One - cart drawer skin.
+
+   Applies Kennedy's 17 Sep review to Dawn's cart drawer:
+     - line items become compact horizontal cards (image left, name and
+       variant, line price, quantity) in the style of the cross-sell cards;
+     - the "Product / Total" column headings are hidden (kept in the DOM for
+       screen readers);
+     - the header shows an editable heading plus the item count;
+     - the totals block shows one "Total" line and one editable note;
+     - the checkout button carries a lock icon, with the reassurance line
+       under it;
+     - on phones the drawer fills the whole screen;
+     - the cross-sell cards are horizontal (image, name, variant, price, Add)
+       and slide one at a time, Bloom style.
+
+   Every Dawn hook the cart JS depends on is untouched (#CartDrawer,
+   .drawer__inner, cart-drawer-items, .cart-drawer__footer, .totals,
+   .cart__ctas, CartDrawer-* ids, quantity-input, cart-remove-button).
+   Loaded from snippets/cart-drawer.liquid after component-cart-drawer.css.
+   ========================================================================== */
+
+/* ---------- Drawer shell ---------- */
+
+.drawer__inner {
+  border: 0;
+  padding: 0 20px;
+}
+
+/* Phones: the drawer fills the screen edge to edge; the Continue shopping
+   link and the close button are the way back to the page. */
+@media screen and (max-width: 749px) {
+  .drawer__inner {
+    width: 100vw;
+    max-width: 100vw;
+    padding: 0 16px;
+  }
+}
+
+/* ---------- Header ---------- */
+
+.hlt-drawer__header {
+  align-items: flex-start;
+  padding: 18px 0 12px;
+}
+
+.hlt-drawer__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0;
+  padding-right: 44px;
+  font-family: var(--hlt-font-display, inherit);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  color: var(--hlt-navy, rgb(var(--color-foreground)));
+}
+
+.hlt-drawer__count {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--hlt-splash-pale, #eaf4fb);
+  font-family: var(--hlt-font-body, inherit);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--hlt-ocean, rgba(var(--color-foreground), 0.75));
+}
+
+.hlt-drawer__continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--hlt-font-body, inherit);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--hlt-splash-deep, rgba(var(--color-foreground), 0.75));
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  cursor: pointer;
+}
+
+.hlt-drawer__continue svg {
+  width: 14px;
+  height: 14px;
+}
+
+.hlt-drawer__continue:focus-visible {
+  outline: 3px solid var(--hlt-splash, #5ec2e7);
+  outline-offset: 2px;
+}
+
+.cart-drawer .drawer__close {
+  top: 12px;
+  right: -8px;
+}
+
+/* ---------- Line items: compact cards ---------- */
+
+/* The column headings add nothing in a narrow drawer. Keep them for screen
+   readers only. */
+.cart-drawer .cart-items thead {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.cart-drawer .cart-items tbody {
+  display: block;
+  padding-top: 4px;
+}
+
+.cart-drawer .cart-items .cart-item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "media details total"
+    "media qty     qty";
+  column-gap: 12px;
+  row-gap: 8px;
+  align-items: start;
+  margin: 0 0 10px;
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--hlt-splash-pale, #eaf4fb);
+  box-shadow: inset 0 0 0 1.5px rgba(27, 46, 92, 0.07);
+}
+
+.cart-drawer .cart-items .cart-item:last-child {
+  margin-bottom: 12px;
+}
+
+.cart-drawer .cart-items .cart-item td {
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+}
+
+.cart-drawer .cart-items .cart-item > td + td {
+  padding-left: 0;
+}
+
+.cart-drawer .cart-items .cart-item__media {
+  grid-area: media;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--hlt-paper, #fff);
+}
+
+.cart-drawer .cart-item__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+}
+
+.cart-drawer .cart-item__nested-line .cart-item__image {
+  max-width: 100%;
+  float: none;
+}
+
+.cart-drawer .cart-items .cart-item__details {
+  grid-area: details;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.cart-drawer .cart-item__details > * + * {
+  margin-top: 3px;
+}
+
+.cart-drawer .cart-item__name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--hlt-font-display, inherit);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.25;
+  letter-spacing: 0;
+  color: var(--hlt-navy, rgb(var(--color-foreground)));
+  text-decoration: none;
+}
+
+.cart-drawer .cart-item__name:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+.cart-drawer .cart-item__details dl,
+.cart-drawer .cart-item__details .product-option {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--hlt-ocean, rgba(var(--color-foreground), 0.75));
+}
+
+.cart-drawer .cart-item__details dl .product-option {
+  display: flex;
+  gap: 4px;
+}
+
+.cart-drawer .cart-item__details dl .product-option + .product-option {
+  margin-top: 2px;
+}
+
+.cart-drawer .cart-item__details .discounts {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--hlt-splash-deep, rgba(var(--color-foreground), 0.75));
+}
+
+.cart-drawer .cart-items .cart-item__totals {
+  grid-area: total;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-left: 8px;
+}
+
+.cart-drawer .cart-item__totals .price,
+.cart-drawer .cart-item__totals .cart-item__discounted-prices {
+  font-family: var(--hlt-font-mono, inherit);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--hlt-navy, rgb(var(--color-foreground)));
+}
+
+.cart-drawer .cart-item__totals .cart-item__old-price {
+  opacity: 0.6;
+}
+
+.cart-drawer .cart-item .loading__spinner {
+  top: 0;
+  right: 0;
+  padding-top: 0;
+}
+
+.cart-drawer .cart-items .cart-item__quantity {
+  grid-area: qty;
+  padding-top: 0;
+}
+
+.cart-drawer .cart-item__quantity-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.cart-drawer .cart-quantity {
+  width: 108px;
+  min-height: 36px;
+}
+
+.cart-drawer .cart-quantity,
+.cart-drawer .cart-quantity:before,
+.cart-drawer .cart-quantity:after {
+  border-radius: 999px;
+}
+
+.cart-drawer .cart-quantity .quantity__button {
+  width: 32px;
+}
+
+.cart-drawer .cart-quantity .quantity__input {
+  font-size: 14px;
+}
+
+.cart-drawer .cart-item cart-remove-button {
+  margin-left: 0;
+}
+
+.cart-drawer cart-remove-button .button {
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0;
+  border-radius: 50%;
+  color: var(--hlt-ocean, rgba(var(--color-foreground), 0.75));
+}
+
+.cart-drawer .cart-item__error {
+  margin-top: 4px;
+}
+
+/* ---------- Footer ---------- */
+
+.cart-drawer .drawer__footer {
+  padding-top: 12px;
+  border-top: 1.5px solid rgba(27, 46, 92, 0.1);
+}
+
+.cart-drawer .cart-drawer__footer > * + * {
+  margin-top: 10px;
+}
+
+.cart-drawer .totals {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+}
+
+.cart-drawer .totals__total {
+  margin: 0;
+  font-family: var(--hlt-font-display, inherit);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0;
+  color: var(--hlt-navy, rgb(var(--color-foreground)));
+}
+
+.cart-drawer .totals__total-value {
+  margin: 0;
+  font-family: var(--hlt-font-display, inherit);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--hlt-navy, rgb(var(--color-foreground)));
+}
+
+.cart-drawer .hlt-drawer__note {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--hlt-ocean, rgba(var(--color-foreground), 0.75));
+}
+
+.cart-drawer .cart__ctas {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  margin-top: 14px;
+}
+
+.cart-drawer .hlt-drawer-trust {
+  width: 100%;
+  margin: 10px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-drawer .hlt-drawer-trust__stars svg,
+.cart-drawer .hlt-drawer-trust__stars .hlt-icon {
+  fill: currentColor !important;
+  stroke: currentColor;
+}
+
+.cart-drawer .hlt-drawer__checkout {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  font-family: var(--hlt-font-display, inherit);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.cart-drawer .hlt-drawer__checkout svg {
+  display: block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+
+/* ---------- Cross-sell cards ("Picked just for you"): horizontal ----------
+   Overrides the stacked card in hlt-cart-upsell.css (loaded before this
+   file). Same DOM, so hlt-cart-upsell.js is untouched. */
+
+.cart-drawer .hlt-upsell {
+  padding-bottom: 4px;
+}
+
+.cart-drawer .hlt-upsell__track {
+  gap: 10px;
+  padding: 2px 0 6px;
+}
+
+.cart-drawer .hlt-upsell__card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "media name  add"
+    "media sub   add"
+    "media price add";
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  flex: 0 0 auto;
+  width: calc(100% - 36px);
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--hlt-paper, #fff);
+  box-shadow: inset 0 0 0 1.5px rgba(27, 46, 92, 0.1);
+}
+
+.cart-drawer .hlt-upsell__media {
+  grid-area: media;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  aspect-ratio: auto;
+  border-radius: 12px;
+  background: var(--hlt-splash-pale, #eaf4fb);
+}
+
+.cart-drawer .hlt-upsell__name {
+  grid-area: name;
+  align-self: end;
+  font-size: 13.5px;
+}
+
+.cart-drawer .hlt-upsell__sub {
+  grid-area: sub;
+  font-size: 12px;
+}
+
+.cart-drawer .hlt-upsell__price {
+  grid-area: price;
+  align-self: start;
+  margin: 0;
+  font-size: 13px;
+}
+
+.cart-drawer .hlt-upsell__actions {
+  grid-area: add;
+  align-self: center;
+  margin: 0;
+}
+
+.cart-drawer .hlt-upsell__add {
+  width: auto;
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--hlt-navy, #1b2e5c);
+  background: transparent;
+  color: var(--hlt-navy, #1b2e5c);
+}
+
+.cart-drawer .hlt-upsell__add:hover:not([disabled]) {
+  background: var(--hlt-navy, #1b2e5c);
+  color: var(--hlt-cream, #fdf7ec);
+  transform: none;
+  box-shadow: none;
+}
+
+.cart-drawer .hlt-upsell__error {
+  grid-column: 1 / -1;
+}
+
+@media screen and (max-width: 420px) {
+  .cart-drawer .hlt-upsell__card {
+    width: calc(100% - 28px);
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+  }
+
+  .cart-drawer .hlt-upsell__media {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* Short viewports keep Dawn's whole-drawer scroll, so nothing to override. */
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer__inner {
+    transition-duration: 0.001ms;
+  }
+}

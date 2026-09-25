@@ -1,0 +1,797 @@
+{%- liquid
+  assign pt = section.settings.padding_top
+  assign pb = section.settings.padding_bottom
+  assign pt_mobile = pt | times: 0.7 | round: 0
+  assign pb_mobile = pb | times: 0.7 | round: 0
+-%}
+
+{%- style -%}
+  /* Static anchor target for CTA links (href="#buy-section").
+     scroll-margin-top keeps the section clear of Dawn's sticky header. */
+  #buy-section {
+    scroll-margin-top: 100px;
+  }
+
+  .gm-section-{{ section.id }} {
+    padding-top: {{ pt_mobile }}px;
+    padding-bottom: {{ pb_mobile }}px;
+  }
+
+  .gm-section-{{ section.id }} .gm-container {
+    max-width: {{ section.settings.container_width }}px;
+    margin: 0 auto;
+    padding-inline: 1.5rem;
+  }
+
+  /* ---------- Header ---------- */
+  .gm-section-{{ section.id }} .gm-header {
+    text-align: {{ section.settings.text_alignment }};
+    margin-bottom: {{ section.settings.header_bottom_spacing | times: 0.7 | round: 0 }}px;
+    padding-top: {{ section.settings.header_padding_top }}px;
+    padding-bottom: {{ section.settings.header_padding_bottom }}px;
+  }
+
+  .gm-section-{{ section.id }} .gm-subheading {
+    font-family: var(--font-body-family);
+    font-size: {{ section.settings.subheading_size }}px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin: 0 0 0.5rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-heading {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: {{ section.settings.heading_size | times: 0.8 | round: 0 }}px;
+    line-height: 1.15;
+    margin: 0;
+    max-width: 22ch;
+    {% if section.settings.text_alignment == 'center' %}margin-inline: auto;{% endif %}
+  }
+
+  /* ---------- Cards ---------- */
+  .gm-section-{{ section.id }} .gm-cards {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.card_gap }}px;
+  }
+
+  .gm-section-{{ section.id }} .gm-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: rgba(var(--color-foreground), {{ section.settings.card_surface_opacity | divided_by: 100.0 }});
+    border-radius: {{ section.settings.card_border_radius }}px;
+    padding: 1.5rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__intro {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__number {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: clamp(40px, 11vw, 56px);
+    line-height: 1;
+    color: rgba(var(--color-foreground), 0.18);
+    margin-bottom: 0.4rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__label {
+    font-family: var(--font-body-family);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.4rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__title {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: clamp(19px, 5vw, 22px);
+    line-height: 1.2;
+    margin: 0 0 0.3rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__tagline {
+    font-style: italic;
+    font-size: 13px;
+    opacity: 0.65;
+    margin: 0;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__media {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: {{ section.settings.image_width }}px;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .gm-section-{{ section.id }} .gm-card__desc {
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 1rem;
+    opacity: 0.85;
+  }
+
+  .gm-section-{{ section.id }} .gm-features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.6rem 1.5rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .gm-section-{{ section.id }} .gm-features svg {
+    flex: 0 0 auto;
+    width: 15px;
+    height: 15px;
+    margin-top: 0.15em;
+    color: {{ section.settings.icon_color }};
+  }
+
+  /* ---------- Guidance table ---------- */
+  .gm-section-{{ section.id }} .gm-guidance {
+    margin-top: {{ section.settings.card_gap | plus: 16 }}px;
+    background: rgba(var(--color-foreground), {{ section.settings.card_surface_opacity | divided_by: 100.0 }});
+    border-radius: {{ section.settings.card_border_radius }}px;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-guidance__subheading {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0 0 0.5rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-guidance__heading {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    font-size: clamp(22px, 6vw, 28px);
+    line-height: 1.2;
+    margin: 0 0 1.25rem;
+    max-width: 16ch;
+  }
+
+  .gm-section-{{ section.id }} .gm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .gm-section-{{ section.id }} .gm-table th {
+    text-align: left;
+    font-family: var(--font-body-family);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: {{ section.settings.table_header_bg }};
+    color: {{ section.settings.table_header_text }};
+    padding: 0.7rem 1rem;
+  }
+
+  .gm-section-{{ section.id }} .gm-table th:first-child { border-top-left-radius: 6px; }
+  .gm-section-{{ section.id }} .gm-table th:last-child { border-top-right-radius: 6px; }
+
+  .gm-section-{{ section.id }} .gm-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(var(--color-foreground), 0.12);
+    vertical-align: top;
+  }
+
+  .gm-section-{{ section.id }} .gm-table td:first-child { font-weight: 600; }
+
+  /* ---------- Desktop ---------- */
+  @media screen and (min-width: 750px) {
+    .gm-section-{{ section.id }} {
+      padding-top: {{ pt }}px;
+      padding-bottom: {{ pb }}px;
+    }
+
+    .gm-section-{{ section.id }} .gm-header {
+      margin-bottom: {{ section.settings.header_bottom_spacing }}px;
+    }
+
+    .gm-section-{{ section.id }} .gm-heading {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+
+    .gm-section-{{ section.id }} .gm-card {
+      flex-direction: row;
+      align-items: center;
+      gap: 2.5rem;
+      padding: 1.75rem 2rem;
+    }
+
+    .gm-section-{{ section.id }} .gm-card__intro {
+      flex: 0 0 22%;
+      max-width: 22%;
+    }
+
+    .gm-section-{{ section.id }} .gm-card__media {
+      align-self: center;
+    }
+
+    .gm-section-{{ section.id }} .gm-features {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- Mobile table: stacked cards ---------- */
+  @media screen and (max-width: 749px) {
+    .gm-section-{{ section.id }} .gm-table thead { display: none; }
+
+    .gm-section-{{ section.id }} .gm-table tr {
+      display: block;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid rgba(var(--color-foreground), 0.12);
+    }
+
+    .gm-section-{{ section.id }} .gm-table tr:last-child { border-bottom: 0; }
+
+    .gm-section-{{ section.id }} .gm-table td {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.25rem 0;
+      border: 0;
+    }
+
+    .gm-section-{{ section.id }} .gm-table td::before {
+      content: attr(data-label);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      flex: 0 0 auto;
+    }
+
+    .gm-section-{{ section.id }} .gm-table td:first-child {
+      font-size: 16px;
+      margin-bottom: 0.25rem;
+    }
+
+    .gm-section-{{ section.id }} .gm-table td:first-child::before { display: none; }
+  }
+{%- endstyle -%}
+
+<div id="buy-section" class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="gm-section-{{ section.id }}">
+    <div class="gm-container">
+
+      {%- if section.settings.subheading != blank or section.settings.heading != blank -%}
+        <div class="gm-header">
+          {%- if section.settings.subheading != blank -%}
+            <p class="gm-subheading">{{ section.settings.subheading }}</p>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="gm-heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="gm-cards">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'layer_card' -%}
+            <div class="gm-card" {{ block.shopify_attributes }}>
+
+              <div class="gm-card__intro">
+                {%- if block.settings.number != blank -%}
+                  <span class="gm-card__number">{{ block.settings.number }}</span>
+                {%- endif -%}
+                {%- if block.settings.label != blank -%}
+                  <span class="gm-card__label">{{ block.settings.label }}</span>
+                {%- endif -%}
+                {%- if block.settings.title != blank -%}
+                  <h3 class="gm-card__title">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.tagline != blank -%}
+                  <p class="gm-card__tagline">{{ block.settings.tagline }}</p>
+                {%- endif -%}
+              </div>
+
+              {%- if block.settings.image != blank -%}
+                <div class="gm-card__media">
+                  <picture>
+                    {%- if block.settings.mobile_image != blank -%}
+                      <source
+                        media="(max-width: 749px)"
+                        srcset="{{ block.settings.mobile_image | image_url: width: 600 }}"
+                      >
+                    {%- endif -%}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 400 }}"
+                      alt="{{ block.settings.image.alt | escape }}"
+                      width="{{ block.settings.image.width }}"
+                      height="{{ block.settings.image.height }}"
+                      loading="lazy"
+                    >
+                  </picture>
+                </div>
+              {%- endif -%}
+
+              <div class="gm-card__body">
+                {%- if block.settings.description != blank -%}
+                  <p class="gm-card__desc">{{ block.settings.description }}</p>
+                {%- endif -%}
+
+                {%- assign feature_items = block.settings.features | strip | split: '
+' -%}
+                {%- if feature_items.size > 0 -%}
+                  <ul class="gm-features">
+                    {%- for item in feature_items -%}
+                      {%- assign feat = item | strip -%}
+                      {%- if feat != blank -%}
+                        <li>
+                          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                            <path d="M4 10.5l3.5 3.5L16 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span>{{ feat }}</span>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- assign has_rows = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'table_row' -%}{%- assign has_rows = true -%}{%- endif -%}
+      {%- endfor -%}
+
+      {%- if section.settings.show_table and has_rows -%}
+        <div class="gm-guidance">
+          {%- if section.settings.table_subheading != blank -%}
+            <p class="gm-guidance__subheading">{{ section.settings.table_subheading }}</p>
+          {%- endif -%}
+          {%- if section.settings.table_heading != blank -%}
+            <h3 class="gm-guidance__heading">{{ section.settings.table_heading }}</h3>
+          {%- endif -%}
+
+          <table class="gm-table">
+            <thead>
+              <tr>
+                <th>{{ section.settings.header_age }}</th>
+                <th>{{ section.settings.header_serving }}</th>
+                <th>{{ section.settings.header_frequency }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'table_row' -%}
+                  <tr {{ block.shopify_attributes }}>
+                    <td data-label="{{ section.settings.header_age | escape }}">{{ block.settings.age }}</td>
+                    <td data-label="{{ section.settings.header_serving | escape }}">{{ block.settings.serving }}</td>
+                    <td data-label="{{ section.settings.header_frequency | escape }}">{{ block.settings.frequency }}</td>
+                  </tr>
+                {%- endif -%}
+              {%- endfor -%}
+            </tbody>
+          </table>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Layered system cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Five Layers. One System."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How GentleMelt engineers every snack for your child's growing body."
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 22,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "header_padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Text container padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "header_padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Text container padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "header_bottom_spacing",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Space below header",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 80,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "label": "Product image width",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "card_surface_opacity",
+      "min": 0,
+      "max": 12,
+      "step": 1,
+      "unit": "%",
+      "label": "Card background tint",
+      "info": "Subtle tint pulled from your color scheme's text color.",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Checkmark color",
+      "default": "#4F7942"
+    },
+    {
+      "type": "header",
+      "content": "Guidance table"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_table",
+      "label": "Show guidance table",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "table_subheading",
+      "label": "Table subheading",
+      "default": "Serving Guidance"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "table_heading",
+      "label": "Table heading",
+      "default": "Matched to where your child is."
+    },
+    {
+      "type": "text",
+      "id": "header_age",
+      "label": "Column 1 header",
+      "default": "Age"
+    },
+    {
+      "type": "text",
+      "id": "header_serving",
+      "label": "Column 2 header",
+      "default": "Serving"
+    },
+    {
+      "type": "text",
+      "id": "header_frequency",
+      "label": "Column 3 header",
+      "default": "Frequency"
+    },
+    {
+      "type": "color",
+      "id": "table_header_bg",
+      "label": "Table header background",
+      "default": "#4A4E2C"
+    },
+    {
+      "type": "color",
+      "id": "table_header_text",
+      "label": "Table header text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 900,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Content width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding bottom",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "layer_card",
+      "name": "Layer card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Layer 1"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Title",
+          "default": "GentleMelt Core"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Safe Texture Before Chewing Develops"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image (optional)"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "textarea",
+          "id": "features",
+          "label": "Features",
+          "info": "One feature per line. Flows into two columns on desktop."
+        }
+      ]
+    },
+    {
+      "type": "table_row",
+      "name": "Table row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "age",
+          "label": "Column 1 (Age)"
+        },
+        {
+          "type": "text",
+          "id": "serving",
+          "label": "Column 2 (Serving)"
+        },
+        {
+          "type": "text",
+          "id": "frequency",
+          "label": "Column 3 (Frequency)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Layered system cards",
+      "blocks": [
+        {
+          "type": "layer_card",
+          "settings": {
+            "number": "01",
+            "label": "Layer 1",
+            "title": "GentleMelt Core",
+            "tagline": "Safe Texture Before Chewing Develops",
+            "description": "Freeze-drying at low temperatures creates a porous, lightweight structure that dissolves instantly on saliva contact - uniformly, every time.",
+            "features": "Dissolves on saliva contact\nConsistent melt every piece\nSafe from first teeth\nEasy for little hands"
+          }
+        },
+        {
+          "type": "layer_card",
+          "settings": {
+            "number": "02",
+            "label": "Layer 2",
+            "title": "Age-Calibrated Formulation",
+            "tagline": "Right Snack, Right Age, Every Time",
+            "description": "Each product is formulated for a specific developmental window - with serving guidance to match.",
+            "features": "Specific ingredient profiles per age\nRatios matched to gut maturity\nTexture density per chewing stage\n6m+ to 12m+ to 18m+ progression"
+          }
+        },
+        {
+          "type": "layer_card",
+          "settings": {
+            "number": "03",
+            "label": "Layer 3",
+            "title": "Functional Gut Integration",
+            "tagline": "Gut Support You Can Actually Rely On",
+            "description": "Inulin prebiotic + compatible probiotic strains integrated into the base formulation - not sprayed on after production.",
+            "features": "Inulin in base, not surface\nPromotes good bacteria\nImproves nutrient absorption\nStrengthens natural immunity"
+          }
+        },
+        {
+          "type": "layer_card",
+          "settings": {
+            "number": "04",
+            "label": "Layer 4",
+            "title": "Freeze Dried Nutrient Lock",
+            "tagline": "97% Nutrients Intact",
+            "description": "Cold-preserved at low temperature, locking vitamins, minerals and natural flavour from ingredient to pouch.",
+            "features": "Up to 97% nutrient retention\nNatural flavour preserved\nReal food integrity\nNo added sugar needed"
+          }
+        },
+        {
+          "type": "layer_card",
+          "settings": {
+            "number": "05",
+            "label": "Layer 5",
+            "title": "Clean Ingredient Architecture",
+            "tagline": "Nothing That Doesn't Belong",
+            "description": "Every ingredient serves a functional purpose at that specific age. No fillers, no binding gums, no marketing additives.",
+            "features": "No fillers or gums\nEvery ingredient functional\nAge-appropriate, not generic\nVerifiable clean label"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "age": "6-8 months",
+            "serving": "1-3 melts per serving",
+            "frequency": "1-2x per week"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "age": "8-10 months",
+            "serving": "3-5 melts per serving",
+            "frequency": "Up to 3x per week"
+          }
+        },
+        {
+          "type": "table_row",
+          "settings": {
+            "age": "10-12 months+",
+            "serving": "Up to 1 pack per day",
+            "frequency": "Several times per week"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

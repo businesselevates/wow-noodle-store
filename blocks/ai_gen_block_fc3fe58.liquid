@@ -1,0 +1,646 @@
+{% doc %}
+  @prompt
+    Editable 3-part layer cards + serving-guidance table card, plus an adjustable
+    CTA button (text, link, colors, border, radius, padding, alignment, arrow).
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-layer-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-layer-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-layer-header-{{ ai_gen_id }} {
+    text-align: left;
+    margin-bottom: {{ block.settings.header_bottom_spacing }}px;
+    padding: {{ block.settings.header_padding_top }}px 0 {{ block.settings.header_padding_bottom }}px;
+  }
+
+  .ai-layer-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .ai-layer-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .ai-layer-grid-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.card_gap }}px;
+  }
+
+  .ai-layer-card-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ block.settings.left_column_width }}px {{ block.settings.image_column_width }}px 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+    padding: {{ block.settings.card_padding }}px;
+  }
+
+  .ai-layer-number-{{ ai_gen_id }} {
+    font-size: {{ block.settings.number_size }}px;
+    color: {{ block.settings.number_color }};
+    opacity: {{ block.settings.number_opacity | divided_by: 100.0 }};
+    font-weight: 700;
+    line-height: 1;
+    margin: 0 0 10px;
+  }
+
+  .ai-layer-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.layer_size }}px;
+    color: {{ block.settings.layer_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 6px;
+  }
+
+  .ai-layer-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+
+  .ai-layer-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    font-style: italic;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .ai-layer-image-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-layer-image-{{ ai_gen_id }} img {
+    max-width: 100%;
+    max-height: {{ block.settings.image_max_height }}px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .ai-layer-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.image_max_height }}px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-layer-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60px;
+    height: 60px;
+    opacity: 0.3;
+  }
+
+  .ai-layer-paragraph-{{ ai_gen_id }} {
+    font-size: {{ block.settings.paragraph_size }}px;
+    color: {{ block.settings.paragraph_color }};
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+
+  .ai-layer-features-{{ ai_gen_id }} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+
+  .ai-layer-feature-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: {{ block.settings.feature_size }}px;
+    color: {{ block.settings.feature_color }};
+    line-height: 1.4;
+  }
+
+  .ai-layer-feature-{{ ai_gen_id }} svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+  }
+
+  /* Serving guidance card */
+  .ai-sg-card-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+    background-color: {{ block.settings.sg_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.sg_padding }}px;
+  }
+
+  .ai-sg-eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.sg_eyebrow_size }}px;
+    color: {{ block.settings.sg_eyebrow_color }};
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 12px;
+  }
+
+  .ai-sg-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.sg_heading_size }}px;
+    color: {{ block.settings.sg_heading_color }};
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .ai-sg-table-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: {{ block.settings.sg_cell_background }};
+  }
+
+  .ai-sg-th-{{ ai_gen_id }} {
+    background-color: {{ block.settings.sg_header_background }};
+    color: {{ block.settings.sg_header_color }};
+    font-size: {{ block.settings.sg_header_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    padding: 12px 18px;
+  }
+
+  .ai-sg-td-{{ ai_gen_id }} {
+    background-color: {{ block.settings.sg_cell_background }};
+    color: {{ block.settings.sg_cell_color }};
+    font-size: {{ block.settings.sg_cell_size }}px;
+    font-weight: 600;
+    padding: 14px 18px;
+    border-top: 1px solid {{ block.settings.sg_divider_color }};
+  }
+
+  /* CTA button */
+  .ai-layer-cta-wrap-{{ ai_gen_id }} {
+    display: flex;
+    margin-top: {{ block.settings.cta_spacing_top }}px;
+    {% if block.settings.cta_align == 'left' %}justify-content: flex-start;
+    {% elsif block.settings.cta_align == 'right' %}justify-content: flex-end;
+    {% else %}justify-content: center;{% endif %}
+  }
+
+  .ai-layer-cta-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: {{ block.settings.cta_padding_vertical }}px {{ block.settings.cta_padding_horizontal }}px;
+    background-color: {{ block.settings.cta_bg }};
+    color: {{ block.settings.cta_text_color }};
+    border: {{ block.settings.cta_border_width }}px solid {{ block.settings.cta_border_color }};
+    border-radius: {{ block.settings.cta_radius }}px;
+    font-size: {{ block.settings.cta_font_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .ai-layer-cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.cta_hover_bg }};
+    color: {{ block.settings.cta_hover_text }};
+  }
+
+  .ai-layer-cta-arrow-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    flex-shrink: 0;
+  }
+
+  .ai-layer-cta-arrow-{{ ai_gen_id }} svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-layer-container-{{ ai_gen_id }} {
+      padding: 0 16px;
+    }
+
+    .ai-layer-card-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .ai-layer-number-{{ ai_gen_id }} {
+      font-size: {{ block.settings.number_size | times: 0.75 | round }}px;
+      margin-bottom: 6px;
+    }
+
+    .ai-layer-image-{{ ai_gen_id }} img {
+      max-height: {{ block.settings.image_max_height | times: 0.9 | round }}px;
+    }
+
+    .ai-layer-features-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-layer-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 | round }}px;
+    }
+
+    .ai-sg-card-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: {{ block.settings.sg_padding | times: 0.6 | round }}px;
+    }
+
+    .ai-sg-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.sg_heading_size | times: 0.85 | round }}px;
+    }
+
+    .ai-sg-th-{{ ai_gen_id }} {
+      padding: 10px 10px;
+    }
+
+    .ai-sg-td-{{ ai_gen_id }} {
+      padding: 10px 10px;
+      font-size: {{ block.settings.sg_cell_size | minus: 1 }}px;
+    }
+
+    .ai-layer-cta-button-{{ ai_gen_id }} {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-layer-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-layer-container-{{ ai_gen_id }}">
+    <div class="ai-layer-header-{{ ai_gen_id }}">
+      {% if block.settings.subheading != blank %}
+        <div class="ai-layer-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>
+      {% endif %}
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-layer-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="ai-layer-grid-{{ ai_gen_id }}">
+      {% for i in (1..5) %}
+        {% liquid
+          assign number_key = 'card_' | append: i | append: '_number'
+          assign label_key = 'card_' | append: i | append: '_label'
+          assign title_key = 'card_' | append: i | append: '_title'
+          assign subtitle_key = 'card_' | append: i | append: '_subtitle'
+          assign image_key = 'card_' | append: i | append: '_image'
+          assign paragraph_key = 'card_' | append: i | append: '_paragraph'
+
+          assign card_number = block.settings[number_key]
+          assign card_label = block.settings[label_key]
+          assign card_title = block.settings[title_key]
+          assign card_subtitle = block.settings[subtitle_key]
+          assign card_image = block.settings[image_key]
+          assign card_paragraph = block.settings[paragraph_key]
+
+          assign has_features = false
+          for f in (1..6)
+            assign feature_key = 'card_' | append: i | append: '_feature_' | append: f
+            if block.settings[feature_key] != blank
+              assign has_features = true
+            endif
+          endfor
+
+          assign has_content = false
+          if card_number != blank or card_label != blank or card_title != blank or card_subtitle != blank or card_image or card_paragraph != blank or has_features
+            assign has_content = true
+          endif
+        %}
+
+        {% if has_content %}
+          <div class="ai-layer-card-{{ ai_gen_id }}">
+            <div class="ai-layer-left-{{ ai_gen_id }}">
+              {% if card_number != blank %}
+                <div class="ai-layer-number-{{ ai_gen_id }}">{{ card_number }}</div>
+              {% endif %}
+              {% if card_label != blank %}
+                <div class="ai-layer-label-{{ ai_gen_id }}">{{ card_label }}</div>
+              {% endif %}
+              {% if card_title != blank %}
+                <h3 class="ai-layer-title-{{ ai_gen_id }}">{{ card_title }}</h3>
+              {% endif %}
+              {% if card_subtitle != blank %}
+                <div class="ai-layer-subtitle-{{ ai_gen_id }}">{{ card_subtitle }}</div>
+              {% endif %}
+            </div>
+
+            <div class="ai-layer-image-{{ ai_gen_id }}">
+              {% if card_image %}
+                <img
+                  src="{{ card_image | image_url: width: 600 }}"
+                  alt="{{ card_image.alt | escape }}"
+                  loading="lazy"
+                  width="{{ card_image.width }}"
+                  height="{{ card_image.height }}"
+                >
+              {% else %}
+                <div class="ai-layer-image-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="ai-layer-right-{{ ai_gen_id }}">
+              {% if card_paragraph != blank %}
+                <p class="ai-layer-paragraph-{{ ai_gen_id }}">{{ card_paragraph }}</p>
+              {% endif %}
+
+              {% if has_features %}
+                <ul class="ai-layer-features-{{ ai_gen_id }}">
+                  {% for f in (1..6) %}
+                    {% assign feature_key = 'card_' | append: i | append: '_feature_' | append: f %}
+                    {% assign feature_text = block.settings[feature_key] %}
+                    {% if feature_text != blank %}
+                      <li class="ai-layer-feature-{{ ai_gen_id }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.check_color }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>{{ feature_text }}</span>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% if block.settings.show_serving_card %}
+        <div class="ai-sg-card-{{ ai_gen_id }}">
+          <div class="ai-sg-left-{{ ai_gen_id }}">
+            {% if block.settings.sg_eyebrow != blank %}
+              <div class="ai-sg-eyebrow-{{ ai_gen_id }}">{{ block.settings.sg_eyebrow }}</div>
+            {% endif %}
+            {% if block.settings.sg_heading != blank %}
+              <h3 class="ai-sg-heading-{{ ai_gen_id }}">{{ block.settings.sg_heading }}</h3>
+            {% endif %}
+          </div>
+
+          <div class="ai-sg-right-{{ ai_gen_id }}">
+            <div class="ai-sg-table-{{ ai_gen_id }}">
+              <div class="ai-sg-th-{{ ai_gen_id }}">{{ block.settings.sg_col_1 }}</div>
+              <div class="ai-sg-th-{{ ai_gen_id }}">{{ block.settings.sg_col_2 }}</div>
+              <div class="ai-sg-th-{{ ai_gen_id }}">{{ block.settings.sg_col_3 }}</div>
+
+              {% for r in (1..5) %}
+                {% liquid
+                  assign a_key = 'sg_row_' | append: r | append: '_a'
+                  assign b_key = 'sg_row_' | append: r | append: '_b'
+                  assign c_key = 'sg_row_' | append: r | append: '_c'
+                  assign a_val = block.settings[a_key]
+                  assign b_val = block.settings[b_key]
+                  assign c_val = block.settings[c_key]
+                %}
+                {% if a_val != blank or b_val != blank or c_val != blank %}
+                  <div class="ai-sg-td-{{ ai_gen_id }}">{{ a_val }}</div>
+                  <div class="ai-sg-td-{{ ai_gen_id }}">{{ b_val }}</div>
+                  <div class="ai-sg-td-{{ ai_gen_id }}">{{ c_val }}</div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_cta and block.settings.cta_text != blank %}
+        <div class="ai-layer-cta-wrap-{{ ai_gen_id }}">
+          <a href="{{ block.settings.cta_link | default: '#' }}" class="ai-layer-cta-button-{{ ai_gen_id }}">
+            <span>{{ block.settings.cta_text }}</span>
+            {% if block.settings.cta_show_arrow %}
+              <span class="ai-layer-cta-arrow-{{ ai_gen_id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </span>
+            {% endif %}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Horizontal image cards",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Section headings" },
+    { "type": "inline_richtext", "id": "subheading", "label": "Subheading", "default": "Five layers. One system." },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "How GentleMelt engineers every snack for your child's growing body." },
+    { "type": "range", "id": "subheading_size", "min": 10, "max": 30, "step": 1, "unit": "px", "label": "Subheading size", "default": 14 },
+    { "type": "range", "id": "heading_size", "min": 20, "max": 60, "step": 2, "unit": "px", "label": "Heading size", "default": 40 },
+    { "type": "color", "id": "subheading_color", "label": "Subheading color", "default": "#8a9466" },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#3f4e1f" },
+    { "type": "range", "id": "header_padding_top", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Text container padding top", "default": 20 },
+    { "type": "range", "id": "header_padding_bottom", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Text container padding bottom", "default": 30 },
+    { "type": "range", "id": "header_bottom_spacing", "min": 20, "max": 80, "step": 5, "unit": "px", "label": "Header bottom spacing", "default": 35 },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "container_width", "min": 1000, "max": 1600, "step": 50, "unit": "px", "label": "Container width", "default": 1350 },
+    { "type": "range", "id": "section_padding_top", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Section padding top", "default": 30 },
+    { "type": "range", "id": "section_padding_bottom", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Section padding bottom", "default": 60 },
+    { "type": "range", "id": "card_gap", "min": 5, "max": 60, "step": 5, "unit": "px", "label": "Gap between cards", "default": 20 },
+    { "type": "range", "id": "left_column_width", "min": 120, "max": 360, "step": 10, "unit": "px", "label": "Left column width", "default": 220 },
+    { "type": "range", "id": "image_column_width", "min": 80, "max": 320, "step": 10, "unit": "px", "label": "Image column width", "default": 160 },
+    { "type": "range", "id": "image_max_height", "min": 80, "max": 320, "step": 10, "unit": "px", "label": "Image max height", "default": 180 },
+    { "type": "range", "id": "column_gap", "min": 16, "max": 80, "step": 4, "unit": "px", "label": "Gap between columns", "default": 32 },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "range", "id": "card_padding", "min": 16, "max": 60, "step": 4, "unit": "px", "label": "Card padding", "default": 32 },
+    { "type": "range", "id": "card_border_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Card border radius", "default": 16 },
+    { "type": "range", "id": "card_border_width", "min": 0, "max": 6, "step": 1, "unit": "px", "label": "Card border width", "default": 0 },
+    { "type": "color", "id": "card_border_color", "label": "Card border color", "default": "#e8e6dc" },
+
+    { "type": "header", "content": "Number style" },
+    { "type": "range", "id": "number_size", "min": 24, "max": 80, "step": 2, "unit": "px", "label": "Number size", "default": 48 },
+    { "type": "color", "id": "number_color", "label": "Number color", "default": "#c9d1a8" },
+    { "type": "range", "id": "number_opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "label": "Number opacity", "default": 100 },
+
+    { "type": "header", "content": "Left text style" },
+    { "type": "range", "id": "layer_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Layer label size", "default": 12 },
+    { "type": "color", "id": "layer_color", "label": "Layer label color", "default": "#8a9466" },
+    { "type": "range", "id": "title_size", "min": 16, "max": 32, "step": 1, "unit": "px", "label": "Title size", "default": 22 },
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#3f4e1f" },
+    { "type": "range", "id": "subtitle_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Subtitle size", "default": 13 },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle color", "default": "#9aa07f" },
+
+    { "type": "header", "content": "Right text style" },
+    { "type": "range", "id": "paragraph_size", "min": 12, "max": 22, "step": 1, "unit": "px", "label": "Paragraph size", "default": 15 },
+    { "type": "color", "id": "paragraph_color", "label": "Paragraph color", "default": "#555555" },
+    { "type": "range", "id": "feature_size", "min": 11, "max": 20, "step": 1, "unit": "px", "label": "Feature text size", "default": 14 },
+    { "type": "color", "id": "feature_color", "label": "Feature text color", "default": "#444444" },
+    { "type": "color", "id": "check_color", "label": "Checklist tick color", "default": "#7c8a4f" },
+
+    { "type": "header", "content": "Card 1" },
+    { "type": "text", "id": "card_1_number", "label": "Number", "default": "01" },
+    { "type": "text", "id": "card_1_label", "label": "Layer label", "default": "Layer 1" },
+    { "type": "text", "id": "card_1_title", "label": "Title", "default": "GentleMelt Core" },
+    { "type": "text", "id": "card_1_subtitle", "label": "Subtitle (italic)", "default": "Safe Texture Before Chewing Develops" },
+    { "type": "image_picker", "id": "card_1_image", "label": "Image (photo only)" },
+    { "type": "textarea", "id": "card_1_paragraph", "label": "Paragraph", "default": "Freeze-drying at low temperatures creates a porous, lightweight structure that dissolves instantly on saliva contact, uniformly, every time." },
+    { "type": "text", "id": "card_1_feature_1", "label": "Feature 1", "default": "Dissolves on saliva contact" },
+    { "type": "text", "id": "card_1_feature_2", "label": "Feature 2", "default": "Consistent melt every piece" },
+    { "type": "text", "id": "card_1_feature_3", "label": "Feature 3", "default": "Safe from first teeth" },
+    { "type": "text", "id": "card_1_feature_4", "label": "Feature 4", "default": "Easy for little hands" },
+    { "type": "text", "id": "card_1_feature_5", "label": "Feature 5" },
+    { "type": "text", "id": "card_1_feature_6", "label": "Feature 6" },
+
+    { "type": "header", "content": "Card 2" },
+    { "type": "text", "id": "card_2_number", "label": "Number", "default": "02" },
+    { "type": "text", "id": "card_2_label", "label": "Layer label", "default": "Layer 2" },
+    { "type": "text", "id": "card_2_title", "label": "Title", "default": "Age-Calibrated Formulation" },
+    { "type": "text", "id": "card_2_subtitle", "label": "Subtitle (italic)", "default": "Right Snack. Right Age, Every Time" },
+    { "type": "image_picker", "id": "card_2_image", "label": "Image (photo only)" },
+    { "type": "textarea", "id": "card_2_paragraph", "label": "Paragraph", "default": "Each product is formulated for a specific developmental window, with serving guidance to match." },
+    { "type": "text", "id": "card_2_feature_1", "label": "Feature 1", "default": "Specific ingredient profiles per age" },
+    { "type": "text", "id": "card_2_feature_2", "label": "Feature 2", "default": "Ratios matched to gut maturity" },
+    { "type": "text", "id": "card_2_feature_3", "label": "Feature 3", "default": "Texture density per chewing stage" },
+    { "type": "text", "id": "card_2_feature_4", "label": "Feature 4", "default": "6m+ to 12m+ to 18m+ progression" },
+    { "type": "text", "id": "card_2_feature_5", "label": "Feature 5" },
+    { "type": "text", "id": "card_2_feature_6", "label": "Feature 6" },
+
+    { "type": "header", "content": "Card 3" },
+    { "type": "text", "id": "card_3_number", "label": "Number", "default": "03" },
+    { "type": "text", "id": "card_3_label", "label": "Layer label", "default": "Layer 3" },
+    { "type": "text", "id": "card_3_title", "label": "Title", "default": "Functional Gut Integration" },
+    { "type": "text", "id": "card_3_subtitle", "label": "Subtitle (italic)", "default": "Gut Support You Can Actually Rely On" },
+    { "type": "image_picker", "id": "card_3_image", "label": "Image (photo only)" },
+    { "type": "textarea", "id": "card_3_paragraph", "label": "Paragraph", "default": "Inulin prebiotic plus compatible probiotic strains integrated into the base formulation, not sprayed on after production." },
+    { "type": "text", "id": "card_3_feature_1", "label": "Feature 1", "default": "Inulin in base, not surface" },
+    { "type": "text", "id": "card_3_feature_2", "label": "Feature 2", "default": "Promotes good bacteria" },
+    { "type": "text", "id": "card_3_feature_3", "label": "Feature 3", "default": "Improves nutrient absorption" },
+    { "type": "text", "id": "card_3_feature_4", "label": "Feature 4", "default": "Strengthens natural immunity" },
+    { "type": "text", "id": "card_3_feature_5", "label": "Feature 5" },
+    { "type": "text", "id": "card_3_feature_6", "label": "Feature 6" },
+
+    { "type": "header", "content": "Card 4" },
+    { "type": "text", "id": "card_4_number", "label": "Number", "default": "04" },
+    { "type": "text", "id": "card_4_label", "label": "Layer label", "default": "Layer 4" },
+    { "type": "text", "id": "card_4_title", "label": "Title", "default": "Freeze Dried Nutrient Lock" },
+    { "type": "text", "id": "card_4_subtitle", "label": "Subtitle (italic)", "default": "97% Nutrients Intact" },
+    { "type": "image_picker", "id": "card_4_image", "label": "Image (photo only)" },
+    { "type": "textarea", "id": "card_4_paragraph", "label": "Paragraph", "default": "Cold-preserved at low temperature, locking vitamins, minerals and natural flavour from ingredient to pouch." },
+    { "type": "text", "id": "card_4_feature_1", "label": "Feature 1", "default": "Up to 97% nutrient retention" },
+    { "type": "text", "id": "card_4_feature_2", "label": "Feature 2", "default": "Natural flavour preserved" },
+    { "type": "text", "id": "card_4_feature_3", "label": "Feature 3", "default": "Real food integrity" },
+    { "type": "text", "id": "card_4_feature_4", "label": "Feature 4", "default": "No added sugar needed" },
+    { "type": "text", "id": "card_4_feature_5", "label": "Feature 5" },
+    { "type": "text", "id": "card_4_feature_6", "label": "Feature 6" },
+
+    { "type": "header", "content": "Card 5" },
+    { "type": "text", "id": "card_5_number", "label": "Number", "default": "05" },
+    { "type": "text", "id": "card_5_label", "label": "Layer label", "default": "Layer 5" },
+    { "type": "text", "id": "card_5_title", "label": "Title", "default": "Clean Ingredient Architecture" },
+    { "type": "text", "id": "card_5_subtitle", "label": "Subtitle (italic)", "default": "Nothing That Doesn't Belong" },
+    { "type": "image_picker", "id": "card_5_image", "label": "Image (photo only)" },
+    { "type": "textarea", "id": "card_5_paragraph", "label": "Paragraph", "default": "Every ingredient serves a functional purpose at that specific age. No fillers, no binding gums, no marketing additives." },
+    { "type": "text", "id": "card_5_feature_1", "label": "Feature 1", "default": "No fillers or gums" },
+    { "type": "text", "id": "card_5_feature_2", "label": "Feature 2", "default": "Every ingredient functional" },
+    { "type": "text", "id": "card_5_feature_3", "label": "Feature 3", "default": "Age-appropriate, not generic" },
+    { "type": "text", "id": "card_5_feature_4", "label": "Feature 4", "default": "Verifiable clean label" },
+    { "type": "text", "id": "card_5_feature_5", "label": "Feature 5" },
+    { "type": "text", "id": "card_5_feature_6", "label": "Feature 6" },
+
+    { "type": "header", "content": "Serving guidance card" },
+    { "type": "checkbox", "id": "show_serving_card", "label": "Show serving guidance card", "default": true },
+    { "type": "color", "id": "sg_background", "label": "Card background", "default": "#eef3e6" },
+    { "type": "range", "id": "sg_padding", "min": 16, "max": 72, "step": 4, "unit": "px", "label": "Card padding", "default": 48 },
+    { "type": "text", "id": "sg_eyebrow", "label": "Eyebrow", "default": "Serving Guidance" },
+    { "type": "range", "id": "sg_eyebrow_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Eyebrow size", "default": 13 },
+    { "type": "color", "id": "sg_eyebrow_color", "label": "Eyebrow color", "default": "#8a9466" },
+    { "type": "text", "id": "sg_heading", "label": "Heading", "default": "Matched to where your child is." },
+    { "type": "range", "id": "sg_heading_size", "min": 18, "max": 48, "step": 2, "unit": "px", "label": "Heading size", "default": 30 },
+    { "type": "color", "id": "sg_heading_color", "label": "Heading color", "default": "#3f4e1f" },
+    { "type": "text", "id": "sg_col_1", "label": "Column 1 header", "default": "Age" },
+    { "type": "text", "id": "sg_col_2", "label": "Column 2 header", "default": "Serving" },
+    { "type": "text", "id": "sg_col_3", "label": "Column 3 header", "default": "Frequency" },
+    { "type": "color", "id": "sg_header_background", "label": "Table header background", "default": "#3f4e1f" },
+    { "type": "color", "id": "sg_header_color", "label": "Table header text", "default": "#ffffff" },
+    { "type": "range", "id": "sg_header_size", "min": 9, "max": 16, "step": 1, "unit": "px", "label": "Table header size", "default": 11 },
+    { "type": "color", "id": "sg_cell_background", "label": "Table cell background", "default": "#ffffff" },
+    { "type": "color", "id": "sg_cell_color", "label": "Table cell text", "default": "#3f4e1f" },
+    { "type": "range", "id": "sg_cell_size", "min": 11, "max": 20, "step": 1, "unit": "px", "label": "Table cell size", "default": 14 },
+    { "type": "color", "id": "sg_divider_color", "label": "Row divider color", "default": "#e8e6dc" },
+    { "type": "text", "id": "sg_row_1_a", "label": "Row 1, Age", "default": "6-8 months" },
+    { "type": "text", "id": "sg_row_1_b", "label": "Row 1, Serving", "default": "1-3 melts per serving" },
+    { "type": "text", "id": "sg_row_1_c", "label": "Row 1, Frequency", "default": "1-2x per week" },
+    { "type": "text", "id": "sg_row_2_a", "label": "Row 2, Age", "default": "8-10 months" },
+    { "type": "text", "id": "sg_row_2_b", "label": "Row 2, Serving", "default": "3-5 melts per serving" },
+    { "type": "text", "id": "sg_row_2_c", "label": "Row 2, Frequency", "default": "Up to 3x per week" },
+    { "type": "text", "id": "sg_row_3_a", "label": "Row 3, Age", "default": "10-12 months+" },
+    { "type": "text", "id": "sg_row_3_b", "label": "Row 3, Serving", "default": "Up to 1 pack per day" },
+    { "type": "text", "id": "sg_row_3_c", "label": "Row 3, Frequency", "default": "Several times per week" },
+    { "type": "text", "id": "sg_row_4_a", "label": "Row 4, Age" },
+    { "type": "text", "id": "sg_row_4_b", "label": "Row 4, Serving" },
+    { "type": "text", "id": "sg_row_4_c", "label": "Row 4, Frequency" },
+    { "type": "text", "id": "sg_row_5_a", "label": "Row 5, Age" },
+    { "type": "text", "id": "sg_row_5_b", "label": "Row 5, Serving" },
+    { "type": "text", "id": "sg_row_5_c", "label": "Row 5, Frequency" },
+
+    { "type": "header", "content": "CTA button" },
+    { "type": "checkbox", "id": "show_cta", "label": "Show CTA button", "default": true },
+    { "type": "text", "id": "cta_text", "label": "Button text", "default": "Get the right snack for your child" },
+    { "type": "url", "id": "cta_link", "label": "Button link" },
+    { "type": "checkbox", "id": "cta_show_arrow", "label": "Show arrow icon", "default": true },
+    { "type": "select", "id": "cta_align", "label": "Alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "color", "id": "cta_bg", "label": "Background", "default": "#192e59" },
+    { "type": "color", "id": "cta_text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "color", "id": "cta_hover_bg", "label": "Hover background", "default": "#3f4e1f" },
+    { "type": "color", "id": "cta_hover_text", "label": "Hover text", "default": "#ffffff" },
+    { "type": "range", "id": "cta_border_width", "min": 0, "max": 6, "step": 1, "unit": "px", "label": "Border width", "default": 0 },
+    { "type": "color", "id": "cta_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "range", "id": "cta_radius", "min": 0, "max": 50, "step": 2, "unit": "px", "label": "Border radius", "default": 40 },
+    { "type": "range", "id": "cta_font_size", "min": 12, "max": 22, "step": 1, "unit": "px", "label": "Font size", "default": 14 },
+    { "type": "range", "id": "cta_padding_vertical", "min": 8, "max": 30, "step": 2, "unit": "px", "label": "Vertical padding", "default": 18 },
+    { "type": "range", "id": "cta_padding_horizontal", "min": 16, "max": 60, "step": 4, "unit": "px", "label": "Horizontal padding", "default": 36 },
+    { "type": "range", "id": "cta_spacing_top", "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Space above button", "default": 40 }
+  ],
+  "presets": [
+    { "name": "Horizontal image cards" }
+  ]
+}
+{% endschema %}

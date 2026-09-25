@@ -1,0 +1,373 @@
+/* HLT Gallery and buy box. Layout modelled on Bloom's Greens & Superfoods product page. */
+.hlt-bb > .hlt__inner { max-width: 1760px; }
+/* Title block sits above the gallery on phones and beside it on desktop. */
+.hlt-bb__grid { display: grid; gap: 28px; align-items: start; grid-template-areas: 'head' 'gallery' 'panel' 'pair'; }
+.hlt-bb__head { grid-area: head; }
+.hlt-bb__gallery { grid-area: gallery; min-width: 0; }
+.hlt-bb__panel { grid-area: panel; min-width: 0; }
+.hlt-bb__pair { grid-area: pair; min-width: 0; }
+/* A section docked into the buy box (the ambassador reels) ends up as a grid
+   item here -- on phones .hlt-bb__side is display:contents, so it lands in the
+   single column. Grid items default to min-width: auto, so the reel carousel's
+   fixed-width slides would stretch the column past the viewport and push the
+   whole card off screen; the areas above carry min-width: 0 for the same
+   reason. */
+.hlt-bb__grid .shopify-section { min-width: 0; max-width: 100%; }
+.hlt-bb__side, .hlt-bb__card { display: contents; }
+/* Phones and tablets: the whole block (title, gallery, buy box) sits in one card. */
+@media (max-width: 989px) {
+  .hlt-bb { padding: 24px 0 8px; }
+  .hlt-bb > .hlt__inner {
+    --hlt-bb-card-pad: 22px;
+    margin: 0 16px; padding: 22px 18px 24px;
+    background: #fff;
+    border: 1.5px solid rgba(27, 46, 92, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px -26px rgba(27, 46, 92, 0.28), 0 2px 6px rgba(27, 46, 92, 0.04);
+  }
+}
+@media (min-width: 990px) {
+  .hlt-bb__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-areas: 'gallery side';
+    gap: clamp(56px, 5vw, 96px);
+  }
+  /* Bloom-style card: title block + buy box in one bordered, shadowed panel that
+     stays in view while the tall gallery scrolls. */
+  .hlt-bb__side {
+    display: block; grid-area: side; min-width: 0;
+    position: sticky; top: calc(var(--header-height, 80px) + 18px); align-self: start;
+  }
+  .hlt-bb__card {
+    display: block;
+    --hlt-bb-card-pad: 28px;
+    padding: 28px 28px 24px;
+    background: #fff;
+    border: 1.5px solid rgba(27, 46, 92, 0.1);
+    border-radius: 28px;
+    box-shadow: 0 24px 48px -28px rgba(27, 46, 92, 0.28), 0 2px 6px rgba(27, 46, 92, 0.04);
+  }
+  .hlt-bb__head, .hlt-bb__panel, .hlt-bb__pair { grid-area: auto; }
+  .hlt-bb__head { margin-bottom: 24px; }
+  .hlt-bb__pair { margin-top: 28px; }
+}
+
+/* Title block */
+.hlt-bb__pills { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
+/* Rating pill sits on the card's top border, Bloom style: pulled up by the
+   card's top padding and half its own height, so the border runs through its
+   middle. --hlt-bb-card-pad is set on the card at each breakpoint. */
+.hlt-bb__head { position: relative; }
+.hlt-bb__head .hlt-bb__pills {
+  position: absolute; left: 0; top: calc(-1 * var(--hlt-bb-card-pad, 22px));
+  transform: translateY(-50%); z-index: 2; flex-wrap: nowrap;
+}
+.hlt-bb__head .hlt-bb__pills + * { margin-top: 0 !important; }
+.hlt-bb__pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: var(--hlt-r-pill);
+  border: 1.5px solid rgba(27, 46, 92, 0.14); background: #fff;
+  color: var(--hlt-navy); font-size: 13px; font-weight: 700; line-height: 1.2;
+}
+.hlt-bb__pill-stars { display: inline-flex; gap: 2px; color: var(--hlt-sun); }
+.hlt-bb__pill-stars svg { width: 15px; height: 15px; display: block; fill: currentColor; stroke: currentColor; stroke-width: 1; }
+.hlt-bb__pill-stars .is-empty { color: rgba(27, 46, 92, 0.16); display: inline-flex; }
+.hlt-bb__title { font-size: var(--hlt-title-size, 36px) !important; line-height: 1.1; }
+.hlt-bb__head .hlt-body { font-size: 16px; }
+.hlt-bb__head .hlt-tags { margin-top: 6px; }
+.hlt-bb__panel-inner { position: relative; }
+.hlt-bb__group { min-width: 0; }
+.hlt-bb__add-price { font-weight: inherit; }
+
+/* Gallery */
+.hlt-bb__stage { position: relative; }
+.hlt-bb__track {
+  display: flex; gap: 12px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  overscroll-behavior-x: contain; scrollbar-width: none;
+  border-radius: var(--hlt-r-card);
+}
+.hlt-bb__track::-webkit-scrollbar { display: none; }
+.hlt-bb__slide { position: relative; flex: 0 0 100%; margin: 0; scroll-snap-align: start; }
+.hlt-bb__slide .hlt-media { border-radius: var(--hlt-r-card); }
+.hlt-bb__caption {
+  position: absolute; left: 14px; right: 14px; bottom: 14px;
+  padding: 12px 18px;
+  border-radius: var(--hlt-r-btn);
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--hlt-navy);
+  font-family: var(--hlt-font-display); font-weight: 700; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.25;
+  box-shadow: 0 8px 20px -12px rgba(27, 46, 92, 0.35);
+}
+.hlt-bb__quote { background: var(--hlt-splash); }
+.hlt-bb__quote-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 12%; text-align: center; }
+.hlt-bb__stars { display: inline-flex; gap: 4px; color: var(--hlt-sun); }
+.hlt-bb__quote-text { font-family: var(--hlt-font-display); font-weight: 800; font-size: clamp(24px, 3vw, 38px); line-height: 1.15; color: var(--hlt-navy); }
+.hlt-bb__quote-text::before { content: '“'; } .hlt-bb__quote-text::after { content: '”'; }
+.hlt-bb__quote-img { width: 72px; height: 72px; object-fit: contain; }
+/* Phones and tablets get a thumbnail strip under the main image, the way Bloom
+   does it. Desktop keeps the tile grid plus "View all", so the strip hides there. */
+.hlt-bb__dots { display: none; }
+.hlt-bb__thumbs {
+  display: flex; gap: 8px; margin-top: 12px; padding: 2px 2px 4px;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-behavior: smooth;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.hlt-bb__thumbs::-webkit-scrollbar { display: none; }
+.hlt-bb__view-all {
+  display: none; margin: 18px auto 0; padding: 4px 2px;
+  border: 0; background: none; cursor: pointer;
+  color: var(--hlt-navy); font-family: var(--hlt-font-display); font-weight: 700; font-size: 16px;
+  text-decoration: underline; text-underline-offset: 4px;
+}
+.hlt-bb__view-all:hover { color: var(--hlt-ocean); }
+/* Desktop: one main image with a 2-column grid of tiles under it (Bloom layout).
+   Tiles after the 4th are hidden until "View all" is pressed. */
+@media (min-width: 990px) {
+  .hlt-bb__dots { display: none; }
+  .hlt-bb__track {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+    overflow: visible; scroll-snap-type: none; border-radius: 0;
+  }
+  .hlt-bb__slide { flex: none; width: auto; min-width: 0; }
+  .hlt-bb__slide[data-hlt-age-only], .hlt-bb__track > .hlt-bb__slide:first-child { grid-column: 1 / -1; }
+  .hlt-bb__slide--extra { display: none; }
+  .hlt-bb__gallery.is-expanded .hlt-bb__slide--extra:not([hidden]) { display: block; }
+  .hlt-bb__thumbs { display: none; }
+  .hlt-bb__view-all { display: table; }
+}
+.hlt-bb__thumb {
+  position: relative; flex: 0 0 auto; width: calc((100% - 32px) / 5); min-width: 54px; max-width: 86px;
+  aspect-ratio: 1; padding: 0; overflow: hidden; cursor: pointer;
+  border: 2px solid transparent; border-radius: 12px; background: var(--hlt-splash-pale);
+  transition: border-color 0.25s, transform 0.3s var(--hlt-ease);
+}
+.hlt-bb__thumb img, .hlt-bb__thumb svg { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hlt-bb__thumb:hover { transform: translateY(-2px); }
+.hlt-bb__thumb[aria-current='true'] { border-color: var(--hlt-navy); }
+.hlt-bb__thumb--quote { background: var(--hlt-splash); color: var(--hlt-navy); font-family: var(--hlt-font-display); font-weight: 800; font-size: 22px; }
+
+/* Panel */
+.hlt-bb__title { font-size: clamp(34px, 3.6vw, 48px); }
+.hlt-bb__notice { padding: 12px 16px; border: 2px dashed var(--hlt-coral); border-radius: var(--hlt-r-btn); font-size: 14px; color: var(--hlt-navy); }
+.hlt-bb__label { margin-bottom: 10px !important; font-family: var(--hlt-font-display); font-weight: 700; font-size: 18px; color: var(--hlt-navy); }
+
+.hlt-bb__chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.hlt-bb__chip {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 72px; padding: 10px 8px;
+  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-btn);
+  background: var(--hlt-paper); color: var(--hlt-navy);
+  font-family: var(--hlt-font-body); text-align: center; line-height: 1.2; cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s, transform 0.3s var(--hlt-ease);
+}
+.hlt-bb__chip strong { font-family: var(--hlt-font-display); font-weight: 700; font-size: 17px; }
+.hlt-bb__chip span { font-size: 13px; font-weight: 600; color: var(--hlt-ocean); }
+.hlt-bb__chip:hover { transform: translateY(-2px); border-color: var(--hlt-splash-deep); }
+.hlt-bb__chip[aria-pressed='true'] { border-color: var(--hlt-navy); background: var(--hlt-splash-pale); box-shadow: inset 0 0 0 1px var(--hlt-navy); }
+.hlt-bb__chip:focus-visible, .hlt-bb__card:focus-visible { outline: 3px solid var(--hlt-splash); outline-offset: 2px; }
+
+.hlt-bb__cards { display: grid; gap: 22px; margin-top: 8px; }
+.hlt-bb__card {
+  position: relative;
+  padding: 18px 18px 16px 54px;
+  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-card);
+  background: var(--hlt-paper); cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s, box-shadow 0.35s var(--hlt-ease);
+}
+.hlt-bb__card:hover { border-color: var(--hlt-splash-deep); }
+.hlt-bb__card.is-selected { border-color: var(--hlt-navy); background: var(--hlt-splash-pale); box-shadow: var(--hlt-shadow); }
+.hlt-bb__radio { position: absolute; left: 18px; top: 21px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(27, 46, 92, 0.35); background: var(--hlt-paper); transition: border-color 0.25s; }
+.hlt-bb__radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--hlt-navy); transform: scale(0); transition: transform 0.3s var(--hlt-ease); }
+.hlt-bb__card.is-selected .hlt-bb__radio { border-color: var(--hlt-navy); }
+.hlt-bb__card.is-selected .hlt-bb__radio::after { transform: scale(1); }
+.hlt-bb__card-tag {
+  position: absolute; top: -12px; right: 18px;
+  padding: 4px 12px; border-radius: var(--hlt-r-pill);
+  background: var(--hlt-sun); color: var(--hlt-navy);
+  font-family: var(--hlt-font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.hlt-bb__card-save {
+  position: absolute; top: -12px; left: 18px;
+  padding: 4px 12px; border-radius: var(--hlt-r-pill);
+  border: 1.5px solid var(--hlt-navy); background: #fff; color: var(--hlt-navy);
+  font-family: var(--hlt-font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
+}
+.hlt-bb__card[data-hlt-size='value'] .hlt-bb__card-save {
+  border-color: var(--hlt-sun); background: var(--hlt-sun); font-weight: 700;
+}
+.hlt-bb__card-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; }
+.hlt-bb__card-line { font-size: 15px; font-weight: 600; color: var(--hlt-ocean); }
+.hlt-bb__card-price { text-align: right; }
+.hlt-bb__price {
+  font-family: var(--hlt-font-display); font-size: 26px; font-weight: 800;
+  line-height: 1.05; letter-spacing: -0.01em; color: var(--hlt-navy); white-space: nowrap;
+}
+.hlt-bb__per { font-family: var(--hlt-font-mono); font-size: 12px; color: var(--hlt-ocean); margin-top: 3px; }
+
+/* Single-product mode. One panel stands in for the two pack cards, so it takes
+   the selected card's look -- navy edge, pale fill, savings pill on the top
+   left -- without the radio, since there is nothing to choose between. */
+.hlt-bb__solo {
+  position: relative;
+  margin-top: 8px;
+  padding: 18px;
+  border: 2px solid var(--hlt-navy); border-radius: var(--hlt-r-card);
+  background: var(--hlt-splash-pale); box-shadow: var(--hlt-shadow);
+}
+.hlt-bb__solo-save { border-color: var(--hlt-sun); background: var(--hlt-sun); font-weight: 700; }
+.hlt-bb__solo-save[hidden] { display: none; }
+/* With no title the price carries the panel on its own, so it leads from the
+   left at the size the page title would. */
+.hlt-bb__solo-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.hlt-bb__solo-price .hlt-bb__price { font-size: 32px; }
+.hlt-bb__was {
+  font-family: var(--hlt-font-mono); font-size: 13px; color: var(--hlt-ocean);
+  text-decoration: line-through; white-space: nowrap;
+}
+.hlt-bb__was[hidden] { display: none; }
+/* The product's own description, which is where a bundle's contents live. */
+.hlt-bb__desc ul { margin: 6px 0 6px 18px; padding: 0; }
+.hlt-bb__desc ul ul { margin-top: 4px; margin-bottom: 8px; }
+.hlt-bb__desc li { margin-bottom: 4px; }
+.hlt-bb__bullets { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1.5px dashed rgba(27, 46, 92, 0.14); display: grid; gap: 6px; font-size: 14px; color: var(--hlt-navy); }
+.hlt-bb__bullets li { position: relative; padding-left: 22px; }
+.hlt-bb__bullets li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--hlt-splash); }
+.hlt-bb__bullets li.hlt-bb__gift { display: flex; gap: 8px; padding-left: 0; font-weight: 700; }
+.hlt-bb__bullets li.hlt-bb__gift::before { display: none; }
+.hlt-bb__gift .hlt-icon { color: var(--hlt-coral); flex: none; margin-top: 2px; }
+
+/* Phones and tablets. The pack cards pick up the wrapper's `display: contents`
+   here, which leaves them with no box of their own: the radio and the two
+   badges then anchor to the section instead and pile up above the age chips.
+   Give the cards a box back, and lay the two packs out as one list — a rule
+   between them, the "Best value" tag in the Value pack's top-right corner, and
+   the savings badge on its own line under the price. */
+@media (max-width: 989px) {
+  .hlt-bb__cards { gap: 20px; margin-top: 4px; }
+  .hlt-bb__cards > .hlt-bb__card {
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding: 12px 12px 14px 40px;
+    border: 0; border-radius: 14px; background: none; box-shadow: none;
+  }
+  .hlt-bb__cards > .hlt-bb__card.is-selected { background: var(--hlt-splash-pale); }
+  .hlt-bb__cards > .hlt-bb__card + .hlt-bb__card::before {
+    content: ''; position: absolute; left: 0; right: 0; top: -10px;
+    border-top: 1.5px solid rgba(27, 46, 92, 0.16);
+  }
+  .hlt-bb__radio { left: 10px; top: 15px; }
+  .hlt-bb__card-tag { top: 12px; right: 12px; padding: 3px 10px; font-size: 11px; letter-spacing: 0.08em; }
+  .hlt-bb__card-head { order: 1; width: 100%; }
+  .hlt-bb__card-save { position: static; order: 2; margin-top: 10px; }
+  .hlt-bb__solo { padding: 14px; }
+  .hlt-bb__solo .hlt-bb__solo-save { display: inline-block; margin: 0 0 12px; }
+  .hlt-bb__bullets { order: 3; width: 100%; }
+  /* Price and per-snack line share a row under the pack name. */
+  .hlt-bb__card-price { text-align: left; width: 100%; }
+  .hlt-bb__card-price > div { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 10px; }
+  .hlt-bb__card-price > div[hidden] { display: none; }
+  .hlt-bb__per { margin-top: 0; }
+}
+
+.hlt-bb__add { min-height: 62px; font-size: 20px; }
+.hlt-bb__error { padding: 10px 14px; border-radius: var(--hlt-r-chip); background: #fdecee; color: var(--hlt-navy); font-size: 14px; }
+.hlt-bb__badges {
+  display: grid; grid-template-columns: repeat(var(--hlt-badge-cols, 5), minmax(0, 1fr)); gap: 12px 8px;
+  padding-top: 18px; margin-top: 4px; border-top: 1.5px dashed rgba(27, 46, 92, 0.14);
+}
+.hlt-bb__badges .hlt-badge { flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 12px; line-height: 1.25; }
+.hlt-bb__badge-ring {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 1.5px solid rgba(94, 194, 231, 0.7); background: var(--hlt-paper); color: var(--hlt-splash-deep);
+}
+.hlt-bb__badge-ring svg { width: 24px; height: 24px; }
+.hlt-bb__badge-logo { width: 30px; height: 30px; object-fit: contain; }
+@media (max-width: 480px) { .hlt-bb__badges { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hlt-bb__dropdowns { margin-top: 8px !important; }
+.hlt-bb__dropdowns .hlt-acc summary { font-size: 17px; padding: 16px 2px; }
+.hlt-bb__link { color: var(--hlt-navy); font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+
+/* Sticky bar */
+.hlt-sticky {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  background: var(--hlt-paper);
+  box-shadow: 0 -10px 30px -12px rgba(27, 46, 92, 0.25);
+  transform: translateY(110%); transition: transform 0.5s var(--hlt-ease);
+  overflow: visible;
+}
+.hlt-sticky.is-visible { transform: translateY(0); }
+body.hlt-sticky-on { padding-bottom: 84px; }
+.hlt-sticky__error { flex-basis: 100%; margin: 0; }
+.hlt-sticky__inner { max-width: 1280px; margin: 0 auto; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 10px; }
+.hlt-sticky__field { flex: 1 1 0; min-width: 0; }
+.hlt-sticky__field select {
+  width: 100%; min-height: 48px; padding: 0 34px 0 14px;
+  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-pill);
+  background: var(--hlt-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b2e5c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6-6'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
+  color: var(--hlt-navy); font-family: var(--hlt-font-body); font-weight: 700; font-size: 14px;
+  appearance: none; -webkit-appearance: none; text-overflow: ellipsis;
+}
+.hlt-sticky__btn { flex: 1.2 1 0; min-height: 50px; padding: 10px 18px; font-size: 16px; white-space: nowrap; }
+@media (max-width: 749px) {
+  .hlt-sticky__inner { flex-wrap: wrap; }
+  .hlt-sticky__btn { flex-basis: 100%; }
+}
+@media (min-width: 990px) { .hlt-sticky__inner { justify-content: flex-end; } .hlt-sticky__field { flex: 0 1 260px; } .hlt-sticky__btn { flex: 0 0 auto; } }
+
+/* Pair it with: Bloom-style add-on carousel under the buy box, same column.
+   A tab sits on the card's top-left corner, one add-on shows at a time
+   (image left, text and a full-width Add to cart right), dots below. */
+.hlt-bb__pair[hidden] { display: none; }
+.hlt-bb__pair-tabs { display: flex; align-items: flex-end; gap: 6px; }
+.hlt-bb__pair-tab {
+  position: relative; z-index: 1;
+  padding: 10px 20px 12px; margin-bottom: -1.5px;
+  border: 1.5px solid rgba(27, 46, 92, 0.1); border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background: #fff; color: var(--hlt-ocean);
+  font-family: var(--hlt-font-display); font-weight: 700; font-size: 15px; line-height: 1.2;
+  cursor: pointer; -webkit-appearance: none; appearance: none;
+  transition: background-color 0.25s, color 0.25s;
+}
+.hlt-bb__pair-tab:hover { color: var(--hlt-navy); }
+.hlt-bb__pair-tab:focus-visible { outline: 3px solid var(--hlt-splash); outline-offset: 2px; }
+/* The chosen tab shares the card's colour and covers its top border, so the two read as one shape. */
+.hlt-bb__pair-tab.is-active { background: var(--hlt-cream); color: var(--hlt-navy); z-index: 2; }
+.hlt-bb__pair-tab[hidden] { display: none; }
+.hlt-bb__pair-pane[hidden] { display: none; }
+.hlt-bb__pair-card {
+  position: relative; overflow: hidden;
+  border: 1.5px solid rgba(27, 46, 92, 0.1); border-radius: 0 22px 22px 22px;
+  background: var(--hlt-cream);
+}
+.hlt-bb__pair-track {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 100%;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none;
+}
+.hlt-bb__pair-track::-webkit-scrollbar { display: none; }
+.hlt-bb__pair-item {
+  scroll-snap-align: start; min-width: 0;
+  display: grid; grid-template-columns: minmax(120px, 34%) minmax(0, 1fr); gap: 20px; align-items: center;
+  padding: 18px;
+}
+.hlt-bb__pair-item[hidden] { display: none; }
+.hlt-bb__pair-img { border-radius: 16px; background: #fff; }
+.hlt-bb__pair-body { display: flex; flex-direction: column; align-items: stretch; gap: 8px; min-width: 0; }
+.hlt-bb__pair-title { font-family: var(--hlt-font-display); font-weight: 700; font-size: 18px; line-height: 1.25; color: var(--hlt-navy); }
+.hlt-bb__pair-line { font-size: 14px; line-height: 1.45; color: var(--hlt-ocean); }
+.hlt-bb__pair-add { width: 100%; margin-top: 6px; min-height: 48px; padding: 12px 18px; font-size: 15px; }
+.hlt-bb__pair-price { font-weight: 600; }
+.hlt-bb__pair-soldout { font-size: 14px; font-weight: 700; color: var(--hlt-ocean); }
+.hlt-bb__pair-error[hidden] { display: none; }
+.hlt-bb__pair-dots { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 12px; }
+.hlt-bb__pair-dots[hidden] { display: none; }
+.hlt-bb__pair-dot { position: relative; padding: 0; border: 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
+.hlt-bb__pair-dot::after { content: ''; position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); }
+.hlt-bb__pair-dot:focus-visible { outline: 3px solid var(--hlt-splash); outline-offset: 5px; }
+@media (max-width: 480px) {
+  .hlt-bb__pair-item { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 14px; }
+  .hlt-bb__pair-title { font-size: 16px; }
+}

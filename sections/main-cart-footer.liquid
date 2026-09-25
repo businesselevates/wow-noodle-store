@@ -1,0 +1,345 @@
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+{{ 'hlt-cart.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- assign hlt_savings = cart.original_total_price | minus: cart.total_price -%}
+
+<div
+  class="hlt-cart color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
+  id="main-cart-footer"
+  data-id="{{ section.id }}"
+>
+  <div class="hlt-cart__inner section-{{ section.id }}-padding">
+    <div class="hlt-cart__summary" aria-labelledby="HltCartSummaryHeading">
+      <h2 class="hlt-cart__summary-title" id="HltCartSummaryHeading">
+        {{- section.settings.summary_heading | default: 'Order summary' -}}
+      </h2>
+
+      {% for block in section.blocks %}
+        {%- case block.type -%}
+          {%- when '@app' -%}
+            {% render block %}
+          {%- when 'subtotal' -%}
+            <div class="js-contents" {{ block.shopify_attributes }}>
+              <div class="hlt-cart__rows">
+                <div class="hlt-cart__row">
+                  <span>{{ section.settings.subtotal_label | default: 'Subtotal' }}</span>
+                  <span class="hlt-cart__row-value">{{ cart.items_subtotal_price | money }}</span>
+                </div>
+
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                  <ul
+                    class="discounts list-unstyled hlt-cart__discounts"
+                    role="list"
+                    aria-label="{{ 'customer.order.discount' | t }}"
+                  >
+                    {%- for discount in cart.cart_level_discount_applications -%}
+                      <li class="discounts__discount hlt-cart__row hlt-cart__row--discount">
+                        <span>
+                          {{- 'icon-discount.svg' | inline_asset_content -}}
+                          {{ discount.title | escape }}
+                        </span>
+                        <span class="hlt-cart__row-value">-{{ discount.total_allocated_amount | money }}</span>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+
+                {%- if section.settings.shipping_label != blank -%}
+                  <div class="hlt-cart__row">
+                    <span>{{ section.settings.shipping_label }}</span>
+                    <span class="hlt-cart__row-value hlt-cart__row-value--muted">
+                      {{- section.settings.shipping_value -}}
+                    </span>
+                  </div>
+                {%- endif -%}
+              </div>
+
+              <div class="hlt-cart__total" role="status">
+                <span class="hlt-cart__total-label">{{ section.settings.total_label | default: 'Total' }}</span>
+                <span class="hlt-cart__total-value">{{ cart.total_price | money_with_currency }}</span>
+              </div>
+
+              {%- if hlt_savings > 0 -%}
+                <p class="hlt-cart__saving">
+                  {% render 'hlt-icon', name: 'sparkle', size: 16 %}
+                  <span>{{ section.settings.savings_label | default: 'You save' }} {{ hlt_savings | money }}</span>
+                </p>
+              {%- endif -%}
+
+              <small class="tax-note caption-large rte hlt-cart__tax">
+                {%- if cart.duties_included and cart.taxes_included -%}
+                  {%- if shop.shipping_policy.body == blank -%}
+                    {{ 'sections.cart.duties_and_taxes_included_shipping_at_checkout_without_policy' | t }}
+                  {%- else -%}
+                    {{
+                      'sections.cart.duties_and_taxes_included_shipping_at_checkout_with_policy_html'
+                      | t: link: shop.shipping_policy.url
+                    }}
+                  {%- endif -%}
+                {%- elsif cart.duties_included == false and cart.taxes_included -%}
+                  {%- if shop.shipping_policy.body == blank -%}
+                    {{ 'sections.cart.taxes_included_shipping_at_checkout_without_policy' | t }}
+                  {%- else -%}
+                    {{
+                      'sections.cart.taxes_included_shipping_at_checkout_with_policy_html'
+                      | t: link: shop.shipping_policy.url
+                    }}
+                  {%- endif -%}
+                {%- elsif cart.duties_included and cart.taxes_included == false -%}
+                  {%- if shop.shipping_policy.body == blank -%}
+                    {{ 'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
+                  {%- else -%}
+                    {{
+                      'sections.cart.duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_html'
+                      | t: link: shop.shipping_policy.url
+                    }}
+                  {%- endif -%}
+                {%- elsif cart.duties_included == false and cart.taxes_included == false -%}
+                  {%- if shop.shipping_policy.body == blank -%}
+                    {{ 'sections.cart.taxes_at_checkout_shipping_at_checkout_without_policy' | t }}
+                  {%- else -%}
+                    {{
+                      'sections.cart.taxes_at_checkout_shipping_at_checkout_with_policy_html'
+                      | t: link: shop.shipping_policy.url
+                    }}
+                  {%- endif -%}
+                {%- endif -%}
+              </small>
+            </div>
+          {%- else -%}
+            <div class="hlt-cart__ctas" {{ block.shopify_attributes }}>
+              <button
+                type="submit"
+                id="checkout"
+                class="cart__checkout-button hlt-btn hlt-btn--block"
+                name="checkout"
+                {% if cart == empty %}
+                  disabled
+                {% endif %}
+                form="cart"
+              >
+                <span>{{ 'sections.cart.checkout' | t }}</span>
+                {% render 'hlt-icon', name: 'arrow-right', size: 20 %}
+              </button>
+
+              {%- if section.settings.show_secure_note -%}
+                <p class="hlt-cart__secure">
+                  {% render 'hlt-icon', name: 'lock', size: 18 %}
+                  <span class="hlt-cart__secure-main">
+                    <span class="hlt-cart__secure-title">
+                      {{- section.settings.secure_text | default: 'Secure checkout' -}}
+                    </span>
+                    {%- if section.settings.secure_subtext != blank -%}
+                      <span class="hlt-cart__secure-sub">{{ section.settings.secure_subtext }}</span>
+                    {%- endif -%}
+                  </span>
+                </p>
+              {%- endif -%}
+
+              {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+                <ul class="hlt-cart__pay list-unstyled" role="list" aria-label="{{ section.settings.secure_text | default: 'Secure checkout' | escape }}">
+                  {%- for type in shop.enabled_payment_types -%}
+                    <li>{{ type | payment_type_svg_tag: class: 'hlt-cart__pay-icon' }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+
+            {%- if additional_checkout_buttons -%}
+              <div class="cart__dynamic-checkout-buttons additional-checkout-buttons hlt-cart__dynamic">
+                {{ content_for_additional_checkout_buttons }}
+              </div>
+            {%- endif -%}
+        {%- endcase -%}
+      {% endfor %}
+
+      {%- if section.settings.show_trust -%}
+        {%- if section.settings.trust_1 != blank
+          or section.settings.trust_2 != blank
+          or section.settings.trust_3 != blank
+        -%}
+          <ul class="hlt-cart__trust list-unstyled" role="list">
+            {%- if section.settings.trust_1 != blank -%}
+              <li>{% render 'hlt-icon', name: 'truck', size: 18 %}<span>{{ section.settings.trust_1 }}</span></li>
+            {%- endif -%}
+            {%- if section.settings.trust_2 != blank -%}
+              <li>{% render 'hlt-icon', name: 'return', size: 18 %}<span>{{ section.settings.trust_2 }}</span></li>
+            {%- endif -%}
+            {%- if section.settings.trust_3 != blank -%}
+              <li>{% render 'hlt-icon', name: 'certificate', size: 18 %}<span>{{ section.settings.trust_3 }}</span></li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      {%- endif -%}
+
+      <div id="cart-errors" class="hlt-cart__errors" role="alert"></div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-footer.name",
+  "class": "cart__footer-wrapper hlt-cart-wrapper hlt-cart-wrapper--summary",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Order summary"
+    },
+    {
+      "type": "text",
+      "id": "summary_heading",
+      "label": "Heading",
+      "default": "Order summary"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_label",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "shipping_label",
+      "label": "Shipping label",
+      "default": "Shipping"
+    },
+    {
+      "type": "text",
+      "id": "shipping_value",
+      "label": "Shipping value",
+      "default": "Calculated at checkout"
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "Total label",
+      "default": "Total"
+    },
+    {
+      "type": "text",
+      "id": "savings_label",
+      "label": "Savings label",
+      "default": "You save"
+    },
+    {
+      "type": "header",
+      "content": "Secure checkout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secure_note",
+      "label": "Show the secure checkout line",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "secure_text",
+      "label": "Secure checkout text",
+      "default": "Secure checkout"
+    },
+    {
+      "type": "text",
+      "id": "secure_subtext",
+      "label": "Secure checkout subtext",
+      "default": "Encrypted payment, handled by Shopify."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show accepted payment icons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Reassurance"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show the reassurance list",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Line 1",
+      "default": "Tracked delivery across Singapore"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Line 2",
+      "default": "Easy returns within 14 days"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Line 3",
+      "default": "Lab tested, SFA compliant batches"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart-footer.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart-footer.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

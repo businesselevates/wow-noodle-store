@@ -1,0 +1,1762 @@
+{% doc %}
+  @prompt
+    Create a custom Shopify section with the following layout structure.
+    
+    IMPORTANT LAYOUT REQUIREMENT
+    
+    * Use the same container width, left padding, and right padding as the section above.
+    * All content must align to the same left and right boundaries as the previous section.
+    * Maintain a consistent content width throughout the section.
+    * Center all content within a shared container.
+    * Large vertical spacing between content blocks.
+    
+    ---
+    
+    SECTION 1: INTRODUCTION
+    
+    Content:
+    
+    * Small eyebrow heading
+    * Large main heading
+    * Supporting paragraph text
+    
+    Layout:
+    
+    * Centered content
+    * Narrow text container (max-width 700px)
+    * Large spacing below before next content block
+    
+    ---
+    
+    SECTION 2: IMAGE + TEXT CONTENT CARD
+    
+    Layout:
+    
+    * Two-column card
+    * Left: Image
+    * Right: Content
+    
+    Content includes:
+    
+    * Small label
+    * Heading
+    * Description
+    
+    Card style:
+    
+    * Rounded corners
+    * Optional border
+    * Optional background color
+    
+    Mobile:
+    
+    * Stack image above text
+    
+    ---
+    
+    SECTION 3: DEVELOPMENT STAGE CARDS
+    
+    Layout:
+    
+    * 3 cards in a single row
+    * Equal width columns
+    
+    Each card contains:
+    
+    * Age label (e.g. 6m+, 12m+, 18m+)
+    * Small stage label
+    * Card heading
+    * Short description
+    * Bullet list items
+    * Optional icon
+    
+    Section settings:
+    
+    * Number of cards via blocks
+    * Card gap
+    * Desktop columns
+    * Mobile columns
+    
+    ---
+    
+    SECTION 4: COMPARISON CARDS
+    
+    Layout:
+    
+    * 2 cards in one row
+    * Equal width columns
+    
+    Card 1:
+    
+    * Comparison title
+    * Optional badge/icon
+    * Bullet list
+    
+    Card 2:
+    
+    * Comparison title
+    * Optional badge/icon
+    * Bullet list
+    
+    Card style:
+    
+    * Rounded corners
+    * Optional border
+    * Optional background color
+    
+    Mobile:
+    
+    * Stack cards vertically
+    
+    ---
+    
+    EDITABLE SETTINGS
+    
+    Allow every element to be edited independently.
+    
+    Text Elements:
+    
+    * Eyebrow text
+    * Heading
+    * Subheading
+    * Description
+    * List items
+    * Button text
+    
+    Typography:
+    
+    * Font family
+    * Font size
+    * Font weight
+    * Line height
+    * Letter spacing
+    * Text alignment
+    * Text color
+    
+    Images:
+    
+    * Image upload
+    * Image aspect ratio
+    * Image position
+    
+    Cards:
+    
+    * Background color
+    * Border color
+    * Border width
+    * Border radius
+    * Shadow
+    * Internal padding
+    * Card spacing
+    * Card width
+    
+    Layout:
+    
+    * Section width
+    * Content max-width
+    * Container alignment
+    * Gap between content blocks
+    * Desktop columns
+    * Tablet columns
+    * Mobile columns
+    
+    Spacing:
+    
+    * Padding top
+    * Padding bottom
+    * Padding left
+    * Padding right
+    * Margin controls
+    
+    Buttons:
+    
+    * Button label
+    * Button URL
+    * Button style
+    * Button color
+    * Button text color
+    * Button border radius
+    * Optional icon
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-content-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.section_bg_color }};
+  }
+
+  .ai-content-section-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding-left: {{ block.settings.padding_left }}px;
+    padding-right: {{ block.settings.padding_right }}px;
+  }
+
+  .ai-content-section-intro-{{ ai_gen_id }} {
+    text-align: {{ block.settings.intro_alignment }};
+    max-width: {{ block.settings.intro_max_width }}px;
+    margin: 0 auto {{ block.settings.intro_spacing }}px;
+  }
+
+  .ai-content-section-eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.eyebrow_font_size }}px;
+    font-weight: {{ block.settings.eyebrow_font_weight }};
+    color: {{ block.settings.eyebrow_color }};
+    margin: 0 0 {{ block.settings.eyebrow_margin_bottom }}px;
+    text-transform: {{ block.settings.eyebrow_text_transform }};
+    letter-spacing: {{ block.settings.eyebrow_letter_spacing }}px;
+  }
+
+  .ai-content-section-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_font_size }}px;
+    font-weight: {{ block.settings.heading_font_weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px;
+    line-height: {{ block.settings.heading_line_height }};
+  }
+
+  .ai-content-section-paragraph-{{ ai_gen_id }} {
+    font-size: {{ block.settings.paragraph_font_size }}px;
+    color: {{ block.settings.paragraph_color }};
+    line-height: {{ block.settings.paragraph_line_height }};
+    margin: 0;
+  }
+
+  .ai-content-section-image-text-card-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: {{ block.settings.image_text_image_width }}% 1fr;
+    gap: {{ block.settings.image_text_gap }}px;
+    background-color: {{ block.settings.image_text_bg_color }};
+    border: {{ block.settings.image_text_border_width }}px solid {{ block.settings.image_text_border_color }};
+    border-radius: {{ block.settings.image_text_border_radius }}px;
+    padding: {{ block.settings.image_text_padding }}px;
+    margin-bottom: {{ block.settings.image_text_spacing }}px;
+  }
+
+  .ai-content-section-image-text-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ block.settings.image_text_image_radius }}px;
+  }
+
+  .ai-content-section-image-text-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: {{ block.settings.image_text_aspect_ratio }};
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.image_text_image_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-content-section-image-text-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-content-section-image-text-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ai-content-section-image-text-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.image_text_label_size }}px;
+    font-weight: {{ block.settings.image_text_label_weight }};
+    color: {{ block.settings.image_text_label_color }};
+    margin: 0 0 {{ block.settings.image_text_label_margin }}px;
+    text-transform: {{ block.settings.image_text_label_transform }};
+  }
+
+  .ai-content-section-image-text-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.image_text_heading_size }}px;
+    font-weight: {{ block.settings.image_text_heading_weight }};
+    color: {{ block.settings.image_text_heading_color }};
+    margin: 0 0 {{ block.settings.image_text_heading_margin }}px;
+    line-height: {{ block.settings.image_text_heading_line_height }};
+  }
+
+  .ai-content-section-image-text-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.image_text_description_size }}px;
+    color: {{ block.settings.image_text_description_color }};
+    line-height: {{ block.settings.image_text_description_line_height }};
+    margin: 0;
+  }
+
+  .ai-content-section-stage-cards-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.stage_desktop_columns }}, 1fr);
+    gap: {{ block.settings.stage_gap }}px;
+    margin-bottom: {{ block.settings.stage_spacing }}px;
+  }
+
+  .ai-content-section-stage-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.stage_card_bg_color }};
+    border: {{ block.settings.stage_card_border_width }}px solid {{ block.settings.stage_card_border_color }};
+    border-radius: {{ block.settings.stage_card_border_radius }}px;
+    padding: {{ block.settings.stage_card_padding }}px;
+    box-shadow: {{ block.settings.stage_card_shadow_h }}px {{ block.settings.stage_card_shadow_v }}px {{ block.settings.stage_card_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.stage_card_shadow_opacity }});
+  }
+
+  .ai-content-section-stage-age-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stage_age_size }}px;
+    font-weight: {{ block.settings.stage_age_weight }};
+    color: {{ block.settings.stage_age_color }};
+    margin: 0 0 {{ block.settings.stage_age_margin }}px;
+  }
+
+  .ai-content-section-stage-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stage_label_size }}px;
+    font-weight: {{ block.settings.stage_label_weight }};
+    color: {{ block.settings.stage_label_color }};
+    margin: 0 0 {{ block.settings.stage_label_margin }}px;
+    text-transform: {{ block.settings.stage_label_transform }};
+  }
+
+  .ai-content-section-stage-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stage_heading_size }}px;
+    font-weight: {{ block.settings.stage_heading_weight }};
+    color: {{ block.settings.stage_heading_color }};
+    margin: 0 0 {{ block.settings.stage_heading_margin }}px;
+    line-height: {{ block.settings.stage_heading_line_height }};
+  }
+
+  .ai-content-section-stage-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.stage_description_size }}px;
+    color: {{ block.settings.stage_description_color }};
+    line-height: {{ block.settings.stage_description_line_height }};
+    margin: 0 0 {{ block.settings.stage_description_margin }}px;
+  }
+
+  .ai-content-section-stage-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-content-section-stage-list-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.stage_list_size }}px;
+    color: {{ block.settings.stage_list_color }};
+    line-height: {{ block.settings.stage_list_line_height }};
+    margin-bottom: {{ block.settings.stage_list_spacing }}px;
+    padding-left: {{ block.settings.stage_list_indent }}px;
+    position: relative;
+  }
+
+  .ai-content-section-stage-list-{{ ai_gen_id }} li:before {
+    content: "{{ block.settings.stage_list_bullet }}";
+    position: absolute;
+    left: 0;
+    color: {{ block.settings.stage_list_bullet_color }};
+  }
+
+  .ai-content-section-comparison-cards-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.comparison_desktop_columns }}, 1fr);
+    gap: {{ block.settings.comparison_gap }}px;
+  }
+
+  .ai-content-section-comparison-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.comparison_card_bg_color }};
+    border: {{ block.settings.comparison_card_border_width }}px solid {{ block.settings.comparison_card_border_color }};
+    border-radius: {{ block.settings.comparison_card_border_radius }}px;
+    padding: {{ block.settings.comparison_card_padding }}px;
+    box-shadow: {{ block.settings.comparison_card_shadow_h }}px {{ block.settings.comparison_card_shadow_v }}px {{ block.settings.comparison_card_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.comparison_card_shadow_opacity }});
+  }
+
+  .ai-content-section-comparison-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.comparison_title_size }}px;
+    font-weight: {{ block.settings.comparison_title_weight }};
+    color: {{ block.settings.comparison_title_color }};
+    margin: 0 0 {{ block.settings.comparison_title_margin }}px;
+    line-height: {{ block.settings.comparison_title_line_height }};
+  }
+
+  .ai-content-section-comparison-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-content-section-comparison-list-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.comparison_list_size }}px;
+    color: {{ block.settings.comparison_list_color }};
+    line-height: {{ block.settings.comparison_list_line_height }};
+    margin-bottom: {{ block.settings.comparison_list_spacing }}px;
+    padding-left: {{ block.settings.comparison_list_indent }}px;
+    position: relative;
+  }
+
+  .ai-content-section-comparison-list-{{ ai_gen_id }} li:before {
+    content: "{{ block.settings.comparison_list_bullet }}";
+    position: absolute;
+    left: 0;
+    color: {{ block.settings.comparison_list_bullet_color }};
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-content-section-stage-cards-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.stage_tablet_columns }}, 1fr);
+    }
+
+    .ai-content-section-comparison-cards-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-content-section-{{ ai_gen_id }} {
+      padding-top: {{ block.settings.padding_top | times: 0.7 }}px;
+      padding-bottom: {{ block.settings.padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-content-section-container-{{ ai_gen_id }} {
+      padding-left: {{ block.settings.padding_left | times: 0.7 }}px;
+      padding-right: {{ block.settings.padding_right | times: 0.7 }}px;
+    }
+
+    .ai-content-section-intro-{{ ai_gen_id }} {
+      margin-bottom: {{ block.settings.intro_spacing | times: 0.7 }}px;
+    }
+
+    .ai-content-section-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_font_size | times: 0.8 }}px;
+    }
+
+    .ai-content-section-image-text-card-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      margin-bottom: {{ block.settings.image_text_spacing | times: 0.7 }}px;
+    }
+
+    .ai-content-section-stage-cards-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      margin-bottom: {{ block.settings.stage_spacing | times: 0.7 }}px;
+    }
+
+    .ai-content-section-comparison-cards-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstyle %}
+
+<content-section-{{ ai_gen_id }} class="ai-content-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-content-section-container-{{ ai_gen_id }}">
+    {% if block.settings.show_intro %}
+      <div class="ai-content-section-intro-{{ ai_gen_id }}">
+        {% if block.settings.eyebrow_text != blank %}
+          <div class="ai-content-section-eyebrow-{{ ai_gen_id }}">{{ block.settings.eyebrow_text }}</div>
+        {% endif %}
+        {% if block.settings.heading_text != blank %}
+          <h2 class="ai-content-section-heading-{{ ai_gen_id }}">{{ block.settings.heading_text }}</h2>
+        {% endif %}
+        {% if block.settings.paragraph_text != blank %}
+          <div class="ai-content-section-paragraph-{{ ai_gen_id }}">{{ block.settings.paragraph_text }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_image_text %}
+      <div class="ai-content-section-image-text-card-{{ ai_gen_id }}">
+        <div>
+          {% if block.settings.image_text_image %}
+            <img
+              src="{{ block.settings.image_text_image | image_url: width: 800 }}"
+              alt="{{ block.settings.image_text_image.alt | escape }}"
+              class="ai-content-section-image-text-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="{{ block.settings.image_text_image.width }}"
+              height="{{ block.settings.image_text_image.height }}"
+            >
+          {% else %}
+            <div class="ai-content-section-image-text-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="ai-content-section-image-text-content-{{ ai_gen_id }}">
+          {% if block.settings.image_text_label != blank %}
+            <div class="ai-content-section-image-text-label-{{ ai_gen_id }}">{{ block.settings.image_text_label }}</div>
+          {% endif %}
+          {% if block.settings.image_text_heading != blank %}
+            <h3 class="ai-content-section-image-text-heading-{{ ai_gen_id }}">{{ block.settings.image_text_heading }}</h3>
+          {% endif %}
+          {% if block.settings.image_text_description != blank %}
+            <div class="ai-content-section-image-text-description-{{ ai_gen_id }}">{{ block.settings.image_text_description }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_stage_cards %}
+      <div class="ai-content-section-stage-cards-{{ ai_gen_id }}">
+        {% for i in (1..3) %}
+          {% liquid
+            assign age_key = 'stage_' | append: i | append: '_age'
+            assign label_key = 'stage_' | append: i | append: '_label'
+            assign heading_key = 'stage_' | append: i | append: '_heading'
+            assign description_key = 'stage_' | append: i | append: '_description'
+            assign list_key = 'stage_' | append: i | append: '_list'
+
+            assign age = block.settings[age_key]
+            assign label = block.settings[label_key]
+            assign heading = block.settings[heading_key]
+            assign description = block.settings[description_key]
+            assign list = block.settings[list_key]
+          %}
+          <div class="ai-content-section-stage-card-{{ ai_gen_id }}">
+            {% if age != blank %}
+              <div class="ai-content-section-stage-age-{{ ai_gen_id }}">{{ age }}</div>
+            {% endif %}
+            {% if label != blank %}
+              <div class="ai-content-section-stage-label-{{ ai_gen_id }}">{{ label }}</div>
+            {% endif %}
+            {% if heading != blank %}
+              <h3 class="ai-content-section-stage-heading-{{ ai_gen_id }}">{{ heading }}</h3>
+            {% endif %}
+            {% if description != blank %}
+              <div class="ai-content-section-stage-description-{{ ai_gen_id }}">{{ description }}</div>
+            {% endif %}
+            {% if list != blank %}
+              <ul class="ai-content-section-stage-list-{{ ai_gen_id }}">
+                {% assign list_items = list | split: '|' %}
+                {% for item in list_items %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_comparison_cards %}
+      <div class="ai-content-section-comparison-cards-{{ ai_gen_id }}">
+        {% for i in (1..2) %}
+          {% liquid
+            assign title_key = 'comparison_' | append: i | append: '_title'
+            assign list_key = 'comparison_' | append: i | append: '_list'
+
+            assign title = block.settings[title_key]
+            assign list = block.settings[list_key]
+          %}
+          <div class="ai-content-section-comparison-card-{{ ai_gen_id }}">
+            {% if title != blank %}
+              <h3 class="ai-content-section-comparison-title-{{ ai_gen_id }}">{{ title }}</h3>
+            {% endif %}
+            {% if list != blank %}
+              <ul class="ai-content-section-comparison-list-{{ ai_gen_id }}">
+                {% assign list_items = list | split: '|' %}
+                {% for item in list_items %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</content-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ContentSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('content-section-{{ ai_gen_id }}', ContentSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Multi section content",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "label": "Container width",
+      "min": 600,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Padding left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Padding right",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#f9f7f1"
+    },
+    {
+      "type": "header",
+      "content": "Introduction section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_intro",
+      "label": "Show introduction",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "Introducing"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Our comprehensive approach"
+    },
+    {
+      "type": "textarea",
+      "id": "paragraph_text",
+      "label": "Paragraph",
+      "default": "Discover how our solutions are designed to meet your needs at every stage."
+    },
+    {
+      "type": "select",
+      "id": "intro_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "intro_max_width",
+      "label": "Max width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "intro_spacing",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_font_size",
+      "label": "Eyebrow font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_font_weight",
+      "label": "Eyebrow font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#192e59"
+    },
+    {
+      "type": "select",
+      "id": "eyebrow_text_transform",
+      "label": "Eyebrow text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_letter_spacing",
+      "label": "Eyebrow letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_margin_bottom",
+      "label": "Eyebrow bottom margin",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading font size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "label": "Heading line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Heading bottom margin",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "paragraph_font_size",
+      "label": "Paragraph font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "paragraph_line_height",
+      "label": "Paragraph line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Image and text card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image_text",
+      "label": "Show image and text card",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image_text_image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_text_aspect_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "4/3", "label": "Landscape (4:3)" },
+        { "value": "16/9", "label": "Wide (16:9)" },
+        { "value": "3/4", "label": "Portrait (3:4)" }
+      ],
+      "default": "4/3"
+    },
+    {
+      "type": "text",
+      "id": "image_text_label",
+      "label": "Label",
+      "default": "Featured"
+    },
+    {
+      "type": "text",
+      "id": "image_text_heading",
+      "label": "Heading",
+      "default": "Discover our approach"
+    },
+    {
+      "type": "textarea",
+      "id": "image_text_description",
+      "label": "Description",
+      "default": "Learn more about how we deliver exceptional results through our proven methodology."
+    },
+    {
+      "type": "range",
+      "id": "image_text_image_width",
+      "label": "Image width",
+      "min": 30,
+      "max": 60,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "image_text_gap",
+      "label": "Gap",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "image_text_padding",
+      "label": "Card padding",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "image_text_spacing",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "image_text_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "image_text_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "image_text_border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "image_text_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_text_image_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_text_label_size",
+      "label": "Label font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_text_label_weight",
+      "label": "Label font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "image_text_label_color",
+      "label": "Label color",
+      "default": "#192e59"
+    },
+    {
+      "type": "select",
+      "id": "image_text_label_transform",
+      "label": "Label text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "image_text_label_margin",
+      "label": "Label bottom margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "image_text_heading_size",
+      "label": "Heading font size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "image_text_heading_weight",
+      "label": "Heading font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "image_text_heading_color",
+      "label": "Heading color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "image_text_heading_line_height",
+      "label": "Heading line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "image_text_heading_margin",
+      "label": "Heading bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "image_text_description_size",
+      "label": "Description font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "color",
+      "id": "image_text_description_color",
+      "label": "Description color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "image_text_description_line_height",
+      "label": "Description line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.6
+    },
+    {
+      "type": "header",
+      "content": "Development stage cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stage_cards",
+      "label": "Show stage cards",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "stage_desktop_columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "stage_tablet_columns",
+      "label": "Tablet columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "stage_gap",
+      "label": "Gap between cards",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "stage_spacing",
+      "label": "Bottom spacing",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "stage_card_bg_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "stage_card_border_width",
+      "label": "Card border width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "stage_card_border_color",
+      "label": "Card border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "stage_card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "stage_card_padding",
+      "label": "Card padding",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "stage_card_shadow_h",
+      "label": "Shadow horizontal",
+      "min": -20,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "stage_card_shadow_v",
+      "label": "Shadow vertical",
+      "min": -20,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "stage_card_shadow_blur",
+      "label": "Shadow blur",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "stage_card_shadow_opacity",
+      "label": "Shadow opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.1
+    },
+    {
+      "type": "text",
+      "id": "stage_1_age",
+      "label": "Card 1 age",
+      "default": "6m+"
+    },
+    {
+      "type": "text",
+      "id": "stage_1_label",
+      "label": "Card 1 label",
+      "default": "Stage 1"
+    },
+    {
+      "type": "text",
+      "id": "stage_1_heading",
+      "label": "Card 1 heading",
+      "default": "Early development"
+    },
+    {
+      "type": "textarea",
+      "id": "stage_1_description",
+      "label": "Card 1 description",
+      "default": "Foundation building phase"
+    },
+    {
+      "type": "text",
+      "id": "stage_1_list",
+      "label": "Card 1 list items (separate with |)",
+      "default": "Motor skills|Sensory exploration|Basic coordination"
+    },
+    {
+      "type": "text",
+      "id": "stage_2_age",
+      "label": "Card 2 age",
+      "default": "12m+"
+    },
+    {
+      "type": "text",
+      "id": "stage_2_label",
+      "label": "Card 2 label",
+      "default": "Stage 2"
+    },
+    {
+      "type": "text",
+      "id": "stage_2_heading",
+      "label": "Card 2 heading",
+      "default": "Active learning"
+    },
+    {
+      "type": "textarea",
+      "id": "stage_2_description",
+      "label": "Card 2 description",
+      "default": "Skill development phase"
+    },
+    {
+      "type": "text",
+      "id": "stage_2_list",
+      "label": "Card 2 list items (separate with |)",
+      "default": "Problem solving|Language development|Social interaction"
+    },
+    {
+      "type": "text",
+      "id": "stage_3_age",
+      "label": "Card 3 age",
+      "default": "18m+"
+    },
+    {
+      "type": "text",
+      "id": "stage_3_label",
+      "label": "Card 3 label",
+      "default": "Stage 3"
+    },
+    {
+      "type": "text",
+      "id": "stage_3_heading",
+      "label": "Card 3 heading",
+      "default": "Advanced growth"
+    },
+    {
+      "type": "textarea",
+      "id": "stage_3_description",
+      "label": "Card 3 description",
+      "default": "Mastery and refinement phase"
+    },
+    {
+      "type": "text",
+      "id": "stage_3_list",
+      "label": "Card 3 list items (separate with |)",
+      "default": "Creative thinking|Independence|Complex tasks"
+    },
+    {
+      "type": "range",
+      "id": "stage_age_size",
+      "label": "Age font size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "stage_age_weight",
+      "label": "Age font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "stage_age_color",
+      "label": "Age color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "stage_age_margin",
+      "label": "Age bottom margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "stage_label_size",
+      "label": "Label font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "stage_label_weight",
+      "label": "Label font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 600
+    },
+    {
+      "type": "color",
+      "id": "stage_label_color",
+      "label": "Label color",
+      "default": "#192e59"
+    },
+    {
+      "type": "select",
+      "id": "stage_label_transform",
+      "label": "Label text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "stage_label_margin",
+      "label": "Label bottom margin",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "stage_heading_size",
+      "label": "Heading font size",
+      "min": 16,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "stage_heading_weight",
+      "label": "Heading font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "stage_heading_color",
+      "label": "Heading color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "stage_heading_line_height",
+      "label": "Heading line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "stage_heading_margin",
+      "label": "Heading bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "stage_description_size",
+      "label": "Description font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "stage_description_color",
+      "label": "Description color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "stage_description_line_height",
+      "label": "Description line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "stage_description_margin",
+      "label": "Description bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "stage_list_size",
+      "label": "List font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "stage_list_color",
+      "label": "List color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "stage_list_line_height",
+      "label": "List line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "stage_list_spacing",
+      "label": "List item spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "stage_list_indent",
+      "label": "List indent",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "stage_list_bullet",
+      "label": "List bullet character",
+      "default": "•"
+    },
+    {
+      "type": "color",
+      "id": "stage_list_bullet_color",
+      "label": "Bullet color",
+      "default": "#192e59"
+    },
+    {
+      "type": "header",
+      "content": "Comparison cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comparison_cards",
+      "label": "Show comparison cards",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "comparison_desktop_columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "comparison_gap",
+      "label": "Gap between cards",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "comparison_card_bg_color",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_border_width",
+      "label": "Card border width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "comparison_card_border_color",
+      "label": "Card border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_padding",
+      "label": "Card padding",
+      "min": 12,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_shadow_h",
+      "label": "Shadow horizontal",
+      "min": -20,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_shadow_v",
+      "label": "Shadow vertical",
+      "min": -20,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_shadow_blur",
+      "label": "Shadow blur",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "comparison_card_shadow_opacity",
+      "label": "Shadow opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.1
+    },
+    {
+      "type": "text",
+      "id": "comparison_1_title",
+      "label": "Card 1 title",
+      "default": "Traditional approach"
+    },
+    {
+      "type": "text",
+      "id": "comparison_1_list",
+      "label": "Card 1 list items (separate with |)",
+      "default": "Limited flexibility|Higher costs|Longer timelines|Complex processes"
+    },
+    {
+      "type": "text",
+      "id": "comparison_2_title",
+      "label": "Card 2 title",
+      "default": "Our approach"
+    },
+    {
+      "type": "text",
+      "id": "comparison_2_list",
+      "label": "Card 2 list items (separate with |)",
+      "default": "Maximum flexibility|Cost effective|Fast delivery|Simple processes"
+    },
+    {
+      "type": "range",
+      "id": "comparison_title_size",
+      "label": "Title font size",
+      "min": 16,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "comparison_title_weight",
+      "label": "Title font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "comparison_title_color",
+      "label": "Title color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "comparison_title_line_height",
+      "label": "Title line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "comparison_title_margin",
+      "label": "Title bottom margin",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "comparison_list_size",
+      "label": "List font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "comparison_list_color",
+      "label": "List color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "comparison_list_line_height",
+      "label": "List line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "comparison_list_spacing",
+      "label": "List item spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "comparison_list_indent",
+      "label": "List indent",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "comparison_list_bullet",
+      "label": "List bullet character",
+      "default": "•"
+    },
+    {
+      "type": "color",
+      "id": "comparison_list_bullet_color",
+      "label": "Bullet color",
+      "default": "#192e59"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multi section content"
+    }
+  ]
+}
+{% endschema %}

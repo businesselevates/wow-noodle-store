@@ -1,0 +1,308 @@
+{% doc %}
+  @prompt
+    Testimonial gallery: 6 editable cards per row of 3, each with star rating,
+    quote headline, body, name, and meta info. Per-card text content, global
+    typography and color controls. Fully responsive.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign grid_max_width = block.settings.card_max_width | times: 3 | plus: block.settings.card_gap | plus: block.settings.card_gap %}
+
+{% style %}
+  .ai-testimonial-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: {{ block.settings.section_padding }}px 0;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-testimonial-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.container_horizontal_padding }}px;
+  }
+
+  .ai-testimonial-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-testimonial-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px 0;
+    font-weight: 700;
+  }
+
+  .ai-testimonial-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ai-testimonial-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+    gap: {{ block.settings.card_gap }}px;
+    max-width: {{ grid_max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-testimonial-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    border: {{ block.settings.card_border_thickness }}px solid {{ block.settings.card_border_color }};
+    box-shadow: 0 {{ block.settings.card_shadow_vertical }}px {{ block.settings.card_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.card_shadow_opacity | divided_by: 100.0 }});
+    width: 100%;
+  }
+
+  .ai-testimonial-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: {{ block.settings.card_padding }}px;
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 2px;
+    margin: 0 0 {{ block.settings.stars_spacing }}px;
+    color: {{ block.settings.stars_color }};
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} svg {
+    width: {{ block.settings.star_size }}px;
+    height: {{ block.settings.star_size }}px;
+    fill: currentColor;
+    display: block;
+  }
+
+  .ai-testimonial-quote-{{ ai_gen_id }} {
+    font-size: {{ block.settings.quote_size }}px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    color: {{ block.settings.quote_color }};
+  }
+
+  .ai-testimonial-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    line-height: 1.55;
+    margin: 0 0 18px;
+    color: {{ block.settings.body_color }};
+  }
+
+  .ai-testimonial-body-{{ ai_gen_id }} p {
+    margin: 0 0 8px;
+  }
+
+  .ai-testimonial-body-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-testimonial-footer-{{ ai_gen_id }} {
+    margin-top: auto;
+    padding-top: {{ block.settings.footer_spacing }}px;
+    border-top: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-testimonial-name-{{ ai_gen_id }} {
+    font-size: {{ block.settings.name_size }}px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: {{ block.settings.name_color }};
+    margin: 0 0 4px;
+  }
+
+  .ai-testimonial-meta-{{ ai_gen_id }} {
+    font-size: {{ block.settings.meta_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    color: {{ block.settings.meta_color }};
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-testimonial-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: {{ block.settings.card_max_width | times: 2 | plus: block.settings.card_gap }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-testimonial-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      max-width: {{ block.settings.card_max_width }}px;
+    }
+
+    .ai-testimonial-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 | round }}px;
+    }
+
+    .ai-testimonial-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-testimonial-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-testimonial-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank or block.settings.description != blank %}
+      <div class="ai-testimonial-header-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-testimonial-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+        {% endif %}
+        {% if block.settings.description != blank %}
+          <div class="ai-testimonial-text-{{ ai_gen_id }}">{{ block.settings.description }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-testimonial-grid-{{ ai_gen_id }}">
+      {% for i in (1..6) %}
+        {% liquid
+          assign quote_key = 'quote_' | append: i
+          assign body_key = 'body_' | append: i
+          assign name_key = 'name_' | append: i
+          assign meta_key = 'meta_' | append: i
+          assign quote = block.settings[quote_key]
+          assign body = block.settings[body_key]
+          assign person_name = block.settings[name_key]
+          assign meta = block.settings[meta_key]
+        %}
+        <div class="ai-testimonial-card-{{ ai_gen_id }}">
+          <div class="ai-testimonial-content-{{ ai_gen_id }}">
+            {% if block.settings.show_stars %}
+              <div class="ai-testimonial-stars-{{ ai_gen_id }}" aria-label="5 out of 5 stars">
+                {% for s in (1..5) %}
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if quote != blank %}
+              <h3 class="ai-testimonial-quote-{{ ai_gen_id }}">{{ quote }}</h3>
+            {% endif %}
+
+            {% if body != blank %}
+              <div class="ai-testimonial-body-{{ ai_gen_id }}">{{ body }}</div>
+            {% endif %}
+
+            {% if person_name != blank or meta != blank %}
+              <div class="ai-testimonial-footer-{{ ai_gen_id }}">
+                {% if person_name != blank %}
+                  <div class="ai-testimonial-name-{{ ai_gen_id }}">{{ person_name }}</div>
+                {% endif %}
+                {% if meta != blank %}
+                  <div class="ai-testimonial-meta-{{ ai_gen_id }}">{{ meta }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonial gallery",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Section heading" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "What our customers say" },
+    { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Real stories from real customers</p>" },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "container_width", "label": "Container max width", "min": 800, "max": 1600, "step": 20, "unit": "px", "default": 1340 },
+    { "type": "range", "id": "container_horizontal_padding", "label": "Container side padding", "min": 0, "max": 80, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "card_max_width", "label": "Card max width", "min": 360, "max": 460, "step": 1, "unit": "px", "default": 427 },
+    { "type": "range", "id": "section_padding", "label": "Section padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "header_spacing", "label": "Header spacing", "min": 20, "max": 80, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "card_gap", "label": "Card gap", "min": 8, "max": 40, "step": 4, "unit": "px", "default": 16 },
+    { "type": "range", "id": "card_padding", "label": "Card content padding", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 32 },
+    { "type": "range", "id": "footer_spacing", "label": "Space above name divider", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 18 },
+
+    { "type": "header", "content": "Stars" },
+    { "type": "checkbox", "id": "show_stars", "label": "Show 5-star row", "default": true },
+    { "type": "range", "id": "star_size", "label": "Star size", "min": 10, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "stars_spacing", "label": "Space below stars", "min": 4, "max": 30, "step": 2, "unit": "px", "default": 14 },
+    { "type": "color", "id": "stars_color", "label": "Stars color", "default": "#1b2e5c" },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#fffbf1" },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#1b2e5c" },
+    { "type": "color", "id": "text_color", "label": "Description color", "default": "#1b2e5c" },
+    { "type": "color", "id": "card_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_border_color", "label": "Card border", "default": "#e0e0e0" },
+    { "type": "color", "id": "divider_color", "label": "Divider line color", "default": "#e0e0e0" },
+    { "type": "color", "id": "quote_color", "label": "Quote color", "default": "#1b2e5c" },
+    { "type": "color", "id": "body_color", "label": "Body text color", "default": "#3c4d6b" },
+    { "type": "color", "id": "name_color", "label": "Name color", "default": "#1b2e5c" },
+    { "type": "color", "id": "meta_color", "label": "Meta color", "default": "#8fa3c8" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 20, "max": 60, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "text_size", "label": "Description size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "quote_size", "label": "Quote size", "min": 14, "max": 30, "step": 1, "unit": "px", "default": 20 },
+    { "type": "range", "id": "body_size", "label": "Body text size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "name_size", "label": "Name size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "meta_size", "label": "Meta size", "min": 9, "max": 16, "step": 1, "unit": "px", "default": 11 },
+
+    { "type": "header", "content": "Card style" },
+    { "type": "range", "id": "card_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_border_thickness", "label": "Border thickness", "min": 0, "max": 10, "step": 1, "unit": "px", "default": 2 },
+    { "type": "range", "id": "card_shadow_opacity", "label": "Shadow opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 10 },
+    { "type": "range", "id": "card_shadow_vertical", "label": "Shadow vertical offset", "min": 0, "max": 20, "step": 2, "unit": "px", "default": 4 },
+    { "type": "range", "id": "card_shadow_blur", "label": "Shadow blur", "min": 0, "max": 40, "step": 5, "unit": "px", "default": 10 },
+
+    { "type": "header", "content": "Card 1" },
+    { "type": "text", "id": "quote_1", "label": "Quote", "default": "\"Finally, a snack I don't have to Google before handing over.\"" },
+    { "type": "richtext", "id": "body_1", "label": "Body", "default": "<p>I used to spend 15 minutes every week reading labels and still feel uncertain. With Yummybara I just grabbed the 8m+ range and that was it. She loved the coconut melts, no tummy issues whatsoever.</p>" },
+    { "type": "text", "id": "name_1", "label": "Name", "default": "Priya M." },
+    { "type": "text", "id": "meta_1", "label": "Meta line", "default": "Mum of 10-month-old · Tampines" },
+
+    { "type": "header", "content": "Card 2" },
+    { "type": "text", "id": "quote_2", "label": "Quote", "default": "\"No more 10AM calls from daycare about tummy problems.\"" },
+    { "type": "richtext", "id": "body_2", "label": "Body", "default": "<p>Since switching to Yummybara - specifically the Gentle Tummy Bundle - we haven't had a single incident. Three months now. My daycare teacher asked me what I changed.</p>" },
+    { "type": "text", "id": "name_2", "label": "Name", "default": "Rachel K." },
+    { "type": "text", "id": "meta_2", "label": "Meta line", "default": "Working mum · Jurong East" },
+
+    { "type": "header", "content": "Card 3" },
+    { "type": "text", "id": "quote_3", "label": "Quote", "default": "\"We had so many rejected snacks before this. He eats every single piece.\"" },
+    { "type": "richtext", "id": "body_3", "label": "Body", "default": "<p>We'd tried probably 6 or 7 different baby snack brands. The texture always put him off. With Yummybara Cheese Melts he literally reaches into the pouch himself.</p>" },
+    { "type": "text", "id": "name_3", "label": "Name", "default": "Janice T." },
+    { "type": "text", "id": "meta_3", "label": "Meta line", "default": "Mum of 14-month-old · Buona Vista" },
+
+    { "type": "header", "content": "Card 4" },
+    { "type": "text", "id": "quote_4", "label": "Quote", "default": "\"I didn't know how much I needed age-specific until I had it.\"" },
+    { "type": "richtext", "id": "body_4", "label": "Body", "default": "<p>I thought 'suitable from 6 months' was fine - I had no idea there was a difference. Yummybara makes sense of something I didn't even know was broken.</p>" },
+    { "type": "text", "id": "name_4", "label": "Name", "default": "Siti A." },
+    { "type": "text", "id": "meta_4", "label": "Meta line", "default": "Mum of 9-month-old · Woodlands" },
+
+    { "type": "header", "content": "Card 5" },
+    { "type": "text", "id": "quote_5", "label": "Quote", "default": "\"The freeze-dried apple is a bestseller in our house for reason.\"" },
+    { "type": "richtext", "id": "body_5", "label": "Body", "default": "<p>Once I understood the 97% nutrient retention thing - and tasted how real the apple actually tastes - I was converted. No added sugar and it tastes better than anything else we've tried.</p>" },
+    { "type": "text", "id": "name_5", "label": "Name", "default": "Linh T." },
+    { "type": "text", "id": "meta_5", "label": "Meta line", "default": "Mum of 11-month-old · Punggol" },
+
+    { "type": "header", "content": "Card 6" },
+    { "type": "text", "id": "quote_6", "label": "Quote", "default": "\"Daycare bag, stroller, car rides - I grab and go with zero stress.\"" },
+    { "type": "richtext", "id": "body_6", "label": "Body", "default": "<p>The On-The-Go Kit is literally just in my bag every day. I know it's age-right, I know it won't upset her stomach, and she eats it happily.</p>" },
+    { "type": "text", "id": "name_6", "label": "Name", "default": "Michelle L." },
+    { "type": "text", "id": "meta_6", "label": "Meta line", "default": "Mum of 18-month-old · Novena" }
+  ],
+  "presets": [
+    { "name": "Testimonial gallery" }
+  ]
+}
+{% endschema %}

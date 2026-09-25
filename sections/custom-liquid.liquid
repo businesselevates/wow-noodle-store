@@ -1,0 +1,279 @@
+{%- comment -%}
+  HLT One — first-order signup, rebuilt around the 20% offer.
+
+  Paste this into the "Custom Liquid" field of the existing section in Theme
+  Editor. It replaces the markup only; the section wrapper, colour scheme and
+  padding settings stay as they are.
+
+  ── HOW IT SUBMITS ───────────────────────────────────────────────────────────
+  This uses Shopify's native customer form, so the address lands in Customers
+  with marketing consent recorded, and syncs through to Klaviyo on the existing
+  integration. If the current block posts straight to Klaviyo instead, keep that
+  mechanism and lift only the visual layer out of here: swapping the transport
+  as well is how addresses go missing quietly.
+
+  ── THE CODE STILL HAS TO BE SENT ────────────────────────────────────────────
+  A form that captures the address does not deliver anything. The 20% code needs
+  a Klaviyo flow triggered on the subscribe event, and a matching discount in
+  Shopify. Without both, this promises something the customer never receives.
+{%- endcomment -%}
+
+<style>
+  .hlt-join {
+    --navy: #1b2e5c;
+    --navy-deep: #14224a;
+    --cream: #fffbf1;
+    --sky: #6cb4e4;
+    --ink-soft: #55637f;
+    --line: rgba(27, 46, 92, .14);
+    --font: inherit;
+
+    /* ---- Type sizes. Everything adjustable lives here. ----
+       Deliberately px, not rem. A rem is a share of the theme's root size, and
+       plenty of Shopify themes set that root to 62.5%, which quietly turns
+       1.2rem into 12px instead of 19px. px renders the same number whatever the
+       theme did upstream.
+
+       The cost of that choice: px ignores a reader who has raised their browser
+       font size. If that matters more than predictability here, swap these back
+       to rem and check the rendered pixel value in DevTools before trusting it.
+
+       The title is a clamp: first value is the floor on a phone, last is the
+       ceiling on a desktop, middle scales between. Move the first and last
+       together or the two ends drift apart. */
+    --fs-badge: 14px;
+    --fs-title: clamp(34px, 5vw, 52px);
+    --fs-sub: 19px;
+    --fs-field: 17px;
+    --fs-consent: 15px;
+
+    /* ---- Widths ----
+       The block gets wider, but the prose does not follow it all the way. A
+       line of body copy running the full 1200px would be past 120 characters,
+       which is roughly double what the eye tracks comfortably; the reader loses
+       their place on the return sweep. So the shell widens and the paragraphs
+       stay capped by character count instead. */
+    --max-w: 1200px;
+    --measure-sub: 62ch;
+    --measure-consent: 66ch;
+    --w-form: 620px;
+
+    max-width: var(--max-w);
+    margin-inline: auto;
+    text-align: center;
+    /* The section this sits in has lost its padding sliders, so the breathing
+       room is carried here instead. If those sliders ever come back, drop this
+       line rather than running both and doubling the gap. */
+    padding: clamp(56px, 7vw, 88px) 20px;
+  }
+
+  /* The offer leads. The old version opened on brand language and left the
+     reader to work out what they were being asked for. */
+  .hlt-join__badge {
+    display: inline-block;
+    background: var(--sky);
+    color: var(--navy);
+    font-size: var(--fs-badge);
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 999px;
+    margin: 0 0 20px;
+  }
+
+  .hlt-join__title {
+    color: var(--navy);
+    font-size: var(--fs-title);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.01em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+
+  .hlt-join__title em { font-style: normal; color: var(--sky); }
+
+  .hlt-join__sub {
+    color: var(--ink-soft);
+    font-size: var(--fs-sub);
+    line-height: 1.6;
+    margin: 0 auto 32px;
+    max-width: var(--measure-sub);
+    text-wrap: pretty;
+  }
+
+  .hlt-join__form { display: block; }
+
+  .hlt-join__row {
+    display: flex;
+    gap: 10px;
+    max-width: var(--w-form);
+    margin-inline: auto;
+  }
+
+  .hlt-join__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: inherit;
+    font-size: var(--fs-field);
+    color: var(--navy);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    padding: 17px 24px;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+  .hlt-join__input::placeholder { color: #93a0b8; }
+
+  .hlt-join__input:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(27, 46, 92, .12);
+  }
+
+  /* Navy rather than the sky blue of the old button. White on that light blue
+     came out around 2.4:1, which is below the 4.5:1 needed for body-size text
+     and reads as washed out on any screen in daylight. Navy clears 11:1. */
+  .hlt-join__btn {
+    flex: none;
+    font: inherit;
+    font-size: var(--fs-field);
+    font-weight: 800;
+    letter-spacing: .01em;
+    color: #fff;
+    background: var(--navy);
+    border: none;
+    border-radius: 999px;
+    padding: 17px 32px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .2s ease, transform .15s ease, box-shadow .2s ease;
+    box-shadow: 0 8px 20px rgba(27, 46, 92, .2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hlt-join__btn:hover {
+      background: var(--navy-deep);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(27, 46, 92, .26);
+    }
+  }
+
+  .hlt-join__btn:active { transform: scale(.98); }
+
+  .hlt-join__btn:focus-visible {
+    outline: 2.5px solid var(--navy);
+    outline-offset: 3px;
+  }
+
+  /* Consent has to be visible at the point of submission, not buried in a
+     policy page, and it is what makes these addresses safe to put in a
+     marketing flow. */
+  .hlt-join__consent {
+    color: var(--ink-soft);
+    font-size: var(--fs-consent);
+    line-height: 1.55;
+    margin: 18px auto 0;
+    max-width: var(--measure-consent);
+  }
+
+  .hlt-join__consent a { color: var(--ink-soft); text-decoration: underline; }
+
+  .hlt-join__note {
+    color: var(--ink-soft);
+    font-size: var(--fs-consent);
+    margin: 8px 0 0;
+  }
+
+  .hlt-join__msg {
+    max-width: var(--w-form);
+    margin: 0 auto;
+    padding: 20px 24px;
+    border-radius: 14px;
+    font-size: var(--fs-field);
+    line-height: 1.55;
+  }
+
+  .hlt-join__msg--ok {
+    background: #eaf5ec;
+    border: 1px solid #bfe0c6;
+    color: #1d5b2c;
+  }
+
+  .hlt-join__msg--err {
+    background: #fdeceb;
+    border: 1px solid #f3c2be;
+    color: #9a2b22;
+  }
+
+  @media screen and (max-width: 620px) {
+    .hlt-join__row { flex-direction: column; }
+    .hlt-join__btn { width: 100%; padding: 17px 26px; }
+    .hlt-join__sub { font-size: 17px; }
+  }
+</style>
+
+<div class="hlt-join">
+
+  <span class="hlt-join__badge">First order</span>
+
+  <h2 class="hlt-join__title">Take <em>20% off</em> your first order</h2>
+
+  <p class="hlt-join__sub">
+    Join the HLT One family for members-only bundles, first look at new arrivals,
+    and rewards every time you shop.
+  </p>
+
+  {%- form 'customer', class: 'hlt-join__form' -%}
+    {%- if form.posted_successfully? -%}
+
+      <p class="hlt-join__msg hlt-join__msg--ok">
+        You're in. Your 20% code is on its way to your inbox, so keep an eye on
+        it (and the promotions tab).
+      </p>
+
+    {%- else -%}
+
+      <input type="hidden" name="contact[tags]" value="newsletter,first-order-20">
+      {%- comment -%}
+        Shopify records marketing consent from this field, which is what makes
+        these profiles eligible for a marketing flow rather than transactional
+        mail only.
+      {%- endcomment -%}
+      <input type="hidden" name="contact[accepts_marketing]" value="true">
+
+      <div class="hlt-join__row">
+        <label class="visually-hidden" for="hlt-join-email">Email address</label>
+        <input
+          id="hlt-join-email"
+          class="hlt-join__input"
+          type="email"
+          name="contact[email]"
+          value="{{ form.email }}"
+          placeholder="Your email address"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+        >
+        <button type="submit" class="hlt-join__btn">Unlock 20% off</button>
+      </div>
+
+      {%- if form.errors -%}
+        <p class="hlt-join__msg hlt-join__msg--err" style="margin-top:14px;">
+          {{ form.errors.messages.email | default: "That address didn't look right. Mind checking it?" }}
+        </p>
+      {%- endif -%}
+
+      <p class="hlt-join__consent">
+        By joining you agree to receive marketing emails from HLT One. One code
+        per customer, valid on your first order. Unsubscribe any time.
+      </p>
+
+    {%- endif -%}
+  {%- endform -%}
+
+</div>

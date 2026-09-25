@@ -1,0 +1,189 @@
+{% comment %}
+  Age Bundle: "The formula argument" (Block 05).
+  Text column plus an inline SVG chart. Top row: three formula tins, each under
+  its own age column. Bottom row: one snack pack whose "suitable from 6 months"
+  band stretches flat across all three columns.
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .fc-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.section_bg }};
+    padding: {{ block.settings.padding_vertical }}px 20px;
+  }
+  .fc-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: {{ block.settings.text_width }}fr {{ 10 | minus: block.settings.text_width }}fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+  }
+  .fc-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 12px;
+  }
+  .fc-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px;
+  }
+  .fc-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+  .fc-chart-{{ ai_gen_id }} {
+    background: {{ block.settings.chart_bg }};
+    border-radius: {{ block.settings.chart_radius }}px;
+    padding: {{ block.settings.chart_padding }}px;
+  }
+  .fc-chart-{{ ai_gen_id }} svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+  .fc-caption-{{ ai_gen_id }} {
+    margin: 14px 0 0;
+    text-align: center;
+    font-style: italic;
+    font-size: {{ block.settings.caption_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.caption_color }};
+  }
+  @media screen and (max-width: 989px) {
+    .fc-inner-{{ ai_gen_id }} { grid-template-columns: 1fr; gap: 28px; }
+  }
+  @media screen and (max-width: 749px) {
+    .fc-{{ ai_gen_id }} { padding: {{ block.settings.padding_vertical | times: 0.6 | round }}px 16px; }
+    .fc-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size | times: 0.8 | round }}px; }
+    .fc-text-{{ ai_gen_id }} { font-size: {{ block.settings.text_size | minus: 2 }}px; }
+    .fc-chart-{{ ai_gen_id }} { padding: {{ block.settings.chart_padding | times: 0.6 | round }}px; }
+  }
+{% endstyle %}
+
+{% liquid
+  assign ink = block.settings.chart_ink
+  assign accent = block.settings.chart_accent
+  assign soft = block.settings.chart_soft
+  assign cols = '130,320,510' | split: ','
+  assign col_labels = block.settings.col_1_label | append: '|' | append: block.settings.col_2_label | append: '|' | append: block.settings.col_3_label | split: '|'
+  assign tin_labels = block.settings.tin_1_label | append: '|' | append: block.settings.tin_2_label | append: '|' | append: block.settings.tin_3_label | split: '|'
+%}
+
+<div class="fc-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="fc-inner-{{ ai_gen_id }}">
+    <div class="fc-copy-{{ ai_gen_id }}">
+      {% if block.settings.subheading != blank %}
+        <div class="fc-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>
+      {% endif %}
+      {% if block.settings.heading != blank %}
+        <h2 class="fc-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+      {% if block.settings.text != blank %}
+        <p class="fc-text-{{ ai_gen_id }}">{{ block.settings.text }}</p>
+      {% endif %}
+    </div>
+
+    <div class="fc-chart-wrap-{{ ai_gen_id }}">
+      <div class="fc-chart-{{ ai_gen_id }}">
+        <svg viewBox="0 0 640 400" role="img" aria-label="{{ block.settings.chart_alt | escape }}" xmlns="http://www.w3.org/2000/svg">
+          {%- comment -%} Age columns {%- endcomment -%}
+          {% for i in (0..2) %}
+            {% assign cx = cols[i] | plus: 0 %}
+            {% assign x = cx | minus: 90 %}
+            <rect x="{{ x }}" y="14" width="180" height="34" rx="17" fill="{{ accent }}"/>
+            <text x="{{ cx }}" y="37" text-anchor="middle" font-size="16" font-weight="700" fill="{{ ink }}">{{ col_labels[i] }}</text>
+            <line x1="{{ cx }}" y1="48" x2="{{ cx }}" y2="62" stroke="{{ ink }}" stroke-width="2" stroke-dasharray="3 3" opacity="0.5"/>
+          {% endfor %}
+
+          {%- comment -%} Row 1: formula tins, one per column {%- endcomment -%}
+          <text x="40" y="82" font-size="12" font-weight="700" letter-spacing="2" fill="{{ ink }}" opacity="0.7">{{ block.settings.row_1_label | upcase }}</text>
+          {% for i in (0..2) %}
+            {% assign cx = cols[i] | plus: 0 %}
+            {% assign x = cx | minus: 45 %}
+            {% assign bx = cx | minus: 90 %}
+            <rect x="{{ x }}" y="96" width="90" height="104" rx="10" fill="#ffffff" stroke="{{ ink }}" stroke-width="2.5"/>
+            <rect x="{{ x | minus: 4 }}" y="92" width="98" height="16" rx="5" fill="{{ ink }}"/>
+            <rect x="{{ x | plus: 12 }}" y="126" width="66" height="44" rx="6" fill="{{ soft }}"/>
+            <text x="{{ cx }}" y="154" text-anchor="middle" font-size="15" font-weight="700" fill="{{ ink }}">{{ tin_labels[i] }}</text>
+            <rect x="{{ bx }}" y="212" width="180" height="10" rx="5" fill="{{ ink }}"/>
+            <path d="M{{ cx | minus: 8 }} 236 l6 6 l12 -12" fill="none" stroke="{{ ink }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          {% endfor %}
+
+          {%- comment -%} Row 2: one snack pack across all three columns {%- endcomment -%}
+          <text x="40" y="276" font-size="12" font-weight="700" letter-spacing="2" fill="{{ ink }}" opacity="0.7">{{ block.settings.row_2_label | upcase }}</text>
+          <rect x="40" y="288" width="560" height="64" rx="14" fill="#ffffff" stroke="{{ ink }}" stroke-width="2.5" stroke-dasharray="7 5"/>
+          <rect x="52" y="300" width="18" height="40" rx="4" fill="{{ soft }}"/>
+          <rect x="570" y="300" width="18" height="40" rx="4" fill="{{ soft }}"/>
+          <text x="320" y="326" text-anchor="middle" font-size="16" font-weight="700" fill="{{ ink }}">{{ block.settings.pack_label }}</text>
+          <rect x="40" y="366" width="560" height="10" rx="5" fill="{{ ink }}" opacity="0.35"/>
+          <text x="320" y="394" text-anchor="middle" font-size="12" font-weight="700" letter-spacing="1" fill="{{ ink }}" opacity="0.7">{{ block.settings.pack_note | upcase }}</text>
+        </svg>
+      </div>
+      {% if block.settings.caption != blank %}
+        <p class="fc-caption-{{ ai_gen_id }}">{{ block.settings.caption }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Formula argument chart",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "container_width", "min": 800, "max": 1400, "step": 20, "unit": "px", "label": "Container width", "default": 1240 },
+    { "type": "range", "id": "padding_vertical", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Vertical padding", "default": 40 },
+    { "type": "range", "id": "column_gap", "min": 16, "max": 80, "step": 4, "unit": "px", "label": "Gap between text and chart", "default": 40 },
+    { "type": "range", "id": "text_width", "min": 3, "max": 7, "step": 1, "label": "Text column share (out of 10)", "default": 4 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "section_bg", "label": "Section background", "default": "#1b2e5c" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading", "default": "#5ec2e7" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#fffbf1" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#f9f7f1" },
+    { "type": "color", "id": "caption_color", "label": "Caption", "default": "#5ec2e7" },
+    { "type": "color", "id": "chart_bg", "label": "Chart card background", "default": "#fffbf1" },
+    { "type": "color", "id": "chart_ink", "label": "Chart lines and text", "default": "#1b2e5c" },
+    { "type": "color", "id": "chart_accent", "label": "Chart age pills", "default": "#a8dbec" },
+    { "type": "color", "id": "chart_soft", "label": "Chart soft fill", "default": "#e4f8ff" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "subheading_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Subheading size", "default": 14 },
+    { "type": "range", "id": "heading_size", "min": 20, "max": 56, "step": 1, "unit": "px", "label": "Heading size", "default": 32 },
+    { "type": "range", "id": "text_size", "min": 14, "max": 24, "step": 1, "unit": "px", "label": "Text size", "default": 18 },
+    { "type": "range", "id": "caption_size", "min": 12, "max": 20, "step": 1, "unit": "px", "label": "Caption size", "default": 15 },
+    { "type": "range", "id": "chart_radius", "min": 0, "max": 32, "step": 2, "unit": "px", "label": "Chart card radius", "default": 16 },
+    { "type": "range", "id": "chart_padding", "min": 0, "max": 48, "step": 2, "unit": "px", "label": "Chart card padding", "default": 20 },
+
+    { "type": "header", "content": "Copy" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Think about formula" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You wouldn't give stage 3 formula to a 4-month-old." },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "text", "id": "caption", "label": "Caption under the chart", "default": "A snack made for all of them is made for none of them." },
+    { "type": "text", "id": "chart_alt", "label": "Chart alt text", "default": "Three formula tins, one per age. One baby snack pack labelled suitable from 6 months covering every age." },
+
+    { "type": "header", "content": "Chart labels" },
+    { "type": "text", "id": "col_1_label", "label": "Age column 1", "default": "8 months+" },
+    { "type": "text", "id": "col_2_label", "label": "Age column 2", "default": "10 months+" },
+    { "type": "text", "id": "col_3_label", "label": "Age column 3", "default": "12 months+" },
+    { "type": "text", "id": "row_1_label", "label": "Top row label", "default": "Formula" },
+    { "type": "text", "id": "tin_1_label", "label": "Tin 1", "default": "Stage 1" },
+    { "type": "text", "id": "tin_2_label", "label": "Tin 2", "default": "Stage 2" },
+    { "type": "text", "id": "tin_3_label", "label": "Tin 3", "default": "Stage 3" },
+    { "type": "text", "id": "row_2_label", "label": "Bottom row label", "default": "Baby snacks" },
+    { "type": "text", "id": "pack_label", "label": "Snack pack label", "default": "\"Suitable from 6 months\"" },
+    { "type": "text", "id": "pack_note", "label": "Note under the pack", "default": "One texture. One label. Every age." }
+  ],
+  "presets": [ { "name": "Formula argument chart" } ]
+}
+{% endschema %}

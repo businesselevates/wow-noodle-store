@@ -1,0 +1,293 @@
+{%- liquid
+  assign prefix = section.settings.price_prefix
+  assign add_label = section.settings.add_label | default: 'Add to cart'
+  assign product_count = 0
+  for block in section.blocks
+    if block.type == 'product'
+      assign product_count = product_count | plus: 1
+    endif
+  endfor
+-%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-pw"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hlt__inner">
+    {%- if section.settings.heading != blank -%}<h2 class="hlt-h3 hlt-pw__heading" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+    {%- comment -%}
+      Only the add-on PRODUCTS ride in the carousel, one at a time, with dots
+      underneath. The next age bundle is a different kind of offer, so it sits
+      below as its own full-width card rather than as another slide.
+    {%- endcomment -%}
+    <div class="hlt-pw__stack">
+      {%- if product_count > 0 -%}
+        <div class="hlt-slider hlt-pw__slider" data-hlt-slider data-hlt-pw="{{ section.id }}" data-hlt-reveal>
+          <div class="hlt-slider__track" style="--hlt-slide-w: 100%; --hlt-slide-desktop: 100%;">
+            {%- for block in section.blocks -%}
+              {%- unless block.type == 'product' -%}{%- continue -%}{%- endunless -%}
+              {%- liquid
+                assign p = block.settings.product
+                assign variant = nil
+                if p != blank
+                  assign variant = p.selected_or_first_available_variant
+                  if block.settings.variant_title != blank
+                    for v in p.variants
+                      if v.title == block.settings.variant_title
+                        assign variant = v
+                      endif
+                    endfor
+                  endif
+                endif
+                assign title = block.settings.title | default: p.title
+                assign img = block.settings.image | default: p.featured_image
+              -%}
+              <article
+                class="hlt-card hlt-pw__card"
+                {% if block.settings.hide_on_value %}data-hlt-size-only="standard"{% endif %}
+                {{ block.shopify_attributes }}
+              >
+                <div class="hlt-media hlt-media--contain hlt-pw__img" style="--hlt-ratio: 1 / 1;">
+                  {%- if img != blank -%}
+                    {{ img | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 300, 400', sizes: '120px', alt: title }}
+                  {%- else -%}
+                    {{ 'product-3' | placeholder_svg_tag: 'hlt-placeholder' }}
+                  {%- endif -%}
+                </div>
+                <div class="hlt-pw__info">
+                  <p class="hlt-pw__title">{{ title }}</p>
+                  {%- if block.settings.line != blank -%}<p class="hlt-pw__line">{{ block.settings.line }}</p>{%- endif -%}
+                </div>
+                {%- if variant and variant.available -%}
+                  <button type="button" class="hlt-btn hlt-pw__add" data-hlt-variant="{{ variant.id }}" aria-label="{{ add_label | escape }}: {{ title | escape }}">
+                    <span>{{ add_label }}<span class="hlt-pw__add-price"> · {{ prefix }}{{ variant.price | money_without_currency }}</span></span>
+                  </button>
+                {%- endif -%}
+                <p class="hlt-bb__error hlt-pw__error" role="alert" data-hlt-error hidden></p>
+              </article>
+            {%- endfor -%}
+          </div>
+          <div class="hlt-pw__dots" data-hlt-dots role="group" aria-label="Choose which add-on to show"></div>
+        </div>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        {%- unless block.type == 'next_age' -%}{%- continue -%}{%- endunless -%}
+        {%- liquid
+          assign title = block.settings.title | default: 'The next age bundle'
+          assign img = block.settings.image
+        -%}
+        <article
+          class="hlt-card hlt-pw__card hlt-pw__next"
+          data-hlt-next-card
+          data-hlt-reveal
+          {{ block.shopify_attributes }}
+        >
+          <div class="hlt-media hlt-media--contain hlt-pw__img" style="--hlt-ratio: 1 / 1;">
+            {%- if img != blank -%}
+              {{ img | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 300, 400', sizes: '120px', alt: title }}
+            {%- else -%}
+              {{ 'product-3' | placeholder_svg_tag: 'hlt-placeholder' }}
+            {%- endif -%}
+          </div>
+          <div class="hlt-pw__info">
+            <p class="hlt-pw__title">{{ title }}</p>
+            {%- if block.settings.line != blank -%}<p class="hlt-pw__line">{{ block.settings.line }}</p>{%- endif -%}
+          </div>
+          <button type="button" class="hlt-btn hlt-pw__add" data-hlt-add-next data-hlt-variant="" aria-label="{{ add_label | escape }}: {{ title | escape }}">
+            <span>{{ add_label }}</span>
+          </button>
+          <p class="hlt-bb__error hlt-pw__error" role="alert" data-hlt-error hidden></p>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var slider = document.querySelector('[data-hlt-pw="{{ section.id }}"]');
+    if (!slider || slider.hltDotsReady) return;
+    slider.hltDotsReady = true;
+
+    var track = slider.querySelector('.hlt-slider__track');
+    var dots = slider.querySelector('[data-hlt-dots]');
+    if (!track || !dots) return;
+
+    /* The track holds product cards only. Each one can hide itself as the
+       bundle changes, so the dots are counted from whichever are still on show. */
+    function visibleCards() {
+      return Array.prototype.filter.call(track.children, function (c) { return !c.hidden; });
+    }
+
+    function activeIndex(cards) {
+      var left = track.scrollLeft;
+      var idx = 0;
+      var best = Infinity;
+      cards.forEach(function (c, i) {
+        var d = Math.abs(c.offsetLeft - track.offsetLeft - left);
+        if (d < best) { best = d; idx = i; }
+      });
+      return idx;
+    }
+
+    function paint() {
+      var cards = visibleCards();
+      /* Nothing left to pair with: pull the whole carousel, and let the next
+         age card below it stand on its own. */
+      slider.hidden = cards.length === 0;
+      if (dots.children.length !== cards.length) {
+        dots.innerHTML = '';
+        cards.forEach(function (c, i) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'hlt-dot hlt-pw__dot';
+          b.setAttribute('aria-label', 'Show item ' + (i + 1) + ' of ' + cards.length);
+          dots.appendChild(b);
+        });
+      }
+      var idx = activeIndex(cards);
+      Array.prototype.forEach.call(dots.children, function (b, i) {
+        var on = i === idx;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+      /* A lone product needs no dot to choose between. */
+      dots.hidden = cards.length < 2;
+    }
+
+    function goTo(i) {
+      var cards = visibleCards();
+      if (!cards[i]) return;
+      track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
+
+    dots.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('button') : null;
+      if (!b || b.parentElement !== dots) return;
+      goTo(Array.prototype.indexOf.call(dots.children, b));
+    });
+
+    var frame = null;
+    function schedule() {
+      if (frame) return;
+      frame = window.requestAnimationFrame(function () { frame = null; paint(); });
+    }
+    track.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+
+    /* Product cards appear and disappear with the bundle, so show the carousel
+       again first, go back to the first card still on show, then recount. */
+    function onBundleChange() {
+      window.requestAnimationFrame(function () {
+        slider.hidden = visibleCards().length === 0;
+        track.scrollLeft = 0;
+        paint();
+      });
+    }
+    document.addEventListener('hlt:bundle-change', onBundleChange);
+
+    paint();
+    schedule();
+
+    document.addEventListener('shopify:section:unload', function cleanup() {
+      if (slider.isConnected) return;
+      document.removeEventListener('hlt:bundle-change', onBundleChange);
+      window.removeEventListener('resize', schedule);
+      document.removeEventListener('shopify:section:unload', cleanup);
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .hlt-pw__heading { margin-bottom: 18px; }
+  /* One product card at a time at every width: --hlt-slide-w is set inline on the track. */
+  .hlt-pw__slider .hlt-slider__track { padding: 8px 2px 14px; }
+  /* Bloom layout: image on the left, text then a full "Add to cart" button on the right. */
+  .hlt-pw__card {
+    display: grid; grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-areas: "img info" "img add" "err err";
+    align-items: start; column-gap: 14px; row-gap: 10px;
+    padding: 12px 14px 12px 12px;
+  }
+  .hlt-pw__img { grid-area: img; }
+  .hlt-pw__info { grid-area: info; }
+  .hlt-pw__img { border-radius: 14px; background: var(--hlt-splash-pale); }
+  .hlt-pw__title { font-family: var(--hlt-font-display); font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--hlt-navy); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .hlt-pw__line { font-size: 14px; line-height: 1.4; color: var(--hlt-ocean); margin-top: 2px !important; }
+  .hlt-pw__price { font-family: var(--hlt-font-mono); font-size: 13px; color: var(--hlt-navy); margin-top: 4px !important; }
+  .hlt-pw__add { grid-area: add; justify-self: start; min-height: 44px; padding: 10px 20px; font-size: 15px; }
+  .hlt-pw__add-price { font-weight: 600; }
+  .hlt-pw__add.is-loading { opacity: .5; }
+  .hlt-pw__error { grid-area: err; }
+  @media (max-width: 480px) { .hlt-pw__card { grid-template-columns: 84px minmax(0, 1fr); } .hlt-pw__add { justify-self: stretch; } }
+  /* Pagination dots, same look as the buy box gallery but tappable. */
+  .hlt-pw__dots { display: flex; justify-content: center; align-items: center; gap: 10px; }
+  .hlt-pw__dot { position: relative; padding: 0; border: 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .hlt-pw__dot::after { content: ''; position: absolute; left: 50%; top: 50%; width: 30px; height: 30px; transform: translate(-50%, -50%); }
+  .hlt-pw__dot:focus-visible { outline: 3px solid var(--hlt-splash); outline-offset: 5px; }
+  /* The next age bundle is its own card under the carousel, full width of the
+     section. A breath of space and one faded hairline keep the two apart
+     without a hard rule between them. */
+  .hlt-pw__next { position: relative; margin-top: 24px; }
+  .hlt-pw__next::before {
+    content: '';
+    position: absolute; left: 10%; right: 10%; top: -13px; height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(94, 194, 231, 0), rgba(94, 194, 231, .45), rgba(94, 194, 231, 0));
+    transition: transform .45s var(--hlt-ease);
+  }
+  /* The card lifts on hover; hold the hairline where it is. */
+  .hlt-pw__next:hover::before { transform: translateY(6px); }
+  /* No carousel above it, so nothing to be separated from. */
+  .hlt-pw__slider[hidden] + .hlt-pw__next,
+  .hlt-pw__stack > .hlt-pw__next:first-child { margin-top: 0; }
+  .hlt-pw__slider[hidden] + .hlt-pw__next::before,
+  .hlt-pw__stack > .hlt-pw__next:first-child::before { content: none; }
+  /* Every card can hide itself depending on the bundle chosen. Hide the whole
+     section rather than leaving a heading with nothing under it. */
+  .hlt-pw:not(:has(.hlt-pw__card:not([hidden]))) { display: none; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Pair it with",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pair it with" },
+    { "type": "text", "id": "price_prefix", "label": "Price prefix", "default": "S$" },
+    { "type": "text", "id": "add_label", "label": "Add button label", "default": "Add to cart" },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "variant_title", "label": "Variant name to add", "info": "For example: 3 Packs. Leave empty for the first available." },
+        { "type": "text", "id": "title", "label": "Title (replaces product name)" },
+        { "type": "text", "id": "line", "label": "Line" },
+        { "type": "image_picker", "id": "image", "label": "Image (replaces product image)" },
+        { "type": "checkbox", "id": "hide_on_value", "label": "Hide while the Value pack is selected", "default": true }
+      ]
+    },
+    {
+      "type": "next_age",
+      "name": "Next age bundle",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "The next age bundle" },
+        { "type": "text", "id": "line", "label": "Line", "default": "Ready for when they move up." },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "HLT Pair it with" } ]
+}
+{% endschema %}
+

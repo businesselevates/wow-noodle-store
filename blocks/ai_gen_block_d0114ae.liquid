@@ -1,0 +1,611 @@
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-multi-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-multi-section-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_max_width }}px;
+    margin: 0 auto;
+    padding-left: {{ block.settings.container_padding_horizontal }}px;
+    padding-right: {{ block.settings.container_padding_horizontal }}px;
+  }
+
+  /* Section 1: Intro */
+  .ai-section-intro-{{ ai_gen_id }} {
+    background-color: {{ block.settings.intro_bg_color }};
+    padding: {{ block.settings.intro_padding_vertical }}px 0;
+    text-align: center;
+  }
+  .ai-section-intro-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.intro_heading_color }};
+    font-size: {{ block.settings.intro_heading_size }}px;
+    margin: 0 0 {{ block.settings.intro_spacing }}px;
+  }
+  .ai-section-intro-text-{{ ai_gen_id }} {
+    color: {{ block.settings.intro_text_color }};
+    font-size: {{ block.settings.intro_text_size }}px;
+    margin: 0;
+  }
+
+  /* Section 2: Formula */
+  .ai-section-formula-{{ ai_gen_id }} {
+    background-color: {{ block.settings.formula_bg_color }};
+    padding: {{ block.settings.formula_padding_vertical }}px 0;
+  }
+  .ai-formula-card-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.formula_gap }}px;
+    align-items: center;
+    background-color: {{ block.settings.formula_card_bg }};
+    border-radius: {{ block.settings.formula_card_radius }}px;
+    padding: {{ block.settings.formula_card_padding }}px;
+  }
+  .ai-formula-text-{{ ai_gen_id }} { flex: 1; }
+  .ai-formula-subheading-{{ ai_gen_id }} {
+    color: {{ block.settings.formula_subheading_color }};
+    font-size: {{ block.settings.formula_subheading_size }}px;
+    margin: 0 0 {{ block.settings.formula_text_spacing }}px;
+  }
+  .ai-formula-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.formula_heading_color }};
+    font-size: {{ block.settings.formula_heading_size }}px;
+    margin: 0 0 {{ block.settings.formula_text_spacing }}px;
+  }
+  .ai-formula-subtext-{{ ai_gen_id }} {
+    color: {{ block.settings.formula_subtext_color }};
+    font-size: {{ block.settings.formula_subtext_size }}px;
+    margin: 0 0 {{ block.settings.formula_text_spacing }}px;
+  }
+  .ai-formula-text-content-{{ ai_gen_id }} {
+    color: {{ block.settings.formula_text_color }};
+    font-size: {{ block.settings.formula_text_size }}px;
+    margin: 0;
+  }
+  .ai-formula-image-wrapper-{{ ai_gen_id }} { flex: 1; }
+  .ai-formula-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    border-radius: {{ block.settings.formula_image_radius }}px;
+  }
+  .ai-formula-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.formula_image_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ai-formula-image-placeholder-{{ ai_gen_id }} svg { width: 100%; height: 100%; max-width: 300px; max-height: 300px; }
+  .ai-formula-description-{{ ai_gen_id }} {
+    color: {{ block.settings.formula_description_color }};
+    font-size: {{ block.settings.formula_description_size }}px;
+    margin-top: {{ block.settings.formula_text_spacing }}px;
+    text-align: center;
+  }
+
+  /* Image card (optional, off by default) */
+  .ai-section-imgcard-{{ ai_gen_id }} {
+    background-color: {{ block.settings.imgcard_section_bg }};
+    padding: {{ block.settings.imgcard_padding_vertical }}px 0;
+  }
+  .ai-imgcard-{{ ai_gen_id }} {
+    background-color: {{ block.settings.imgcard_card_bg }};
+    border-radius: {{ block.settings.imgcard_card_radius }}px;
+    padding: {{ block.settings.imgcard_card_padding }}px;
+    text-align: {{ block.settings.imgcard_align }};
+  }
+  .ai-imgcard-media-{{ ai_gen_id }} img {
+    width: 100%; height: auto; display: block;
+    border-radius: {{ block.settings.imgcard_image_radius }}px;
+  }
+  .ai-imgcard-desktop-{{ ai_gen_id }} { display: block; }
+  .ai-imgcard-mobile-{{ ai_gen_id }} { display: none; }
+  .ai-imgcard-placeholder-{{ ai_gen_id }} {
+    width: 100%; aspect-ratio: 16 / 9; background-color: #f4f4f4;
+    border-radius: {{ block.settings.imgcard_image_radius }}px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ai-imgcard-placeholder-{{ ai_gen_id }} svg { max-width: 300px; max-height: 200px; opacity: 0.5; }
+  .ai-imgcard-title-{{ ai_gen_id }} {
+    color: {{ block.settings.imgcard_title_color }};
+    font-size: {{ block.settings.imgcard_title_size }}px;
+    margin: {{ block.settings.imgcard_text_spacing }}px 0 8px;
+    line-height: 1.2;
+  }
+  .ai-imgcard-caption-{{ ai_gen_id }} {
+    color: {{ block.settings.imgcard_caption_color }};
+    font-size: {{ block.settings.imgcard_caption_size }}px;
+    margin: 0; line-height: 1.6;
+  }
+
+  /* Image banner */
+  .ai-section-banner-{{ ai_gen_id }} {
+    background-color: {{ block.settings.banner_section_bg }};
+    padding: {{ block.settings.banner_padding_vertical }}px 0;
+  }
+  .ai-banner-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: {{ block.settings.banner_border_radius }}px;
+    overflow: hidden;
+  }
+  .ai-banner-media-{{ ai_gen_id }} img {
+    width: 100%; height: {{ block.settings.banner_height }}px;
+    object-fit: cover; display: block;
+  }
+  .ai-banner-desktop-{{ ai_gen_id }} { display: block; }
+  .ai-banner-mobile-{{ ai_gen_id }} { display: none; }
+  .ai-banner-placeholder-{{ ai_gen_id }} {
+    width: 100%; height: {{ block.settings.banner_height }}px; background-color: #f4f4f4;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ai-banner-placeholder-{{ ai_gen_id }} svg { max-width: 300px; max-height: 200px; opacity: 0.5; }
+  .ai-banner-overlay-{{ ai_gen_id }} {
+    position: absolute; inset: 0;
+    background-color: {{ block.settings.banner_overlay_color }};
+    opacity: {{ block.settings.banner_overlay_opacity | divided_by: 100.0 }};
+  }
+  .ai-banner-content-wrap-{{ ai_gen_id }} {
+    position: absolute; inset: 0; display: flex;
+    align-items: {{ block.settings.banner_content_v }};
+    justify-content: {{ block.settings.banner_content_h }};
+    padding: {{ block.settings.banner_content_padding }}px;
+  }
+  .ai-banner-content-{{ ai_gen_id }} {
+    max-width: {{ block.settings.banner_content_max_width }}px;
+    text-align: {{ block.settings.banner_text_align }};
+  }
+  .ai-banner-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_subtitle_color }};
+    font-size: {{ block.settings.banner_subtitle_size }}px;
+    margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .ai-banner-title-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_title_color }};
+    font-size: {{ block.settings.banner_title_size }}px;
+    line-height: 1.15; margin: 0 0 12px;
+  }
+  .ai-banner-text-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_text_color }};
+    font-size: {{ block.settings.banner_text_size }}px;
+    line-height: 1.6; margin: 0;
+  }
+
+  /* Section 3: Label cards (number small on top, stacked) */
+  .ai-section-label-{{ ai_gen_id }} {
+    background-color: {{ block.settings.label_bg_color }};
+    padding-top: {{ block.settings.label_padding_vertical }}px;
+    padding-bottom: {{ block.settings.label_padding_bottom }}px;
+  }
+  .ai-section-label-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.label_heading_color }};
+    font-size: {{ block.settings.label_heading_size }}px;
+    margin: 0 0 {{ block.settings.label_spacing }}px;
+    text-align: center;
+  }
+  .ai-section-label-text-{{ ai_gen_id }} {
+    color: {{ block.settings.label_text_color }};
+    font-size: {{ block.settings.label_text_size }}px;
+    margin: 0 0 {{ block.settings.label_spacing }}px;
+    text-align: center;
+  }
+  .ai-label-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: {{ block.settings.label_card_gap }}px;
+  }
+  .ai-label-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.label_card_bg }};
+    border-radius: {{ block.settings.label_card_radius }}px;
+    padding: {{ block.settings.label_card_padding }}px;
+  }
+  .ai-label-card-number-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: {{ block.settings.label_card_number_color }};
+    font-size: {{ block.settings.label_card_number_size }}px;
+    font-weight: 600;
+    margin: 0 0 {{ block.settings.label_card_spacing }}px;
+  }
+  {%- if block.settings.label_card_show_dot -%}
+  .ai-label-card-number-{{ ai_gen_id }}:before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: {{ block.settings.label_card_dot_color }};
+    flex-shrink: 0;
+  }
+  {%- endif -%}
+  .ai-label-card-title-{{ ai_gen_id }} {
+    color: {{ block.settings.label_card_title_color }};
+    font-size: {{ block.settings.label_card_title_size }}px;
+    margin: 0 0 {{ block.settings.label_card_spacing }}px;
+    line-height: 1.2;
+  }
+  .ai-label-card-text-{{ ai_gen_id }} {
+    color: {{ block.settings.label_card_text_color }};
+    font-size: {{ block.settings.label_card_text_size }}px;
+    margin: 0; line-height: 1.6;
+  }
+
+  /* CTA button (after label cards) */
+  .ai-cta-wrap-{{ ai_gen_id }} {
+    text-align: center;
+    margin-top: {{ block.settings.label_spacing }}px;
+  }
+  .ai-cta-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: {{ block.settings.cta_button_bg }};
+    color: {{ block.settings.cta_button_text_color }};
+    font-size: {{ block.settings.cta_button_text_size }}px;
+    font-weight: 600;
+    padding: {{ block.settings.cta_button_padding_vertical }}px {{ block.settings.cta_button_padding_horizontal }}px;
+    border-radius: {{ block.settings.cta_button_radius }}px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  .ai-cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.cta_button_hover_bg }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-section-intro-{{ ai_gen_id }} { padding: {{ block.settings.intro_padding_vertical_mobile }}px 0; }
+    .ai-section-formula-{{ ai_gen_id }} { padding: {{ block.settings.formula_padding_vertical_mobile }}px 0; }
+    .ai-section-imgcard-{{ ai_gen_id }} { padding: {{ block.settings.imgcard_padding_vertical_mobile }}px 0; }
+    .ai-section-banner-{{ ai_gen_id }} { padding: {{ block.settings.banner_padding_vertical_mobile }}px 0; }
+    .ai-section-label-{{ ai_gen_id }} { padding-top: {{ block.settings.label_padding_top_mobile }}px; padding-bottom: {{ block.settings.label_padding_bottom_mobile }}px; }
+
+    .ai-formula-card-{{ ai_gen_id }} { flex-direction: column; align-items: stretch; }
+    .ai-formula-text-{{ ai_gen_id }}, .ai-formula-image-wrapper-{{ ai_gen_id }} { width: 100%; }
+    .ai-label-grid-{{ ai_gen_id }} { grid-template-columns: 1fr; }
+
+    .ai-banner-desktop-{{ ai_gen_id }} { display: none; }
+    .ai-banner-mobile-{{ ai_gen_id }} { display: block; }
+    .ai-banner-media-{{ ai_gen_id }} img { height: {{ block.settings.banner_height_mobile }}px; }
+    .ai-banner-title-{{ ai_gen_id }} { font-size: {{ block.settings.banner_title_size | times: 0.65 | round }}px; }
+
+    .ai-imgcard-desktop-{{ ai_gen_id }} { display: none; }
+    {%- if block.settings.imgcard_image_mobile != blank -%}
+      .ai-imgcard-mobile-{{ ai_gen_id }} { display: block; }
+    {%- else -%}
+      .ai-imgcard-desktop-{{ ai_gen_id }} { display: block; }
+    {%- endif -%}
+  }
+{% endstyle %}
+
+<div class="ai-multi-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.show_section_1 %}
+    <div class="ai-section-intro-{{ ai_gen_id }}">
+      <div class="ai-multi-section-container-{{ ai_gen_id }}">
+        {% if block.settings.intro_heading != blank %}
+          <h2 class="ai-section-intro-heading-{{ ai_gen_id }}">{{ block.settings.intro_heading }}</h2>
+        {% endif %}
+        {% if block.settings.intro_text != blank %}
+          <div class="ai-section-intro-text-{{ ai_gen_id }}">{{ block.settings.intro_text }}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_section_2 %}
+    <div class="ai-section-formula-{{ ai_gen_id }}">
+      <div class="ai-multi-section-container-{{ ai_gen_id }}">
+        <div class="ai-formula-card-{{ ai_gen_id }}">
+          <div class="ai-formula-text-{{ ai_gen_id }}">
+            {% if block.settings.formula_subheading != blank %}
+              <div class="ai-formula-subheading-{{ ai_gen_id }}">{{ block.settings.formula_subheading }}</div>
+            {% endif %}
+            {% if block.settings.formula_heading != blank %}
+              <h3 class="ai-formula-heading-{{ ai_gen_id }}">{{ block.settings.formula_heading }}</h3>
+            {% endif %}
+            {% if block.settings.formula_subtext != blank %}
+              <div class="ai-formula-subtext-{{ ai_gen_id }}">{{ block.settings.formula_subtext }}</div>
+            {% endif %}
+            {% if block.settings.formula_text != blank %}
+              <div class="ai-formula-text-content-{{ ai_gen_id }}">{{ block.settings.formula_text }}</div>
+            {% endif %}
+          </div>
+          <div class="ai-formula-image-wrapper-{{ ai_gen_id }}">
+            {% if block.settings.formula_image %}
+              <img
+                src="{{ block.settings.formula_image | image_url: width: 800 }}"
+                alt="{{ block.settings.formula_image.alt | escape }}"
+                class="ai-formula-image-{{ ai_gen_id }}"
+                loading="lazy"
+                width="{{ block.settings.formula_image.width }}"
+                height="{{ block.settings.formula_image.height }}"
+              >
+            {% else %}
+              <div class="ai-formula-image-placeholder-{{ ai_gen_id }}">{{ 'image' | placeholder_svg_tag }}</div>
+            {% endif %}
+            {% if block.settings.formula_description != blank %}
+              <div class="ai-formula-description-{{ ai_gen_id }}">{{ block.settings.formula_description }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_image_card %}
+    <div class="ai-section-imgcard-{{ ai_gen_id }}">
+      <div class="ai-multi-section-container-{{ ai_gen_id }}">
+        <div class="ai-imgcard-{{ ai_gen_id }}">
+          <div class="ai-imgcard-media-{{ ai_gen_id }} ai-imgcard-desktop-{{ ai_gen_id }}">
+            {% if block.settings.imgcard_image %}
+              <img src="{{ block.settings.imgcard_image | image_url: width: 1600 }}" alt="{{ block.settings.imgcard_image.alt | escape }}" loading="lazy" width="{{ block.settings.imgcard_image.width }}" height="{{ block.settings.imgcard_image.height }}">
+            {% else %}
+              <div class="ai-imgcard-placeholder-{{ ai_gen_id }}">{{ 'image' | placeholder_svg_tag }}</div>
+            {% endif %}
+          </div>
+          {% if block.settings.imgcard_image_mobile != blank %}
+            <div class="ai-imgcard-media-{{ ai_gen_id }} ai-imgcard-mobile-{{ ai_gen_id }}">
+              <img src="{{ block.settings.imgcard_image_mobile | image_url: width: 1000 }}" alt="{{ block.settings.imgcard_image_mobile.alt | escape }}" loading="lazy" width="{{ block.settings.imgcard_image_mobile.width }}" height="{{ block.settings.imgcard_image_mobile.height }}">
+            </div>
+          {% endif %}
+          {% if block.settings.imgcard_title != blank %}
+            <h3 class="ai-imgcard-title-{{ ai_gen_id }}">{{ block.settings.imgcard_title }}</h3>
+          {% endif %}
+          {% if block.settings.imgcard_caption != blank %}
+            <div class="ai-imgcard-caption-{{ ai_gen_id }}">{{ block.settings.imgcard_caption }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_image_banner %}
+    <div class="ai-section-banner-{{ ai_gen_id }}">
+      <div class="ai-multi-section-container-{{ ai_gen_id }}">
+        <div class="ai-banner-{{ ai_gen_id }}">
+          <div class="ai-banner-media-{{ ai_gen_id }} ai-banner-desktop-{{ ai_gen_id }}">
+            {% if block.settings.banner_image %}
+              <img src="{{ block.settings.banner_image | image_url: width: 2000 }}" alt="{{ block.settings.banner_image.alt | escape }}" loading="lazy" width="{{ block.settings.banner_image.width }}" height="{{ block.settings.banner_image.height }}">
+            {% else %}
+              <div class="ai-banner-placeholder-{{ ai_gen_id }}">{{ 'image' | placeholder_svg_tag }}</div>
+            {% endif %}
+          </div>
+          {% if block.settings.banner_image_mobile != blank %}
+            <div class="ai-banner-media-{{ ai_gen_id }} ai-banner-mobile-{{ ai_gen_id }}">
+              <img src="{{ block.settings.banner_image_mobile | image_url: width: 1000 }}" alt="{{ block.settings.banner_image_mobile.alt | escape }}" loading="lazy" width="{{ block.settings.banner_image_mobile.width }}" height="{{ block.settings.banner_image_mobile.height }}">
+            </div>
+          {% endif %}
+          {% if block.settings.banner_show_overlay %}
+            <div class="ai-banner-overlay-{{ ai_gen_id }}"></div>
+          {% endif %}
+          {% if block.settings.banner_subtitle != blank or block.settings.banner_title != blank or block.settings.banner_text != blank %}
+            <div class="ai-banner-content-wrap-{{ ai_gen_id }}">
+              <div class="ai-banner-content-{{ ai_gen_id }}">
+                {% if block.settings.banner_subtitle != blank %}
+                  <div class="ai-banner-subtitle-{{ ai_gen_id }}">{{ block.settings.banner_subtitle }}</div>
+                {% endif %}
+                {% if block.settings.banner_title != blank %}
+                  <h3 class="ai-banner-title-{{ ai_gen_id }}">{{ block.settings.banner_title }}</h3>
+                {% endif %}
+                {% if block.settings.banner_text != blank %}
+                  <div class="ai-banner-text-{{ ai_gen_id }}">{{ block.settings.banner_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if block.settings.show_section_3 %}
+    <div class="ai-section-label-{{ ai_gen_id }}">
+      <div class="ai-multi-section-container-{{ ai_gen_id }}">
+        {% if block.settings.label_heading != blank %}
+          <h2 class="ai-section-label-heading-{{ ai_gen_id }}">{{ block.settings.label_heading }}</h2>
+        {% endif %}
+        {% if block.settings.label_text != blank %}
+          <div class="ai-section-label-text-{{ ai_gen_id }}">{{ block.settings.label_text }}</div>
+        {% endif %}
+        <div class="ai-label-grid-{{ ai_gen_id }}">
+          {% for i in (1..4) %}
+            {% liquid
+              assign number_key = 'label_card_' | append: i | append: '_number'
+              assign title_key = 'label_card_' | append: i | append: '_title'
+              assign text_key = 'label_card_' | append: i | append: '_text'
+              assign card_number = block.settings[number_key]
+              assign card_title = block.settings[title_key]
+              assign card_text = block.settings[text_key]
+            %}
+            <div class="ai-label-card-{{ ai_gen_id }}">
+              {% if card_number != blank %}
+                <div class="ai-label-card-number-{{ ai_gen_id }}">{{ card_number }}</div>
+              {% endif %}
+              {% if card_title != blank %}
+                <div class="ai-label-card-title-{{ ai_gen_id }}">{{ card_title }}</div>
+              {% endif %}
+              {% if card_text != blank %}
+                <div class="ai-label-card-text-{{ ai_gen_id }}">{{ card_text }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if block.settings.show_cta_button and block.settings.cta_button_text != blank %}
+          <div class="ai-cta-wrap-{{ ai_gen_id }}">
+            <a href="{{ block.settings.cta_button_link }}" class="ai-cta-button-{{ ai_gen_id }}">{{ block.settings.cta_button_text }}</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Multi section layout",
+  "settings": [
+    { "type": "header", "content": "Container settings" },
+    { "type": "range", "id": "container_max_width", "label": "Container max width", "min": 600, "max": 1600, "step": 100, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "container_padding_horizontal", "label": "Horizontal padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Section visibility (top to bottom order)" },
+    { "type": "checkbox", "id": "show_section_1", "label": "1. Introduction", "default": true },
+    { "type": "checkbox", "id": "show_section_2", "label": "2. Formula (text + image)", "default": true },
+    { "type": "checkbox", "id": "show_image_card", "label": "3. Image card (optional)", "default": false },
+    { "type": "checkbox", "id": "show_image_banner", "label": "4. Image banner", "default": true },
+    { "type": "checkbox", "id": "show_section_3", "label": "5. Label cards + button", "default": true },
+
+    { "type": "header", "content": "Mobile section padding (phone overrides)" },
+    { "type": "range", "id": "intro_padding_vertical_mobile", "label": "1. Intro vertical padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "formula_padding_vertical_mobile", "label": "2. Formula vertical padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "imgcard_padding_vertical_mobile", "label": "3. Image card vertical padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "banner_padding_vertical_mobile", "label": "4. Banner vertical padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "label_padding_top_mobile", "label": "5. Label top padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "label_padding_bottom_mobile", "label": "5. Label bottom padding (mobile)", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 30 },
+
+    { "type": "header", "content": "Section 1: Introduction" },
+    { "type": "richtext", "id": "intro_heading", "label": "Heading", "default": "<p>Welcome to Our Story</p>" },
+    { "type": "range", "id": "intro_heading_size", "label": "Heading size", "min": 16, "max": 80, "step": 2, "unit": "px", "default": 40 },
+    { "type": "color", "id": "intro_heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "richtext", "id": "intro_text", "label": "Text", "default": "<p>Discover the perfect blend of quality and innovation</p>" },
+    { "type": "range", "id": "intro_text_size", "label": "Text size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "intro_text_color", "label": "Text color", "default": "#666666" },
+    { "type": "color", "id": "intro_bg_color", "label": "Background color", "default": "#ffffff" },
+    { "type": "range", "id": "intro_padding_vertical", "label": "Vertical padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 60 },
+    { "type": "range", "id": "intro_spacing", "label": "Content spacing", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Section 2: Formula" },
+    { "type": "text", "id": "formula_subheading", "label": "Subheading", "default": "Our Secret" },
+    { "type": "range", "id": "formula_subheading_size", "label": "Subheading size", "min": 12, "max": 32, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "formula_subheading_color", "label": "Subheading color", "default": "#999999" },
+    { "type": "text", "id": "formula_heading", "label": "Heading", "default": "The Perfect Formula" },
+    { "type": "range", "id": "formula_heading_size", "label": "Heading size", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 32 },
+    { "type": "color", "id": "formula_heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "text", "id": "formula_subtext", "label": "Subtext", "default": "Crafted with precision" },
+    { "type": "range", "id": "formula_subtext_size", "label": "Subtext size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "formula_subtext_color", "label": "Subtext color", "default": "#666666" },
+    { "type": "textarea", "id": "formula_text", "label": "Text", "default": "Our unique formula combines the finest ingredients to deliver exceptional results every time." },
+    { "type": "range", "id": "formula_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "formula_text_color", "label": "Text color", "default": "#666666" },
+    { "type": "image_picker", "id": "formula_image", "label": "Image" },
+    { "type": "range", "id": "formula_image_radius", "label": "Image border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "text", "id": "formula_description", "label": "Image description" },
+    { "type": "range", "id": "formula_description_size", "label": "Description size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "color", "id": "formula_description_color", "label": "Description color", "default": "#999999" },
+    { "type": "color", "id": "formula_bg_color", "label": "Background color", "default": "#f9f9f9" },
+    { "type": "color", "id": "formula_card_bg", "label": "Card background", "default": "#ffffff" },
+    { "type": "range", "id": "formula_card_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "formula_card_padding", "label": "Card padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "formula_gap", "label": "Gap between text and image", "min": 10, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "formula_padding_vertical", "label": "Vertical padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 60 },
+    { "type": "range", "id": "formula_text_spacing", "label": "Text spacing", "min": 5, "max": 40, "step": 5, "unit": "px", "default": 15 },
+
+    { "type": "header", "content": "Image card (optional, off by default)" },
+    { "type": "image_picker", "id": "imgcard_image", "label": "Desktop image" },
+    { "type": "image_picker", "id": "imgcard_image_mobile", "label": "Mobile image (optional)" },
+    { "type": "text", "id": "imgcard_title", "label": "Title (optional)" },
+    { "type": "range", "id": "imgcard_title_size", "label": "Title size", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 28 },
+    { "type": "color", "id": "imgcard_title_color", "label": "Title color", "default": "#000000" },
+    { "type": "textarea", "id": "imgcard_caption", "label": "Caption (optional)" },
+    { "type": "range", "id": "imgcard_caption_size", "label": "Caption size", "min": 10, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "imgcard_caption_color", "label": "Caption color", "default": "#666666" },
+    { "type": "select", "id": "imgcard_align", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "imgcard_image_radius", "label": "Image border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "color", "id": "imgcard_section_bg", "label": "Section background", "default": "#ffffff" },
+    { "type": "color", "id": "imgcard_card_bg", "label": "Card background", "default": "#ffffff" },
+    { "type": "range", "id": "imgcard_card_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 0 },
+    { "type": "range", "id": "imgcard_card_padding", "label": "Card padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 0 },
+    { "type": "range", "id": "imgcard_text_spacing", "label": "Space above title", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "imgcard_padding_vertical", "label": "Section vertical padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Image banner" },
+    { "type": "image_picker", "id": "banner_image", "label": "Desktop image" },
+    { "type": "image_picker", "id": "banner_image_mobile", "label": "Mobile image (optional)" },
+    { "type": "range", "id": "banner_height", "label": "Banner height (desktop)", "min": 200, "max": 800, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "banner_height_mobile", "label": "Banner height (mobile)", "min": 160, "max": 600, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "banner_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "checkbox", "id": "banner_show_overlay", "label": "Show dark overlay (helps text readability)", "default": false },
+    { "type": "color", "id": "banner_overlay_color", "label": "Overlay color", "default": "#000000" },
+    { "type": "range", "id": "banner_overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 30 },
+    { "type": "select", "id": "banner_content_h", "label": "Content horizontal position", "options": [ { "value": "flex-start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Right" } ], "default": "flex-start" },
+    { "type": "select", "id": "banner_content_v", "label": "Content vertical position", "options": [ { "value": "flex-start", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Bottom" } ], "default": "center" },
+    { "type": "select", "id": "banner_text_align", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "left" },
+    { "type": "range", "id": "banner_content_max_width", "label": "Content max width", "min": 200, "max": 1000, "step": 20, "unit": "px", "default": 520 },
+    { "type": "range", "id": "banner_content_padding", "label": "Content padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "text", "id": "banner_subtitle", "label": "Subtitle (optional)" },
+    { "type": "color", "id": "banner_subtitle_color", "label": "Subtitle color", "default": "#192e59" },
+    { "type": "range", "id": "banner_subtitle_size", "label": "Subtitle size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "text", "id": "banner_title", "label": "Title (optional)" },
+    { "type": "color", "id": "banner_title_color", "label": "Title color", "default": "#192e59" },
+    { "type": "range", "id": "banner_title_size", "label": "Title size", "min": 20, "max": 64, "step": 2, "unit": "px", "default": 40 },
+    { "type": "richtext", "id": "banner_text", "label": "Text (optional)" },
+    { "type": "color", "id": "banner_text_color", "label": "Text color", "default": "#3c4d6b" },
+    { "type": "range", "id": "banner_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "banner_section_bg", "label": "Section background", "default": "#ffffff" },
+    { "type": "range", "id": "banner_padding_vertical", "label": "Section vertical padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Section 3: Label cards" },
+    { "type": "richtext", "id": "label_heading", "label": "Heading", "default": "<p>Why Choose Us</p>" },
+    { "type": "range", "id": "label_heading_size", "label": "Heading size", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 36 },
+    { "type": "color", "id": "label_heading_color", "label": "Heading color", "default": "#000000" },
+    { "type": "richtext", "id": "label_text", "label": "Text", "default": "<p>Four reasons to trust our products</p>" },
+    { "type": "range", "id": "label_text_size", "label": "Text size", "min": 12, "max": 28, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "label_text_color", "label": "Text color", "default": "#666666" },
+    { "type": "color", "id": "label_bg_color", "label": "Background color", "default": "#ffffff" },
+    { "type": "range", "id": "label_padding_vertical", "label": "Top padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 60 },
+    { "type": "range", "id": "label_padding_bottom", "label": "Bottom padding", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 60 },
+    { "type": "range", "id": "label_spacing", "label": "Content spacing", "min": 10, "max": 60, "step": 5, "unit": "px", "default": 30 },
+    { "type": "color", "id": "label_card_bg", "label": "Card background", "default": "#f9f9f9" },
+    { "type": "range", "id": "label_card_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "label_card_padding", "label": "Card padding", "min": 10, "max": 80, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "label_card_gap", "label": "Gap between cards", "min": 10, "max": 60, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "label_card_spacing", "label": "Spacing between number, title, text", "min": 4, "max": 30, "step": 2, "unit": "px", "default": 10 },
+    { "type": "checkbox", "id": "label_card_show_dot", "label": "Show dot before number", "default": true },
+    { "type": "color", "id": "label_card_dot_color", "label": "Dot color", "default": "#7fa8d8" },
+    { "type": "range", "id": "label_card_number_size", "label": "Card number size", "min": 10, "max": 40, "step": 1, "unit": "px", "default": 12 },
+    { "type": "color", "id": "label_card_number_color", "label": "Card number color", "default": "#7fa8d8" },
+    { "type": "range", "id": "label_card_title_size", "label": "Card title size", "min": 14, "max": 32, "step": 1, "unit": "px", "default": 20 },
+    { "type": "color", "id": "label_card_title_color", "label": "Card title color", "default": "#000000" },
+    { "type": "range", "id": "label_card_text_size", "label": "Card text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "label_card_text_color", "label": "Card text color", "default": "#666666" },
+
+    { "type": "header", "content": "Label card 1" },
+    { "type": "text", "id": "label_card_1_number", "label": "Number", "default": "01" },
+    { "type": "text", "id": "label_card_1_title", "label": "Title", "default": "Premium Quality" },
+    { "type": "textarea", "id": "label_card_1_text", "label": "Text", "default": "Only the finest materials and ingredients" },
+
+    { "type": "header", "content": "Label card 2" },
+    { "type": "text", "id": "label_card_2_number", "label": "Number", "default": "02" },
+    { "type": "text", "id": "label_card_2_title", "label": "Title", "default": "Sustainable" },
+    { "type": "textarea", "id": "label_card_2_text", "label": "Text", "default": "Environmentally conscious production" },
+
+    { "type": "header", "content": "Label card 3" },
+    { "type": "text", "id": "label_card_3_number", "label": "Number", "default": "03" },
+    { "type": "text", "id": "label_card_3_title", "label": "Title", "default": "Tested" },
+    { "type": "textarea", "id": "label_card_3_text", "label": "Text", "default": "Rigorously tested for safety and efficacy" },
+
+    { "type": "header", "content": "Label card 4" },
+    { "type": "text", "id": "label_card_4_number", "label": "Number", "default": "04" },
+    { "type": "text", "id": "label_card_4_title", "label": "Title", "default": "Guaranteed" },
+    { "type": "textarea", "id": "label_card_4_text", "label": "Text", "default": "100% satisfaction guarantee" },
+
+    { "type": "header", "content": "Button (after label cards)" },
+    { "type": "checkbox", "id": "show_cta_button", "label": "Show button", "default": true },
+    { "type": "text", "id": "cta_button_text", "label": "Button text", "default": "Find the right snack for your child's age" },
+    { "type": "url", "id": "cta_button_link", "label": "Button link" },
+    { "type": "range", "id": "cta_button_text_size", "label": "Button text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "cta_button_bg", "label": "Button background", "default": "#192e59" },
+    { "type": "color", "id": "cta_button_hover_bg", "label": "Button hover background", "default": "#000000" },
+    { "type": "color", "id": "cta_button_text_color", "label": "Button text color", "default": "#ffffff" },
+    { "type": "range", "id": "cta_button_radius", "label": "Button border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "cta_button_padding_vertical", "label": "Button vertical padding", "min": 5, "max": 40, "step": 5, "unit": "px", "default": 15 },
+    { "type": "range", "id": "cta_button_padding_horizontal", "label": "Button horizontal padding", "min": 10, "max": 80, "step": 5, "unit": "px", "default": 40 }
+  ],
+  "presets": [
+    { "name": "Multi section layout" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,189 @@
+{%- liquid
+  assign heading_tag = 'h2'
+  if section.settings.use_h1
+    assign heading_tag = 'h1'
+  endif
+  assign scroll_target = section.settings.scroll_target | default: '#hlt-buy-box'
+-%}
+
+<section
+  id="hlt-hero-{{ section.id }}"
+  class="hlt hlt--{{ section.settings.background }} hlt-hero hlt-hero--{{ section.settings.layout }}{% if section.settings.media_side == 'left' %} hlt-hero--media-left{% endif %}{% if section.settings.body_color != blank and section.settings.body_color != 'default' %} hlt-hero--body-{{ section.settings.body_color }}{% endif %}"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
+>
+  {%- if section.settings.layout == 'overlay' -%}
+    <div class="hlt-hero__bg" aria-hidden="true">
+      <div class="hlt-par" {% if section.settings.parallax_speed != '0' %}data-hlt-parallax="{{ section.settings.parallax_speed }}"{% endif %}>
+        {%- if section.settings.image != blank -%}
+          {%- comment -%}
+            A wide hero crop loses its subject on a phone. When a phone image is
+            given, a <source> hands it to narrow screens and the browser fetches
+            only the one it uses.
+          {%- endcomment -%}
+          {%- if section.settings.image_mobile != blank -%}<picture>
+            <source
+              media="(max-width: 749px)"
+              srcset="{{ section.settings.image_mobile | image_url: width: 600 }} 600w, {{ section.settings.image_mobile | image_url: width: 900 }} 900w, {{ section.settings.image_mobile | image_url: width: 1200 }} 1200w, {{ section.settings.image_mobile | image_url: width: 1500 }} 1500w"
+              sizes="100vw"
+            >{%- endif -%}
+          {{ section.settings.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', alt: '' }}
+          {%- if section.settings.image_mobile != blank -%}</picture>{%- endif -%}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'hlt-placeholder' }}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="hlt__inner hlt-hero__grid">
+    <div class="hlt-hero__copy hlt-stack" data-hlt-stagger>
+      {%- if section.settings.overline != blank -%}
+        <p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <{{ heading_tag }} class="hlt-h1" data-hlt-reveal>{{ section.settings.heading }}</{{ heading_tag }}>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="hlt-sub" data-hlt-reveal>{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <div class="hlt-body hlt-body--lg hlt-maxw" data-hlt-reveal>{{ section.settings.body }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <div class="hlt-btn-row" data-hlt-reveal>
+          <a
+            class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'splash-white' %} hlt-btn--splash hlt-btn--white-text{% endif %}"
+            href="{% if section.settings.button_scroll %}{{ scroll_target }}{% else %}{{ section.settings.button_link | default: '#' }}{% endif %}"
+            {% if section.settings.button_scroll %}data-hlt-scroll-to="{{ scroll_target }}"{% endif %}
+          >
+            {{- section.settings.button_label -}}
+            {% render 'hlt-icon', name: 'arrow-right', size: 20 %}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.layout == 'split' -%}
+      <div class="hlt-hero__media-wrap" data-hlt-reveal="zoom">
+        <div class="hlt-media hlt-hero__media" style="--hlt-ratio: {{ section.settings.ratio }};{% if section.settings.ratio_mobile != blank %} --hlt-ratio-m: {{ section.settings.ratio_mobile }};{% endif %}">
+          {%- if section.settings.video != blank -%}
+            {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1200x' }}
+          {%- elsif section.settings.image != blank -%}
+            <div class="hlt-par" {% if section.settings.parallax_speed != '0' %}data-hlt-parallax="{{ section.settings.parallax_speed }}"{% endif %}>
+              {%- if section.settings.image_mobile != blank -%}<picture>
+                <source
+                  media="(max-width: 749px)"
+                  srcset="{{ section.settings.image_mobile | image_url: width: 600 }} 600w, {{ section.settings.image_mobile | image_url: width: 900 }} 900w, {{ section.settings.image_mobile | image_url: width: 1200 }} 1200w"
+                  sizes="100vw"
+                >{%- endif -%}
+              {{ section.settings.image | image_url: width: 1600 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 100vw' }}
+              {%- if section.settings.image_mobile != blank -%}</picture>{%- endif -%}
+            </div>
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'hlt-placeholder' }}
+          {%- endif -%}
+        </div>
+        {%- if section.settings.show_sparkles -%}
+          <span class="hlt-sparkle" style="top: -6px; right: 14%;" aria-hidden="true">✦</span>
+          <span class="hlt-sparkle" style="top: 18%; right: -8px; animation-delay: .8s; font-size: 16px;" aria-hidden="true">✦</span>
+          <span class="hlt-sparkle" style="bottom: 10%; left: -10px; animation-delay: 1.6s;" aria-hidden="true">✦</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.wave_bottom -%}
+    <div class="hlt-wave hlt-wave--bottom" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .hlt-hero__grid { display: grid; gap: 40px; align-items: center; }
+  .hlt-hero__media-wrap { position: relative; }
+  .hlt-hero__media { box-shadow: var(--hlt-shadow); }
+  @media (min-width: 990px) {
+    .hlt-hero--split .hlt-hero__grid { grid-template-columns: 1fr 1fr; gap: 64px; }
+    .hlt-hero--media-left .hlt-hero__media-wrap { order: -1; }
+  }
+  .hlt-hero--overlay { min-height: min(86vh, 760px); display: flex; align-items: center; }
+  .hlt-hero--overlay .hlt-hero__grid { position: relative; z-index: 1; width: 100%; }
+  .hlt-hero--overlay .hlt-hero__copy { max-width: 640px; }
+  .hlt-hero--body-white .hlt-body { color: #fff; }
+  .hlt-hero--body-navy .hlt-body { color: var(--hlt-navy); }
+  /* A phone image is usually a taller crop, so the split layout lets the box
+     follow it rather than holding the desktop shape. */
+  @media (max-width: 749px) {
+    .hlt-hero__media { aspect-ratio: var(--hlt-ratio-m, var(--hlt-ratio, 1 / 1)); }
+  }
+  .hlt-hero__bg picture, .hlt-hero__media picture { display: contents; }
+  .hlt-hero__bg { position: absolute; inset: 0; overflow: hidden; }
+  .hlt-hero__bg img, .hlt-hero__bg svg { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; }
+  .hlt-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(17, 29, 61, calc(var(--hlt-overlay) + .15)) 0%, rgba(17, 29, 61, var(--hlt-overlay)) 45%, rgba(17, 29, 61, 0) 80%); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Hero",
+  "tag": "div",
+  "class": "hlt-section",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "layout", "label": "Layout", "default": "split", "options": [
+      { "value": "split", "label": "Text beside image" },
+      { "value": "overlay", "label": "Text over full-width image" }
+    ] },
+    { "type": "select", "id": "media_side", "label": "Image side (split layout)", "default": "right", "options": [
+      { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" }
+    ] },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" },
+      { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }, { "value": "deep-navy", "label": "Deep navy" }
+    ] },
+    { "type": "header", "content": "Media" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Image on phones", "info": "Optional. Shown below 750px instead of the image above, so a wide crop does not lose its subject on a narrow screen. Empty uses the same image everywhere." },
+    { "type": "select", "id": "ratio_mobile", "label": "Image shape on phones (split layout)", "default": "", "options": [
+      { "value": "", "label": "Same as above" },
+      { "value": "1 / 1", "label": "Square" },
+      { "value": "4 / 3", "label": "Landscape" },
+      { "value": "4 / 5", "label": "Portrait" },
+      { "value": "3 / 4", "label": "Tall portrait" },
+      { "value": "16 / 9", "label": "Wide" }
+    ] },
+    { "type": "video", "id": "video", "label": "Video (replaces image in split layout)" },
+    { "type": "select", "id": "ratio", "label": "Image shape", "default": "4 / 3", "options": [
+      { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" }
+    ] },
+    { "type": "range", "id": "overlay", "label": "Overlay darkness (overlay layout)", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 45 },
+    { "type": "text", "id": "parallax_speed", "label": "Parallax strength", "info": "0 turns it off. 0.1 to 0.3 looks natural.", "default": "0.15" },
+    { "type": "checkbox", "id": "show_sparkles", "label": "Show twinkling sparkles", "default": true },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "overline", "label": "Overline" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Snacks you can hand over anywhere." },
+    { "type": "checkbox", "id": "use_h1", "label": "Use as the page's main heading (H1)", "default": false },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Easy for little mouths. Easy to feel good about. Easy to take anywhere." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>For the zoo, the car, the plane and the afternoon at home: baby and toddler snacks made for your child's age, with no added refined sugar or salt, in snack-sized packs sealed one by one.</p>" },
+    { "type": "select", "id": "body_color", "label": "Body text colour", "default": "default", "options": [
+      { "value": "default", "label": "Default (from colour combination)" }, { "value": "white", "label": "White" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "button_label", "label": "Label", "default": "Choose their bundle" },
+    { "type": "checkbox", "id": "button_scroll", "label": "Scroll to the buy box", "default": true },
+    { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
+    { "type": "url", "id": "button_link", "label": "Link (when not scrolling)" },
+    { "type": "select", "id": "button_style", "label": "Style", "default": "navy", "options": [
+      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "splash-white", "label": "Splash blue, white text" }
+    ] },
+    { "type": "header", "content": "Spacing and edges" },
+    { "type": "checkbox", "id": "wave_bottom", "label": "Wavy bottom edge", "default": false },
+    { "type": "select", "id": "wave_color", "label": "Wave colour (match the next section)", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 72 }
+  ],
+  "presets": [{ "name": "HLT Hero" }]
+}
+{% endschema %}

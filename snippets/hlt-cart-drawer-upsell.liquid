@@ -1,0 +1,114 @@
+{%- comment -%}
+  HLT One - cart drawer cross-sell carousel ("Picked just for you").
+
+  Usage (from snippets/cart-drawer.liquid, as the first child of
+  .cart-drawer__footer, i.e. directly above the totals):
+    {%- render 'hlt-cart-drawer-upsell' -%}
+
+  This renders the SHELL only - heading, arrows, an empty track, and a JSON
+  config blob. assets/hlt-cart-upsell.js fills the track and only then removes
+  the `hidden` attribute, so an empty result shows nothing at all rather than a
+  bare heading or a skeleton.
+
+  Placement matters: .cart-drawer__footer is the one container rebuilt by all
+  three of the drawer's re-render paths (CartDrawer.renderContents,
+  CartDrawerItems.updateQuantity and CartDrawerItems.onCartUpdate), so the
+  config below - in particular cartIds and seedId - is always regenerated in
+  step with the cart. It also sits BEFORE .cart__ctas, which keeps the checkout
+  button the last focusable element in the drawer and leaves Dawn's focus trap
+  boundaries exactly as they were.
+
+  The products come from a three-step cascade, run in the JS:
+    1. /recommendations/products.json?intent=complementary using seedId
+    2. the same endpoint with intent=related
+    3. the `fallback` list below - products from the collection named by the
+       drawer_upsell_collection_handle theme setting
+  Items already in the cart are excluded at every step, and the list is capped.
+{%- endcomment -%}
+
+{%- liquid
+  assign hlt_up_limit = 4
+  assign hlt_up_heading = settings.drawer_upsell_heading | default: 'Picked just for you'
+  assign hlt_up_add_label = 'Add'
+  assign hlt_up_handle = settings.drawer_upsell_collection_handle | default: 'yummybara'
+  assign hlt_up_collection = collections[hlt_up_handle]
+
+  assign hlt_up_seed = 0
+  if cart.items.size > 0
+    assign hlt_up_seed = cart.items.first.product.id
+  endif
+-%}
+
+{%- if settings.drawer_upsell_enabled and cart != empty -%}
+  <section class="hlt-upsell" data-hlt-upsell aria-labelledby="HltUpsellHeading" hidden>
+    <div class="hlt-upsell__head">
+      <h3 class="hlt-upsell__title" id="HltUpsellHeading">{{ hlt_up_heading | escape }}</h3>
+
+      <div class="hlt-upsell__nav">
+        <button
+          type="button"
+          class="hlt-upsell__arrow"
+          data-hlt-upsell-prev
+          aria-controls="HltUpsellTrack"
+          aria-label="Previous suggestions"
+          disabled
+        >
+          {%- render 'hlt-icon', name: 'arrow-left', size: 16 -%}
+        </button>
+        <button
+          type="button"
+          class="hlt-upsell__arrow"
+          data-hlt-upsell-next
+          aria-controls="HltUpsellTrack"
+          aria-label="Next suggestions"
+          disabled
+        >
+          {%- render 'hlt-icon', name: 'arrow-right', size: 16 -%}
+        </button>
+      </div>
+    </div>
+
+    <ul class="hlt-upsell__track" id="HltUpsellTrack" data-hlt-upsell-track role="list"></ul>
+
+    {%- comment -%} Cloned by the JS so the + Add buttons use the brand icon set. {%- endcomment -%}
+    <template data-hlt-upsell-plus>{%- render 'hlt-icon', name: 'plus', size: 14 -%}</template>
+
+    <script type="application/json" data-hlt-upsell-config>
+      {
+        "enabled": true,
+        "limit": {{ hlt_up_limit }},
+        "seedId": {{ hlt_up_seed }},
+        "recUrl": {{ routes.product_recommendations_url | json }},
+        "moneyFormat": {{ shop.money_format | strip_html | strip_newlines | json }},
+        "addLabel": {{ hlt_up_add_label | json }},
+        "cartIds": [{% for hlt_up_line in cart.items %}{{ hlt_up_line.product.id }}{% unless forloop.last %},{% endunless %}{% endfor %}],
+        "fallback": [
+          {%- assign hlt_fb_n = 0 -%}
+          {%- for hlt_fb_p in hlt_up_collection.products limit: 12 -%}
+            {%- assign hlt_fb_vid = 0 -%}
+            {%- assign hlt_fb_vprice = 0 -%}
+            {%- assign hlt_fb_vtitle = '' -%}
+            {%- for hlt_fb_v in hlt_fb_p.variants -%}
+              {%- if hlt_fb_vid == 0 and hlt_fb_v.available -%}
+                {%- assign hlt_fb_vid = hlt_fb_v.id -%}
+                {%- assign hlt_fb_vprice = hlt_fb_v.price -%}
+                {%- assign hlt_fb_vtitle = hlt_fb_v.title -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if hlt_fb_vid != 0 -%}
+              {%- assign hlt_fb_sub = '' -%}
+              {%- if hlt_fb_p.variants.size > 1 and hlt_fb_vtitle != 'Default Title' -%}
+                {%- assign hlt_fb_sub = hlt_fb_vtitle -%}
+              {%- elsif hlt_fb_p.type != blank -%}
+                {%- assign hlt_fb_sub = hlt_fb_p.type -%}
+              {%- endif -%}
+              {%- if hlt_fb_n > 0 -%},{%- endif -%}
+              {%- assign hlt_fb_n = hlt_fb_n | plus: 1 -%}
+              {"id":{{ hlt_fb_p.id }},"title":{{ hlt_fb_p.title | json }},"subtitle":{{ hlt_fb_sub | json }},"price":{{ hlt_fb_vprice | money | strip_html | json }},"image":{% if hlt_fb_p.featured_image %}{{ hlt_fb_p.featured_image | image_url: width: 240 | json }}{% else %}""{% endif %},"url":{{ hlt_fb_p.url | json }},"variantId":{{ hlt_fb_vid }}}
+            {%- endif -%}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  </section>
+{%- endif -%}

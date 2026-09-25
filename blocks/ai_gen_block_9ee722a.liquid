@@ -1,0 +1,444 @@
+{% doc %}
+  @prompt
+    Brand logo section: heading, subheading, 8 logo slots. Logos show full color
+    by default (no grayscale/opacity dimming). Optional logo cards (background,
+    border, shadow) that can be turned off so logos sit directly on the section.
+    Optional auto-scrolling marquee for when the row outgrows the grid.
+
+  ── MARQUEE ──────────────────────────────────────────────────────────────────
+  Speed is set in pixels per second, not as a fixed duration. A fixed duration
+  would make the row run faster every time a logo is added, because the same
+  clock has to cover a longer track. Measuring the set and deriving the duration
+  keeps the pace identical whether there are four logos or twenty.
+
+  The set is cloned until the track is at least twice the viewport, so the loop
+  is seamless on a wide monitor as well as a laptop. Clones are aria-hidden, so
+  a screen reader hears each brand once.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign logo_count = 0
+  for i in (1..8)
+    assign k = 'logo_' | append: i
+    if block.settings[k] != blank
+      assign logo_count = logo_count | plus: 1
+    endif
+  endfor
+%}
+
+{% style %}
+  .ai-brand-logos-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+    {%- if block.settings.marquee_enabled %}
+    /* the track runs past the container on both sides, so the section clips it */
+    overflow: hidden;
+    {%- endif %}
+  }
+
+  .ai-brand-logos-container-{{ ai_gen_id }} {
+    {%- if block.settings.marquee_enabled %}
+    max-width: none;
+    {%- else %}
+    max-width: {{ block.settings.container_width }}px;
+    {%- endif %}
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .ai-brand-logos-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+    max-width: {{ block.settings.container_width }}px;
+    margin-inline: auto;
+  }
+
+  .ai-brand-logos-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.subheading_spacing }}px;
+    font-weight: 700;
+  }
+
+  .ai-brand-logos-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.subheading_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---------- Static grid ---------- */
+  .ai-brand-logos-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.grid_columns }}, 1fr);
+    gap: {{ block.settings.logo_spacing }}px;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* ---------- Marquee ---------- */
+  .ai-brand-marquee-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    {%- if block.settings.marquee_fade > 0 %}
+    /* fades the two ends so logos enter and leave instead of being chopped off
+       at a hard edge */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 {{ block.settings.marquee_fade }}px, #000 calc(100% - {{ block.settings.marquee_fade }}px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 {{ block.settings.marquee_fade }}px, #000 calc(100% - {{ block.settings.marquee_fade }}px), transparent 100%);
+    {%- endif %}
+  }
+
+  .ai-brand-track-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ block.settings.logo_spacing }}px;
+    width: max-content;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    will-change: transform;
+  }
+
+  .ai-brand-track-{{ ai_gen_id }}.is-running {
+    animation: ai-brand-scroll-{{ ai_gen_id }} var(--ai-dur-{{ ai_gen_id }}, 40s) linear infinite;
+  }
+
+  @keyframes ai-brand-scroll-{{ ai_gen_id }} {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(calc(-1 * var(--ai-set-w-{{ ai_gen_id }}, 0px)), 0, 0); }
+  }
+
+  {%- if block.settings.marquee_pause_hover %}
+  @media (hover: hover) and (pointer: fine) {
+    .ai-brand-marquee-{{ ai_gen_id }}:hover .ai-brand-track-{{ ai_gen_id }} { animation-play-state: paused; }
+  }
+  {%- endif %}
+
+  .ai-brand-track-{{ ai_gen_id }} .ai-brand-logo-card-{{ ai_gen_id }} {
+    flex: none;
+    width: {{ block.settings.marquee_item_width }}px;
+  }
+
+  /* ---------- Card ---------- */
+  .ai-brand-logo-card-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: {{ block.settings.card_min_height }}px;
+    padding: {{ block.settings.card_padding }}px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    {% if block.settings.show_card_style %}
+      background-color: {{ block.settings.card_background }};
+      border-radius: {{ block.settings.card_border_radius }}px;
+      border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+      box-shadow: {{ block.settings.card_shadow_horizontal }}px {{ block.settings.card_shadow_vertical }}px {{ block.settings.card_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.card_shadow_opacity }});
+    {% else %}
+      background-color: transparent;
+      border: 0;
+      box-shadow: none;
+    {% endif %}
+  }
+
+  {% if block.settings.show_card_style %}
+  @media (hover: hover) and (pointer: fine) {
+    .ai-brand-logo-card-{{ ai_gen_id }}:hover {
+      transform: translateY(-2px);
+      box-shadow: {{ block.settings.card_shadow_horizontal }}px {{ block.settings.card_shadow_vertical | plus: 2 }}px {{ block.settings.card_shadow_blur | plus: 5 }}px rgba(0, 0, 0, {{ block.settings.card_shadow_opacity | times: 1.2 | at_most: 1 }});
+    }
+  }
+  {% endif %}
+
+  .ai-brand-logo-image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-brand-logo-image-{{ ai_gen_id }} {
+    max-width: 100%;
+    max-height: {{ block.settings.logo_max_height }}px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale({{ block.settings.logo_grayscale }}%);
+    opacity: {{ block.settings.logo_opacity }};
+    transition: filter 0.3s ease, opacity 0.3s ease;
+    {%- unless block.settings.show_card_style %}
+    /* Without cards the logos sit straight on the section colour. Most of the
+       logo files have a white background baked in, so multiply blends that
+       white away and only the artwork stays visible. */
+    mix-blend-mode: multiply;
+    {%- endunless %}
+  }
+
+  .ai-brand-logo-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.logo_max_height }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+  }
+
+  .ai-brand-logo-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* the row stops but stays readable: it becomes a strip the reader scrolls
+       themselves rather than disappearing */
+    .ai-brand-track-{{ ai_gen_id }}.is-running { animation: none; }
+    .ai-brand-marquee-{{ ai_gen_id }} { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-brand-logos-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.grid_columns | at_most: 3 }}, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-brand-logos-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.7 | round }}px {{ block.settings.section_padding_horizontal | times: 0.7 | round }}px {{ block.settings.section_padding_bottom | times: 0.7 | round }}px;
+    }
+
+    .ai-brand-logos-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ai-brand-track-{{ ai_gen_id }} .ai-brand-logo-card-{{ ai_gen_id }} {
+      width: {{ block.settings.marquee_item_width | times: 0.8 | round }}px;
+    }
+
+    .ai-brand-logos-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 | round }}px;
+    }
+
+    .ai-brand-logos-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.9 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<brand-logos-{{ ai_gen_id }} class="ai-brand-logos-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-brand-logos-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank or block.settings.subheading != blank %}
+      <div class="ai-brand-logos-header-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-brand-logos-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+        {% endif %}
+        {% if block.settings.subheading != blank %}
+          <div class="ai-brand-logos-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {%- capture logo_items -%}
+      {% for i in (1..8) %}
+        {% liquid
+          assign logo_key = 'logo_' | append: i
+          assign logo = block.settings[logo_key]
+        %}
+        {% if logo != blank %}
+          <li class="ai-brand-logo-card-{{ ai_gen_id }}">
+            <div class="ai-brand-logo-image-wrapper-{{ ai_gen_id }}">
+              <img
+                src="{{ logo | image_url: width: 400 }}"
+                srcset="{{ logo | image_url: width: 200 }} 200w,
+                        {{ logo | image_url: width: 400 }} 400w,
+                        {{ logo | image_url: width: 600 }} 600w"
+                sizes="{{ block.settings.marquee_item_width }}px"
+                alt="{{ logo.alt | escape }}"
+                loading="lazy"
+                decoding="async"
+                width="{{ logo.width }}"
+                height="{{ logo.height }}"
+                class="ai-brand-logo-image-{{ ai_gen_id }}"
+              >
+            </div>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {%- comment -%}
+        Placeholders only while the block is empty, so the editor has something
+        to look at. They are skipped once any logo is set.
+      {%- endcomment -%}
+      {% if logo_count == 0 %}
+        {% for i in (1..6) %}
+          <li class="ai-brand-logo-card-{{ ai_gen_id }}">
+            <div class="ai-brand-logo-image-wrapper-{{ ai_gen_id }}">
+              <div class="ai-brand-logo-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      {% endif %}
+    {%- endcapture -%}
+
+    {% if block.settings.marquee_enabled and logo_count > 0 %}
+      <div class="ai-brand-marquee-{{ ai_gen_id }}" data-ai-marquee>
+        <ul class="ai-brand-track-{{ ai_gen_id }}" data-ai-track data-ai-count="{{ logo_count }}">
+          {{ logo_items }}
+        </ul>
+      </div>
+    {% else %}
+      <ul class="ai-brand-logos-grid-{{ ai_gen_id }}">
+        {{ logo_items }}
+      </ul>
+    {% endif %}
+  </div>
+</brand-logos-{{ ai_gen_id }}>
+
+<script>
+(function () {
+  var scope = document.querySelector('.ai-brand-logos-{{ ai_gen_id }}');
+  if (!scope) return;
+  var marquee = scope.querySelector('[data-ai-marquee]');
+  if (!marquee || marquee.dataset.aiInit) return;
+  marquee.dataset.aiInit = '1';
+
+  var track = marquee.querySelector('[data-ai-track]');
+  var count = parseInt(track.getAttribute('data-ai-count'), 10);
+  var SPEED = {{ block.settings.marquee_speed }};   /* pixels per second */
+  var originals = Array.prototype.slice.call(track.children).slice(0, count);
+  if (!originals.length) return;
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function build() {
+    /* start from a clean single set, so a resize re-clones from scratch rather
+       than stacking clones on top of the previous run's clones */
+    track.classList.remove('is-running');
+    while (track.children.length > count) track.removeChild(track.lastChild);
+
+    /* One clone is enough for the loop itself, but on a wide monitor a short
+       set leaves a visible gap before it repeats. Keep cloning until the track
+       covers twice the viewport. */
+    var guard = 0;
+    do {
+      originals.forEach(function (el) {
+        var c = el.cloneNode(true);
+        c.setAttribute('aria-hidden', 'true');
+        /* clones are decoration; a screen reader should hear each brand once */
+        c.querySelectorAll('img').forEach(function (img) { img.setAttribute('alt', ''); });
+        track.appendChild(c);
+      });
+      guard++;
+    } while (track.scrollWidth < marquee.clientWidth * 2 && guard < 10);
+
+    /* Measure from the first item of set 1 to the first item of set 2. That
+       distance already includes the gap, so nothing has to be added by hand and
+       changing the gap setting can't drift the loop out of alignment. */
+    var items = track.children;
+    if (items.length <= count) return;
+    var setWidth = items[count].offsetLeft - items[0].offsetLeft;
+    if (setWidth <= 0) return;
+
+    track.style.setProperty('--ai-set-w-{{ ai_gen_id }}', setWidth + 'px');
+    /* duration derived from distance, so adding logos never changes the pace */
+    track.style.setProperty('--ai-dur-{{ ai_gen_id }}', (setWidth / SPEED).toFixed(2) + 's');
+    if (!reduce) track.classList.add('is-running');
+  }
+
+  /* images can land after first paint and change the widths under us */
+  var imgs = track.querySelectorAll('img');
+  var pending = imgs.length;
+  if (pending === 0) {
+    build();
+  } else {
+    imgs.forEach(function (img) {
+      if (img.complete) { if (--pending === 0) build(); return; }
+      var done = function () { if (--pending === 0) build(); };
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+    });
+    /* never leave the row frozen if an image hangs */
+    setTimeout(function () { if (!track.classList.contains('is-running')) build(); }, 2500);
+  }
+
+  var t = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(build, 200);
+  }, { passive: true });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Brand logos",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Trusted by leading brands" },
+    { "type": "inline_richtext", "id": "subheading", "label": "Subheading", "default": "Join thousands of satisfied customers worldwide" },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+
+    { "type": "header", "content": "Auto-scroll", "info": "Turn this on when the row outgrows a single line. Speed is set per second, so adding logos lengthens the loop without making it run faster." },
+    { "type": "checkbox", "id": "marquee_enabled", "label": "Scroll the logos automatically", "default": false },
+    { "type": "range", "id": "marquee_speed", "label": "Scroll speed", "min": 10, "max": 120, "step": 5, "unit": "px", "info": "Pixels travelled per second.", "default": 40 },
+    { "type": "range", "id": "marquee_item_width", "label": "Logo slot width", "min": 120, "max": 320, "step": 10, "unit": "px", "default": 190 },
+    { "type": "range", "id": "marquee_fade", "label": "Edge fade", "min": 0, "max": 160, "step": 10, "unit": "px", "info": "Softens both ends so logos enter and leave rather than being cut off. Set to 0 for hard edges.", "default": 80 },
+    { "type": "checkbox", "id": "marquee_pause_hover", "label": "Pause on hover", "default": true },
+
+    { "type": "header", "content": "Logos" },
+    { "type": "image_picker", "id": "logo_1", "label": "Logo 1" },
+    { "type": "image_picker", "id": "logo_2", "label": "Logo 2" },
+    { "type": "image_picker", "id": "logo_3", "label": "Logo 3" },
+    { "type": "image_picker", "id": "logo_4", "label": "Logo 4" },
+    { "type": "image_picker", "id": "logo_5", "label": "Logo 5" },
+    { "type": "image_picker", "id": "logo_6", "label": "Logo 6" },
+    { "type": "image_picker", "id": "logo_7", "label": "Logo 7" },
+    { "type": "image_picker", "id": "logo_8", "label": "Logo 8" },
+    { "type": "range", "id": "logo_max_height", "label": "Logo max height", "min": 40, "max": 120, "step": 10, "unit": "px", "default": 60 },
+    { "type": "range", "id": "logo_grayscale", "label": "Logo grayscale (0 = full color)", "min": 0, "max": 100, "step": 10, "unit": "%", "default": 0 },
+    { "type": "range", "id": "logo_opacity", "label": "Logo opacity (1 = fully visible)", "min": 0, "max": 1, "step": 0.1, "default": 1 },
+
+    { "type": "header", "content": "Card style" },
+    { "type": "checkbox", "id": "show_card_style", "label": "Show logo cards (background, border, shadow)", "default": true },
+    { "type": "color", "id": "card_background", "label": "Background", "default": "#ffffff" },
+    { "type": "range", "id": "card_padding", "label": "Padding", "min": 0, "max": 50, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "card_min_height", "label": "Min height", "min": 40, "max": 200, "step": 10, "unit": "px", "default": 120 },
+    { "type": "range", "id": "card_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_border_width", "label": "Border width", "min": 0, "max": 5, "step": 1, "unit": "px", "default": 1 },
+    { "type": "color", "id": "card_border_color", "label": "Border color", "default": "#e5e5e5" },
+    { "type": "range", "id": "card_shadow_opacity", "label": "Shadow opacity", "min": 0, "max": 1, "step": 0.1, "default": 0.1 },
+    { "type": "range", "id": "card_shadow_horizontal", "label": "Shadow horizontal", "min": -10, "max": 10, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "card_shadow_vertical", "label": "Shadow vertical", "min": 0, "max": 20, "step": 2, "unit": "px", "default": 4 },
+    { "type": "range", "id": "card_shadow_blur", "label": "Shadow blur", "min": 0, "max": 30, "step": 5, "unit": "px", "default": 10 },
+
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "grid_columns", "label": "Columns (grid mode)", "min": 2, "max": 8, "step": 1, "info": "Only applies when auto-scroll is off.", "default": 6 },
+    { "type": "range", "id": "container_width", "label": "Container width", "min": 800, "max": 1600, "step": 100, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "logo_spacing", "label": "Logo spacing", "min": 10, "max": 50, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "header_spacing", "label": "Header spacing", "min": 20, "max": 80, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "subheading_spacing", "label": "Subheading spacing", "min": 5, "max": 30, "step": 5, "unit": "px", "default": 10 },
+    { "type": "range", "id": "section_padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 10, "unit": "px", "default": 60 },
+    { "type": "range", "id": "section_padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 10, "unit": "px", "default": 60 },
+    { "type": "range", "id": "section_padding_horizontal", "label": "Padding horizontal", "min": 0, "max": 100, "step": 10, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#fffbf1" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#1b2e5c" },
+    { "type": "range", "id": "heading_size", "label": "Heading size", "min": 20, "max": 60, "step": 2, "unit": "px", "default": 32 },
+    { "type": "color", "id": "subheading_color", "label": "Subheading", "default": "#1b2e5c" },
+    { "type": "range", "id": "subheading_size", "label": "Subheading size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 }
+  ],
+  "presets": [
+    { "name": "Brand logos" }
+  ]
+}
+{% endschema %}
+

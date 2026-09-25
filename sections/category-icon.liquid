@@ -1,0 +1,1001 @@
+{% comment %}
+  Category Tabs with Icon Navigation — SECTION version
+  Updates:
+  - "Default active tab" setting controls which tab opens on page load.
+  - "Subheading" setting adds a short instruction line under the heading.
+{% endcomment %}
+{% assign ai_gen_id = section.id | replace: '_', '' | downcase %}
+
+{%- comment -%}
+  Resolve which tab is active on load.
+  default_tab_number = the tab number chosen in settings (falls back to the first
+  enabled tab if the chosen one is disabled).
+  default_dom_index  = the position of that tab among the tabs actually rendered,
+  which is what the JavaScript needs.
+{%- endcomment -%}
+{%- assign default_tab_number = section.settings.default_tab | times: 1 -%}
+{%- assign default_tab_enabled_key = 'tab_' | append: default_tab_number | append: '_enabled' -%}
+{%- unless section.settings[default_tab_enabled_key] -%}
+  {%- assign default_tab_number = 0 -%}
+  {%- for i in (1..5) -%}
+    {%- assign fallback_key = 'tab_' | append: i | append: '_enabled' -%}
+    {%- if section.settings[fallback_key] and default_tab_number == 0 -%}
+      {%- assign default_tab_number = i -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endunless -%}
+{%- assign default_dom_index = 0 -%}
+{%- assign enabled_seen = 0 -%}
+{%- for i in (1..5) -%}
+  {%- assign enabled_key = 'tab_' | append: i | append: '_enabled' -%}
+  {%- if section.settings[enabled_key] -%}
+    {%- if i == default_tab_number -%}
+      {%- assign default_dom_index = enabled_seen -%}
+    {%- endif -%}
+    {%- assign enabled_seen = enabled_seen | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% style %}
+  .ai-category-tabs-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-category-tabs__wrapper-{{ ai_gen_id }} {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  .ai-category-tabs__inner-{{ ai_gen_id }} {
+    max-width: var(--page-width);
+    margin: 0 auto;
+  }
+
+  .ai-category-tabs__heading-{{ ai_gen_id }} {
+    text-align: center;
+    margin: 0 0 50px;
+  }
+
+  .ai-category-tabs__heading-{{ ai_gen_id }}.has-sub-{{ ai_gen_id }} {
+    margin-bottom: 14px;
+  }
+
+  .ai-category-tabs__subheading-{{ ai_gen_id }} {
+    text-align: center;
+    margin: 0 auto 50px;
+    max-width: 620px;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    opacity: 0.75;
+  }
+
+  .ai-category-tabs__nav-container-{{ ai_gen_id }} {
+    position: relative;
+    margin-bottom: 40px;
+    overflow: visible;
+  }
+
+  .ai-category-tabs__nav-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-category-tabs__tab-{{ ai_gen_id }} {
+    flex: 1;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 16px 12px;
+    position: relative;
+    transition: transform 0.2s ease;
+    min-width: 0;
+    color: rgb(var(--color-foreground));
+  }
+
+  .ai-category-tabs__tab-{{ ai_gen_id }}:hover .ai-category-tabs__icon-{{ ai_gen_id }} {
+    transform: scale(1.1);
+  }
+
+  .ai-category-tabs__icon-{{ ai_gen_id }} {
+    width: 72px;
+    height: 72px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .ai-category-tabs__icon-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-category-tabs__label-{{ ai_gen_id }} {
+    font-size: 1.7rem;
+    line-height: 1.25;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  .ai-category-tabs__sublabel-{{ ai_gen_id }} {
+    font-size: 1.2rem;
+    letter-spacing: 0.14rem;
+    opacity: 0.7;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  .ai-category-tabs__indicator-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 0;
+    height: 4px;
+    background-color: rgb(var(--color-button));
+    transition: left 0.3s ease, width 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .ai-category-tabs__content-{{ ai_gen_id }} {
+    position: relative;
+    min-height: 400px;
+  }
+
+  .ai-category-tabs__panel-{{ ai_gen_id }} {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-category-tabs__panel-{{ ai_gen_id }}.active {
+    display: block;
+    opacity: 1;
+  }
+
+  .ai-category-tabs__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--grid-desktop-horizontal-spacing) var(--grid-desktop-vertical-spacing);
+  }
+
+  .ai-category-tabs__product-card-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+  }
+
+  .ai-category-tabs__image-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--media-radius);
+  }
+
+  .ai-category-tabs__image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-category-tabs__product-card-{{ ai_gen_id }}:hover .ai-category-tabs__image-{{ ai_gen_id }} {
+    transform: scale(1.05);
+  }
+
+  .ai-category-tabs__product-info-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .ai-category-tabs__product-title-{{ ai_gen_id }} {
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    min-height: 2.8em;
+  }
+
+  .ai-category-tabs__product-title-{{ ai_gen_id }} a {
+    color: rgb(var(--color-foreground));
+    text-decoration: none;
+  }
+
+  .ai-category-tabs__product-title-{{ ai_gen_id }} a:hover {
+    text-decoration: underline;
+  }
+
+  .ai-category-tabs__product-price-{{ ai_gen_id }} {
+    color: rgb(var(--color-foreground));
+  }
+
+  .ai-category-tabs__product-button-{{ ai_gen_id }} {
+    margin-top: auto;
+  }
+
+  .ai-category-tabs__product-button-{{ ai_gen_id }} .button {
+    width: 100%;
+    text-align: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 24px;
+  }
+
+  .ai-category-tabs__empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0.6;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-category-tabs__wrapper-{{ ai_gen_id }} {
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+
+    .ai-category-tabs__nav-container-{{ ai_gen_id }} {
+      overflow-x: scroll;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      margin-left: -30px;
+      margin-right: -30px;
+      padding-left: 30px;
+      padding-right: 15px;
+    }
+
+    .ai-category-tabs__nav-container-{{ ai_gen_id }}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ai-category-tabs__nav-{{ ai_gen_id }} {
+      display: flex;
+      justify-content: flex-start;
+      width: auto;
+      gap: 12px;
+    }
+
+    .ai-category-tabs__tab-{{ ai_gen_id }} {
+      flex: 0 0 32%;
+      scroll-snap-align: start;
+      min-width: 120px;
+      max-width: none;
+    }
+
+    .ai-category-tabs__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--grid-mobile-horizontal-spacing) var(--grid-mobile-vertical-spacing);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-category-tabs__wrapper-{{ ai_gen_id }} {
+      padding-top: 40px;
+      padding-bottom: 40px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .ai-category-tabs__heading-{{ ai_gen_id }} {
+      margin-bottom: 40px;
+    }
+
+    .ai-category-tabs__heading-{{ ai_gen_id }}.has-sub-{{ ai_gen_id }} {
+      margin-bottom: 10px;
+    }
+
+    .ai-category-tabs__subheading-{{ ai_gen_id }} {
+      margin-bottom: 32px;
+      font-size: 1.4rem;
+    }
+
+    .ai-category-tabs__nav-container-{{ ai_gen_id }} {
+      margin-left: -20px;
+      margin-right: -20px;
+      padding-left: 20px;
+      padding-right: 10px;
+    }
+
+    .ai-category-tabs__icon-{{ ai_gen_id }} {
+      width: 56px;
+      height: 56px;
+    }
+
+    .ai-category-tabs__label-{{ ai_gen_id }} {
+      font-size: 1.5rem;
+    }
+
+    .ai-category-tabs__sublabel-{{ ai_gen_id }} {
+      font-size: 1.1rem;
+    }
+
+    .ai-category-tabs__tab-{{ ai_gen_id }} {
+      flex: 0 0 32%;
+      padding: 12px 8px;
+      min-width: 112px;
+    }
+
+    .ai-category-tabs__product-button-{{ ai_gen_id }} .button {
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+  }
+{% endstyle %}
+
+<category-tabs-{{ ai_gen_id }} class="ai-category-tabs-{{ ai_gen_id }} color-{{ section.settings.color_scheme }}">
+  <div class="ai-category-tabs__wrapper-{{ ai_gen_id }}">
+    <div class="ai-category-tabs__inner-{{ ai_gen_id }}">
+      {% if section.settings.heading != blank %}
+        <h2 class="ai-category-tabs__heading-{{ ai_gen_id }} h1{% if section.settings.subheading != blank %} has-sub-{{ ai_gen_id }}{% endif %}">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.subheading != blank %}
+        <p class="ai-category-tabs__subheading-{{ ai_gen_id }}">{{ section.settings.subheading }}</p>
+      {% endif %}
+
+      <div class="ai-category-tabs__nav-container-{{ ai_gen_id }}">
+        <div class="ai-category-tabs__nav-{{ ai_gen_id }}" role="tablist">
+          {% if section.settings.tab_1_enabled %}
+            <button
+              class="ai-category-tabs__tab-{{ ai_gen_id }}"
+              role="tab"
+              aria-selected="{% if default_tab_number == 1 %}true{% else %}false{% endif %}"
+              aria-controls="panel-{{ ai_gen_id }}-1"
+              id="tab-{{ ai_gen_id }}-1"
+              data-tab-index="1"
+            >
+              {% if section.settings.tab_1_icon %}
+                <div class="ai-category-tabs__icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ section.settings.tab_1_icon | image_url: width: 216 }}"
+                    alt="{{ section.settings.tab_1_label | escape }}"
+                    loading="lazy"
+                    width="72"
+                    height="72"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-category-tabs__label-{{ ai_gen_id }} h5">{{ section.settings.tab_1_label }}</div>
+              {% if section.settings.tab_1_sublabel != blank %}
+                <div class="ai-category-tabs__sublabel-{{ ai_gen_id }} caption-with-letter-spacing">{{ section.settings.tab_1_sublabel }}</div>
+              {% endif %}
+            </button>
+          {% endif %}
+
+          {% if section.settings.tab_2_enabled %}
+            <button
+              class="ai-category-tabs__tab-{{ ai_gen_id }}"
+              role="tab"
+              aria-selected="{% if default_tab_number == 2 %}true{% else %}false{% endif %}"
+              aria-controls="panel-{{ ai_gen_id }}-2"
+              id="tab-{{ ai_gen_id }}-2"
+              data-tab-index="2"
+            >
+              {% if section.settings.tab_2_icon %}
+                <div class="ai-category-tabs__icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ section.settings.tab_2_icon | image_url: width: 216 }}"
+                    alt="{{ section.settings.tab_2_label | escape }}"
+                    loading="lazy"
+                    width="72"
+                    height="72"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-category-tabs__label-{{ ai_gen_id }} h5">{{ section.settings.tab_2_label }}</div>
+              {% if section.settings.tab_2_sublabel != blank %}
+                <div class="ai-category-tabs__sublabel-{{ ai_gen_id }} caption-with-letter-spacing">{{ section.settings.tab_2_sublabel }}</div>
+              {% endif %}
+            </button>
+          {% endif %}
+
+          {% if section.settings.tab_3_enabled %}
+            <button
+              class="ai-category-tabs__tab-{{ ai_gen_id }}"
+              role="tab"
+              aria-selected="{% if default_tab_number == 3 %}true{% else %}false{% endif %}"
+              aria-controls="panel-{{ ai_gen_id }}-3"
+              id="tab-{{ ai_gen_id }}-3"
+              data-tab-index="3"
+            >
+              {% if section.settings.tab_3_icon %}
+                <div class="ai-category-tabs__icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ section.settings.tab_3_icon | image_url: width: 216 }}"
+                    alt="{{ section.settings.tab_3_label | escape }}"
+                    loading="lazy"
+                    width="72"
+                    height="72"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-category-tabs__label-{{ ai_gen_id }} h5">{{ section.settings.tab_3_label }}</div>
+              {% if section.settings.tab_3_sublabel != blank %}
+                <div class="ai-category-tabs__sublabel-{{ ai_gen_id }} caption-with-letter-spacing">{{ section.settings.tab_3_sublabel }}</div>
+              {% endif %}
+            </button>
+          {% endif %}
+
+          {% if section.settings.tab_4_enabled %}
+            <button
+              class="ai-category-tabs__tab-{{ ai_gen_id }}"
+              role="tab"
+              aria-selected="{% if default_tab_number == 4 %}true{% else %}false{% endif %}"
+              aria-controls="panel-{{ ai_gen_id }}-4"
+              id="tab-{{ ai_gen_id }}-4"
+              data-tab-index="4"
+            >
+              {% if section.settings.tab_4_icon %}
+                <div class="ai-category-tabs__icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ section.settings.tab_4_icon | image_url: width: 216 }}"
+                    alt="{{ section.settings.tab_4_label | escape }}"
+                    loading="lazy"
+                    width="72"
+                    height="72"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-category-tabs__label-{{ ai_gen_id }} h5">{{ section.settings.tab_4_label }}</div>
+              {% if section.settings.tab_4_sublabel != blank %}
+                <div class="ai-category-tabs__sublabel-{{ ai_gen_id }} caption-with-letter-spacing">{{ section.settings.tab_4_sublabel }}</div>
+              {% endif %}
+            </button>
+          {% endif %}
+
+          {% if section.settings.tab_5_enabled %}
+            <button
+              class="ai-category-tabs__tab-{{ ai_gen_id }}"
+              role="tab"
+              aria-selected="{% if default_tab_number == 5 %}true{% else %}false{% endif %}"
+              aria-controls="panel-{{ ai_gen_id }}-5"
+              id="tab-{{ ai_gen_id }}-5"
+              data-tab-index="5"
+            >
+              {% if section.settings.tab_5_icon %}
+                <div class="ai-category-tabs__icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ section.settings.tab_5_icon | image_url: width: 216 }}"
+                    alt="{{ section.settings.tab_5_label | escape }}"
+                    loading="lazy"
+                    width="72"
+                    height="72"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-category-tabs__label-{{ ai_gen_id }} h5">{{ section.settings.tab_5_label }}</div>
+              {% if section.settings.tab_5_sublabel != blank %}
+                <div class="ai-category-tabs__sublabel-{{ ai_gen_id }} caption-with-letter-spacing">{{ section.settings.tab_5_sublabel }}</div>
+              {% endif %}
+            </button>
+          {% endif %}
+
+          <div class="ai-category-tabs__indicator-{{ ai_gen_id }}"></div>
+        </div>
+      </div>
+
+      <div class="ai-category-tabs__content-{{ ai_gen_id }}">
+        {% for i in (1..5) %}
+          {% assign tab_enabled_key = 'tab_' | append: i | append: '_enabled' %}
+          {% assign tab_collection_key = 'tab_' | append: i | append: '_collection' %}
+          {% assign tab_button_key = 'tab_' | append: i | append: '_button_text' %}
+
+          {% assign tab_enabled = section.settings[tab_enabled_key] %}
+          {% assign collection = section.settings[tab_collection_key] %}
+          {% assign button_text = section.settings[tab_button_key] %}
+
+          {% if tab_enabled %}
+            <div
+              class="ai-category-tabs__panel-{{ ai_gen_id }} {% if i == default_tab_number %}active{% endif %}"
+              role="tabpanel"
+              id="panel-{{ ai_gen_id }}-{{ i }}"
+              aria-labelledby="tab-{{ ai_gen_id }}-{{ i }}"
+            >
+              {% if collection != blank %}
+                {% assign max_products = section.settings.max_products | default: 8 %}
+
+                {% if collection.products.size > 0 %}
+                  <div class="ai-category-tabs__grid-{{ ai_gen_id }}">
+                    {% for product in collection.products limit: max_products %}
+                      <div class="ai-category-tabs__product-card-{{ ai_gen_id }}">
+                        <a href="{{ product.url }}" class="ai-category-tabs__image-wrapper-{{ ai_gen_id }}">
+                          {% if product.featured_image %}
+                            <img
+                              class="ai-category-tabs__image-{{ ai_gen_id }}"
+                              src="{{ product.featured_image | image_url: width: 600 }}"
+                              alt="{{ product.featured_image.alt | escape }}"
+                              loading="lazy"
+                              width="600"
+                              height="600"
+                            >
+                          {% else %}
+                            <div class="ai-category-tabs__image-{{ ai_gen_id }}" style="background: #f4f4f4;">
+                              {{ 'product-1' | placeholder_svg_tag }}
+                            </div>
+                          {% endif %}
+                        </a>
+
+                        <div class="ai-category-tabs__product-info-{{ ai_gen_id }}">
+                          <h3 class="ai-category-tabs__product-title-{{ ai_gen_id }} h5">
+                            <a href="{{ product.url }}" title="{{ product.title | escape }}">
+                              {{ product.title }}
+                            </a>
+                          </h3>
+
+                          <div class="ai-category-tabs__product-price-{{ ai_gen_id }} price">
+                            {{ product.price | money }}
+                          </div>
+
+                          <div class="ai-category-tabs__product-button-{{ ai_gen_id }}">
+                            <a href="{{ product.url }}" class="button button--primary">
+                              {{ button_text }}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <div class="ai-category-tabs__empty-{{ ai_gen_id }}">
+                    <p>No products found in this collection.</p>
+                  </div>
+                {% endif %}
+              {% else %}
+                <div class="ai-category-tabs__empty-{{ ai_gen_id }}">
+                  <p>Please select a collection for this tab.</p>
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</category-tabs-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AiCategoryTabs extends HTMLElement {
+      constructor() {
+        super();
+        this.tabs = this.querySelectorAll('.ai-category-tabs__tab-{{ ai_gen_id }}');
+        this.panels = this.querySelectorAll('.ai-category-tabs__panel-{{ ai_gen_id }}');
+        this.indicator = this.querySelector('.ai-category-tabs__indicator-{{ ai_gen_id }}');
+        this.nav = this.querySelector('.ai-category-tabs__nav-{{ ai_gen_id }}');
+        this.navContainer = this.querySelector('.ai-category-tabs__nav-container-{{ ai_gen_id }}');
+        this.defaultIndex = {{ default_dom_index }};
+        this.currentIndex = this.defaultIndex;
+      }
+
+      connectedCallback() {
+        this.setupTabs();
+        setTimeout(() => {
+          this.updateIndicator(this.defaultIndex);
+        }, 100);
+        this.setupKeyboardNavigation();
+        this.setupMobileScroll();
+      }
+
+      setupMobileScroll() {
+        if (window.innerWidth > 989) return;
+
+        let isScrolling = false;
+        let startX = 0;
+        let scrollLeft = 0;
+        let hasMoved = false;
+
+        this.navContainer.addEventListener('mousedown', (e) => {
+          isScrolling = true;
+          hasMoved = false;
+          startX = e.pageX - this.navContainer.offsetLeft;
+          scrollLeft = this.navContainer.scrollLeft;
+          this.navContainer.style.cursor = 'grabbing';
+        });
+
+        this.navContainer.addEventListener('mouseleave', () => {
+          isScrolling = false;
+          this.navContainer.style.cursor = 'grab';
+        });
+
+        this.navContainer.addEventListener('mouseup', () => {
+          isScrolling = false;
+          this.navContainer.style.cursor = 'grab';
+        });
+
+        this.navContainer.addEventListener('mousemove', (e) => {
+          if (!isScrolling) return;
+          e.preventDefault();
+          hasMoved = true;
+          const x = e.pageX - this.navContainer.offsetLeft;
+          const walk = (x - startX) * 2;
+          this.navContainer.scrollLeft = scrollLeft - walk;
+        });
+
+        this.navContainer.addEventListener('touchstart', (e) => {
+          isScrolling = true;
+          hasMoved = false;
+          startX = e.touches[0].pageX - this.navContainer.offsetLeft;
+          scrollLeft = this.navContainer.scrollLeft;
+        }, { passive: true });
+
+        this.navContainer.addEventListener('touchmove', (e) => {
+          if (!isScrolling) return;
+          hasMoved = true;
+          const x = e.touches[0].pageX - this.navContainer.offsetLeft;
+          const walk = (x - startX) * 2;
+          this.navContainer.scrollLeft = scrollLeft - walk;
+        }, { passive: true });
+
+        this.navContainer.addEventListener('touchend', () => {
+          isScrolling = false;
+          setTimeout(() => {
+            hasMoved = false;
+          }, 100);
+        }, { passive: true });
+
+        this.tabs.forEach((tab, index) => {
+          tab.addEventListener('click', (e) => {
+            if (hasMoved) {
+              e.preventDefault();
+              e.stopPropagation();
+              return;
+            }
+            this.switchTab(index);
+          });
+        });
+      }
+
+      setupTabs() {
+        if (window.innerWidth > 989) {
+          this.tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+              this.switchTab(index);
+            });
+          });
+        }
+      }
+
+      switchTab(index) {
+        this.tabs.forEach((tab, i) => {
+          const isActive = i === index;
+          tab.setAttribute('aria-selected', isActive);
+        });
+
+        this.panels.forEach((panel, i) => {
+          if (i === index) {
+            panel.classList.add('active');
+          } else {
+            panel.classList.remove('active');
+          }
+        });
+
+        this.updateIndicator(index);
+        this.currentIndex = index;
+
+        if (window.innerWidth <= 989) {
+          const tab = this.tabs[index];
+          const container = this.navContainer;
+          const tabLeft = tab.offsetLeft;
+          const tabWidth = tab.offsetWidth;
+          const containerWidth = container.offsetWidth;
+          const scrollLeft = tabLeft - (containerWidth / 2) + (tabWidth / 2);
+
+          container.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      updateIndicator(index) {
+        if (!this.indicator || !this.tabs[index]) return;
+
+        const tab = this.tabs[index];
+        const navRect = this.nav.getBoundingClientRect();
+        const tabRect = tab.getBoundingClientRect();
+
+        const left = tabRect.left - navRect.left + (this.navContainer ? this.navContainer.scrollLeft : 0);
+        const width = tabRect.width;
+
+        this.indicator.style.left = left + 'px';
+        this.indicator.style.width = width + 'px';
+      }
+
+      setupKeyboardNavigation() {
+        this.tabs.forEach((tab, index) => {
+          tab.addEventListener('keydown', (e) => {
+            let newIndex = index;
+
+            if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              newIndex = (index + 1) % this.tabs.length;
+            } else if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              newIndex = (index - 1 + this.tabs.length) % this.tabs.length;
+            } else if (e.key === 'Home') {
+              e.preventDefault();
+              newIndex = 0;
+            } else if (e.key === 'End') {
+              e.preventDefault();
+              newIndex = this.tabs.length - 1;
+            } else {
+              return;
+            }
+
+            this.switchTab(newIndex);
+            this.tabs[newIndex].focus();
+          });
+        });
+      }
+    }
+
+    customElements.define('category-tabs-{{ ai_gen_id }}', AiCategoryTabs);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Category tabs with icons",
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by Category"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "info": "Short instruction shown under the heading.",
+      "default": "Click on each baby to explore products for different ages"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "label": "Maximum products per tab",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "default_tab",
+      "label": "Default active tab",
+      "info": "Which tab opens when the page loads. If that tab is disabled, the first enabled tab is used.",
+      "options": [
+        { "value": "1", "label": "Tab 1" },
+        { "value": "2", "label": "Tab 2" },
+        { "value": "3", "label": "Tab 3" },
+        { "value": "4", "label": "Tab 4" },
+        { "value": "5", "label": "Tab 5" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Tab 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "tab_1_enabled",
+      "label": "Enable tab 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_1_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_label",
+      "label": "Label",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_sublabel",
+      "label": "Sublabel",
+      "default": "Latest products"
+    },
+    {
+      "type": "collection",
+      "id": "tab_1_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_1_button_text",
+      "label": "Button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Tab 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "tab_2_enabled",
+      "label": "Enable tab 2",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_2_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_label",
+      "label": "Label",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_sublabel",
+      "label": "Sublabel",
+      "default": "Top picks"
+    },
+    {
+      "type": "collection",
+      "id": "tab_2_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_2_button_text",
+      "label": "Button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Tab 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "tab_3_enabled",
+      "label": "Enable tab 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_3_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_label",
+      "label": "Label",
+      "default": "Sale"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_sublabel",
+      "label": "Sublabel",
+      "default": "Special offers"
+    },
+    {
+      "type": "collection",
+      "id": "tab_3_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_3_button_text",
+      "label": "Button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Tab 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "tab_4_enabled",
+      "label": "Enable tab 4",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_4_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_label",
+      "label": "Label",
+      "default": "Featured"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_sublabel",
+      "label": "Sublabel",
+      "default": "Editor's choice"
+    },
+    {
+      "type": "collection",
+      "id": "tab_4_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_4_button_text",
+      "label": "Button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Tab 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "tab_5_enabled",
+      "label": "Enable tab 5",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "tab_5_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_label",
+      "label": "Label",
+      "default": "Trending"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_sublabel",
+      "label": "Sublabel",
+      "default": "Popular now"
+    },
+    {
+      "type": "collection",
+      "id": "tab_5_collection",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "tab_5_button_text",
+      "label": "Button text",
+      "default": "View Product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category tabs with icons"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,246 @@
+{% doc %}
+  @prompt
+    Create an animated auto-scrolling marquee ticker banner section with the following specifications: DESIGN: Dark background (near black or very dark navy/charcoal). Light colored text (white or off-white). Text items separated by small diamond dividers (♦). Compact height - just enough for one line of text with padding. Clean modern font matching the theme. BEHAVIOUR: Infinite seamless horizontal auto-scroll left with no gaps or jumps. Smooth continuous CSS animation loop (duplicate items for seamless scroll). No pause on hover - always scrolling. Smooth and performant using CSS keyframe animation only. CONTENT: Merchant can add multiple text items (6-8 items supported). Each item separated by diamond divider ♦. Default items: No Added Refined Sugar or Salt, No Preservatives, Age-Specific Formulation, Brand of Singapore, Powered by GentleMelt™, Freeze-Dried Nutrition. SETTINGS: Scroll speed control (slow/medium/fast). Background color picker. Text color picker. Option to add and edit each marquee text item. Divider symbol text field.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-marquee-ticker-{{ ai_gen_id }} {
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    overflow: hidden;
+    position: relative;
+    display: block;
+  }
+
+  .ai-marquee-ticker-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    width: fit-content;
+    {% if block.settings.scroll_speed == 'slow' %}
+      animation: ai-marquee-scroll-{{ ai_gen_id }} 60s linear infinite;
+    {% elsif block.settings.scroll_speed == 'medium' %}
+      animation: ai-marquee-scroll-{{ ai_gen_id }} 40s linear infinite;
+    {% else %}
+      animation: ai-marquee-scroll-{{ ai_gen_id }} 25s linear infinite;
+    {% endif %}
+  }
+
+  .ai-marquee-ticker-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 12px 0;
+  }
+
+  .ai-marquee-ticker-item-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0 20px;
+  }
+
+  .ai-marquee-ticker-divider-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    opacity: 0.6;
+    margin: 0 8px;
+    font-size: 10px;
+  }
+
+  @keyframes ai-marquee-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-marquee-ticker-item-{{ ai_gen_id }} {
+      font-size: 13px;
+      padding: 0 16px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-marquee-ticker-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-marquee-ticker-wrapper-{{ ai_gen_id }}">
+    <div class="ai-marquee-ticker-content-{{ ai_gen_id }}">
+      {% if block.settings.item_1 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_1 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_2 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_2 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_3 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_3 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_4 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_4 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_5 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_5 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_6 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_6 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_7 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_7 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_8 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_8 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+    </div>
+    <div class="ai-marquee-ticker-content-{{ ai_gen_id }}" aria-hidden="true">
+      {% if block.settings.item_1 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_1 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_2 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_2 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_3 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_3 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_4 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_4 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_5 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_5 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_6 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_6 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_7 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_7 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+      {% if block.settings.item_8 != blank %}
+        <span class="ai-marquee-ticker-item-{{ ai_gen_id }}">{{ block.settings.item_8 }}</span>
+        <span class="ai-marquee-ticker-divider-{{ ai_gen_id }}">{{ block.settings.divider_symbol }}</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee ticker",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "options": [
+        {
+          "value": "slow",
+          "label": "Slow"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "fast",
+          "label": "Fast"
+        }
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "text",
+      "id": "divider_symbol",
+      "label": "Divider symbol",
+      "default": "♦"
+    },
+    {
+      "type": "header",
+      "content": "Ticker items"
+    },
+    {
+      "type": "text",
+      "id": "item_1",
+      "label": "Item 1",
+      "default": "No Added Refined Sugar or Salt"
+    },
+    {
+      "type": "text",
+      "id": "item_2",
+      "label": "Item 2",
+      "default": "No Preservatives"
+    },
+    {
+      "type": "text",
+      "id": "item_3",
+      "label": "Item 3",
+      "default": "Age-Specific Formulation"
+    },
+    {
+      "type": "text",
+      "id": "item_4",
+      "label": "Item 4",
+      "default": "Brand of Singapore"
+    },
+    {
+      "type": "text",
+      "id": "item_5",
+      "label": "Item 5",
+      "default": "Powered by GentleMelt™"
+    },
+    {
+      "type": "text",
+      "id": "item_6",
+      "label": "Item 6",
+      "default": "Freeze-Dried Nutrition"
+    },
+    {
+      "type": "text",
+      "id": "item_7",
+      "label": "Item 7"
+    },
+    {
+      "type": "text",
+      "id": "item_8",
+      "label": "Item 8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee ticker"
+    }
+  ]
+}
+{% endschema %}

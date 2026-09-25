@@ -1,0 +1,539 @@
+{% doc %}
+  @prompt
+    Bundle product section: headline, text, 4 vertical cards (2 per row), each
+    with badge, subtitles, title, text, bullets, image, CTA. Per-card background
+    and text color overrides. Bottom helper bar with text + 3 shop-by-age buttons.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-bundle-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-bundle-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-bundle-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-bundle-headline-{{ ai_gen_id }} {
+    font-size: {{ block.settings.headline_size }}px;
+    color: {{ block.settings.headline_color }};
+    margin: 0 0 {{ block.settings.headline_spacing }}px;
+    font-weight: 700;
+  }
+
+  .ai-bundle-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ai-bundle-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: {{ block.settings.card_gap }}px;
+    margin-top: {{ block.settings.grid_spacing }}px;
+  }
+
+  .ai-bundle-card-{{ ai_gen_id }} {
+    background-color: var(--cardbg, {{ block.settings.card_background }});
+    border: {{ block.settings.card_border_thickness }}px solid {{ block.settings.card_border_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 {{ block.settings.card_shadow_vertical }}px {{ block.settings.card_shadow_blur }}px rgba(0, 0, 0, {{ block.settings.card_shadow_opacity | divided_by: 100.0 }});
+  }
+
+  .ai-bundle-card-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: {{ block.settings.card_padding }}px;
+    right: {{ block.settings.card_padding }}px;
+    background-color: {{ block.settings.badge_background }};
+    color: var(--cardtext, {{ block.settings.badge_text_color }});
+    padding: 6px 12px;
+    border-radius: {{ block.settings.badge_border_radius }}px;
+    font-size: {{ block.settings.badge_font_size }}px;
+    font-weight: 600;
+  }
+
+  .ai-bundle-card-subtitle-top-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: var(--cardtext, {{ block.settings.subtitle_color }});
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  .ai-bundle-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_title_size }}px;
+    color: var(--cardtext, {{ block.settings.card_title_color }});
+    margin: 0 0 8px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .ai-bundle-card-subtitle-bottom-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: var(--cardtext, {{ block.settings.subtitle_color }});
+    margin: 0 0 12px;
+    font-style: italic;
+  }
+
+  .ai-bundle-card-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_text_size }}px;
+    color: var(--cardtext, {{ block.settings.card_text_color }});
+    margin: 0 0 16px;
+    line-height: 1.6;
+  }
+
+  .ai-bundle-card-bullets-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+
+  .ai-bundle-card-bullets-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.bullet_size }}px;
+    color: var(--cardtext, {{ block.settings.bullet_color }});
+    margin-bottom: 8px;
+    padding-left: 24px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .ai-bundle-card-bullets-{{ ai_gen_id }} li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--cardtext, {{ block.settings.bullet_icon_color }});
+    font-weight: 700;
+  }
+
+  .ai-bundle-card-image-wrapper-{{ ai_gen_id }} {
+    margin: 0 0 20px;
+    border-radius: {{ block.settings.image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-bundle-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-bundle-card-image-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-bundle-card-image-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-bundle-card-cta-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: {{ block.settings.cta_background }};
+    color: {{ block.settings.cta_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.cta_border_radius }}px;
+    font-size: {{ block.settings.cta_font_size }}px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: auto;
+    border: {{ block.settings.cta_border_thickness }}px solid {{ block.settings.cta_border_color }};
+  }
+
+  .ai-bundle-card-cta-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.cta_hover_background }};
+    color: {{ block.settings.cta_hover_text_color }};
+  }
+
+  /* Bottom helper bar */
+  .ai-bundle-bottombar-{{ ai_gen_id }} {
+    background-color: {{ block.settings.bottombar_bg }};
+    border-radius: {{ block.settings.bottombar_radius }}px;
+    padding: {{ block.settings.bottombar_padding }}px;
+    margin-top: {{ block.settings.bottombar_spacing }}px;
+    text-align: center;
+  }
+  .ai-bundle-bottombar-text-{{ ai_gen_id }} {
+    color: {{ block.settings.bottombar_text_color }};
+    font-size: {{ block.settings.bottombar_text_size }}px;
+    line-height: 1.5;
+    margin: 0 0 16px;
+  }
+  .ai-bundle-bottombar-buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .ai-bundle-bottombar-btn-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 10px 22px;
+    background-color: {{ block.settings.bottombar_btn_bg }};
+    color: {{ block.settings.bottombar_btn_text_color }};
+    border: {{ block.settings.bottombar_btn_border_thickness }}px solid {{ block.settings.bottombar_btn_border_color }};
+    border-radius: {{ block.settings.bottombar_btn_radius }}px;
+    font-size: {{ block.settings.bottombar_btn_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-bundle-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.card_gap_mobile }}px;
+    }
+
+    .ai-bundle-headline-{{ ai_gen_id }} {
+      font-size: {{ block.settings.headline_size | times: 0.8 | round }}px;
+    }
+
+    .ai-bundle-card-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.card_title_size | times: 0.9 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<bundle-product-section-{{ ai_gen_id }} class="ai-bundle-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-bundle-container-{{ ai_gen_id }}">
+    {% if block.settings.headline != blank or block.settings.description != blank %}
+      <div class="ai-bundle-header-{{ ai_gen_id }}">
+        {% if block.settings.headline != blank %}
+          <h2 class="ai-bundle-headline-{{ ai_gen_id }}">{{ block.settings.headline }}</h2>
+        {% endif %}
+        {% if block.settings.description != blank %}
+          <div class="ai-bundle-text-{{ ai_gen_id }}">{{ block.settings.description }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-bundle-grid-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% liquid
+          assign badge_key = 'card_' | append: i | append: '_badge'
+          assign subtitle_top_key = 'card_' | append: i | append: '_subtitle_top'
+          assign title_key = 'card_' | append: i | append: '_title'
+          assign subtitle_bottom_key = 'card_' | append: i | append: '_subtitle_bottom'
+          assign text_key = 'card_' | append: i | append: '_text'
+          assign bullet_1_key = 'card_' | append: i | append: '_bullet_1'
+          assign bullet_2_key = 'card_' | append: i | append: '_bullet_2'
+          assign bullet_3_key = 'card_' | append: i | append: '_bullet_3'
+          assign image_key = 'card_' | append: i | append: '_image'
+          assign cta_text_key = 'card_' | append: i | append: '_cta_text'
+          assign cta_link_key = 'card_' | append: i | append: '_cta_link'
+          assign bg_key = 'card_' | append: i | append: '_bg'
+          assign textcolor_key = 'card_' | append: i | append: '_text_color'
+
+          assign badge = block.settings[badge_key]
+          assign subtitle_top = block.settings[subtitle_top_key]
+          assign title = block.settings[title_key]
+          assign subtitle_bottom = block.settings[subtitle_bottom_key]
+          assign text = block.settings[text_key]
+          assign bullet_1 = block.settings[bullet_1_key]
+          assign bullet_2 = block.settings[bullet_2_key]
+          assign bullet_3 = block.settings[bullet_3_key]
+          assign image = block.settings[image_key]
+          assign cta_text = block.settings[cta_text_key]
+          assign cta_link = block.settings[cta_link_key]
+          assign card_bg = block.settings[bg_key]
+          assign card_text_color = block.settings[textcolor_key]
+        %}
+
+        {%- capture card_style -%}
+          {%- if card_bg != blank -%}--cardbg: {{ card_bg }};{%- endif -%}
+          {%- if card_text_color != blank -%}--cardtext: {{ card_text_color }};{%- endif -%}
+        {%- endcapture -%}
+
+        <div class="ai-bundle-card-{{ ai_gen_id }}" style="{{ card_style | strip }}">
+          {% if badge != blank %}
+            <div class="ai-bundle-card-badge-{{ ai_gen_id }}">{{ badge }}</div>
+          {% endif %}
+
+          {% if subtitle_top != blank %}
+            <div class="ai-bundle-card-subtitle-top-{{ ai_gen_id }}">{{ subtitle_top }}</div>
+          {% endif %}
+
+          {% if title != blank %}
+            <h3 class="ai-bundle-card-title-{{ ai_gen_id }}">{{ title }}</h3>
+          {% endif %}
+
+          {% if subtitle_bottom != blank %}
+            <div class="ai-bundle-card-subtitle-bottom-{{ ai_gen_id }}">{{ subtitle_bottom }}</div>
+          {% endif %}
+
+          {% if text != blank %}
+            <div class="ai-bundle-card-description-{{ ai_gen_id }}">{{ text }}</div>
+          {% endif %}
+
+          {% if bullet_1 != blank or bullet_2 != blank or bullet_3 != blank %}
+            <ul class="ai-bundle-card-bullets-{{ ai_gen_id }}">
+              {% if bullet_1 != blank %}
+                <li>{{ bullet_1 }}</li>
+              {% endif %}
+              {% if bullet_2 != blank %}
+                <li>{{ bullet_2 }}</li>
+              {% endif %}
+              {% if bullet_3 != blank %}
+                <li>{{ bullet_3 }}</li>
+              {% endif %}
+            </ul>
+          {% endif %}
+
+          <div class="ai-bundle-card-image-wrapper-{{ ai_gen_id }}">
+            {% if image %}
+              <img
+                src="{{ image | image_url: width: 800 }}"
+                alt="{{ image.alt | escape }}"
+                loading="lazy"
+                width="{{ image.width }}"
+                height="{{ image.height }}"
+                class="ai-bundle-card-image-{{ ai_gen_id }}"
+              >
+            {% else %}
+              <div class="ai-bundle-card-image-placeholder-{{ ai_gen_id }}">
+                {{ 'product-1' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+
+          {% if cta_text != blank %}
+            <a
+              href="{{ cta_link | default: '#' }}"
+              class="ai-bundle-card-cta-{{ ai_gen_id }}"
+            >
+              {{ cta_text }}
+            </a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if block.settings.show_bottombar %}
+      <div class="ai-bundle-bottombar-{{ ai_gen_id }}">
+        {% if block.settings.bottombar_text != blank %}
+          <div class="ai-bundle-bottombar-text-{{ ai_gen_id }}">{{ block.settings.bottombar_text }}</div>
+        {% endif %}
+        <div class="ai-bundle-bottombar-buttons-{{ ai_gen_id }}">
+          {% for n in (1..3) %}
+            {% liquid
+              assign blabel_key = 'bottombar_btn_' | append: n | append: '_label'
+              assign blink_key = 'bottombar_btn_' | append: n | append: '_link'
+              assign blabel = block.settings[blabel_key]
+              assign blink = block.settings[blink_key]
+            %}
+            {% if blabel != blank %}
+              <a href="{{ blink | default: '#' }}" class="ai-bundle-bottombar-btn-{{ ai_gen_id }}">{{ blabel }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</bundle-product-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class BundleProductSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupCards();
+      }
+
+      setupCards() {
+        const cards = this.querySelectorAll('.ai-bundle-card-{{ ai_gen_id }}');
+        cards.forEach((card) => {
+          card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px)';
+            this.style.transition = 'transform 0.3s ease';
+          });
+          card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+          });
+        });
+      }
+    }
+
+    customElements.define('bundle-product-section-{{ ai_gen_id }}', BundleProductSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Bundle product section",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Section header" },
+    { "type": "inline_richtext", "id": "headline", "label": "Headline", "default": "Complete Bundle Package" },
+    { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Get everything you need in one convenient package</p>" },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "headline_size", "label": "Headline size", "min": 20, "max": 60, "step": 2, "unit": "px", "default": 36 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "headline_spacing", "label": "Headline spacing", "min": 8, "max": 40, "step": 4, "unit": "px", "default": 16 },
+    { "type": "range", "id": "header_spacing", "label": "Header bottom spacing", "min": 20, "max": 80, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "grid_spacing", "label": "Grid top spacing", "min": 0, "max": 60, "step": 4, "unit": "px", "default": 0 },
+
+    { "type": "header", "content": "Section layout" },
+    { "type": "range", "id": "container_width", "label": "Container width", "min": 800, "max": 1600, "step": 100, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "section_padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "section_padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 60 },
+    { "type": "range", "id": "section_padding_horizontal", "label": "Padding horizontal", "min": 0, "max": 60, "step": 4, "unit": "px", "default": 20 },
+    { "type": "range", "id": "card_gap", "label": "Card gap desktop", "min": 12, "max": 60, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "card_gap_mobile", "label": "Card gap mobile", "min": 12, "max": 40, "step": 4, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#ffffff" },
+    { "type": "color", "id": "headline_color", "label": "Headline", "default": "#1b2e5c" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1b2e5c" },
+
+    { "type": "header", "content": "Card style" },
+    { "type": "color", "id": "card_background", "label": "Background (default for all cards)", "default": "#ffffff" },
+    { "type": "color", "id": "card_border_color", "label": "Border color", "default": "#e0e0e0" },
+    { "type": "range", "id": "card_border_thickness", "label": "Border thickness", "min": 0, "max": 4, "step": 1, "unit": "px", "default": 1 },
+    { "type": "range", "id": "card_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_padding", "label": "Padding", "min": 16, "max": 48, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "card_shadow_vertical", "label": "Shadow vertical offset", "min": 0, "max": 20, "step": 2, "unit": "px", "default": 4 },
+    { "type": "range", "id": "card_shadow_blur", "label": "Shadow blur", "min": 0, "max": 40, "step": 4, "unit": "px", "default": 12 },
+    { "type": "range", "id": "card_shadow_opacity", "label": "Shadow opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 10 },
+
+    { "type": "header", "content": "Badge style" },
+    { "type": "color", "id": "badge_background", "label": "Background", "default": "#910f3f" },
+    { "type": "color", "id": "badge_text_color", "label": "Text", "default": "#ffffff" },
+    { "type": "range", "id": "badge_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "badge_font_size", "label": "Font size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 12 },
+
+    { "type": "header", "content": "Card text style" },
+    { "type": "color", "id": "subtitle_color", "label": "Subtitle", "default": "#666666" },
+    { "type": "range", "id": "subtitle_size", "label": "Subtitle size", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 12 },
+    { "type": "color", "id": "card_title_color", "label": "Title", "default": "#1b2e5c" },
+    { "type": "range", "id": "card_title_size", "label": "Title size", "min": 16, "max": 32, "step": 2, "unit": "px", "default": 22 },
+    { "type": "color", "id": "card_text_color", "label": "Description", "default": "#333333" },
+    { "type": "range", "id": "card_text_size", "label": "Description size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "bullet_color", "label": "Bullet text", "default": "#333333" },
+    { "type": "color", "id": "bullet_icon_color", "label": "Bullet icon", "default": "#910f3f" },
+    { "type": "range", "id": "bullet_size", "label": "Bullet size", "min": 12, "max": 18, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Image style" },
+    { "type": "range", "id": "image_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
+
+    { "type": "header", "content": "CTA button style" },
+    { "type": "color", "id": "cta_background", "label": "Background", "default": "#192e59" },
+    { "type": "color", "id": "cta_text_color", "label": "Text", "default": "#ffffff" },
+    { "type": "color", "id": "cta_hover_background", "label": "Hover background", "default": "#910f3f" },
+    { "type": "color", "id": "cta_hover_text_color", "label": "Hover text", "default": "#ffffff" },
+    { "type": "color", "id": "cta_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "range", "id": "cta_border_thickness", "label": "Border thickness", "min": 0, "max": 4, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "cta_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "cta_font_size", "label": "Font size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Card 1" },
+    { "type": "text", "id": "card_1_badge", "label": "Badge", "default": "Best Value" },
+    { "type": "text", "id": "card_1_subtitle_top", "label": "Top subtitle", "default": "Premium" },
+    { "type": "text", "id": "card_1_title", "label": "Title", "default": "Complete Starter Kit" },
+    { "type": "text", "id": "card_1_subtitle_bottom", "label": "Bottom subtitle", "default": "Everything you need to get started" },
+    { "type": "textarea", "id": "card_1_text", "label": "Description", "default": "Our most popular bundle includes all essential items for a complete experience." },
+    { "type": "text", "id": "card_1_bullet_1", "label": "Bullet point 1", "default": "Premium quality materials" },
+    { "type": "text", "id": "card_1_bullet_2", "label": "Bullet point 2", "default": "Free shipping included" },
+    { "type": "text", "id": "card_1_bullet_3", "label": "Bullet point 3", "default": "30-day money back guarantee" },
+    { "type": "image_picker", "id": "card_1_image", "label": "Image" },
+    { "type": "text", "id": "card_1_cta_text", "label": "CTA text", "default": "Shop Now" },
+    { "type": "url", "id": "card_1_cta_link", "label": "CTA link" },
+    { "type": "color", "id": "card_1_bg", "label": "Card background (optional override)" },
+    { "type": "color", "id": "card_1_text_color", "label": "Card text color (optional override)" },
+
+    { "type": "header", "content": "Card 2" },
+    { "type": "text", "id": "card_2_badge", "label": "Badge", "default": "Popular" },
+    { "type": "text", "id": "card_2_subtitle_top", "label": "Top subtitle", "default": "Essential" },
+    { "type": "text", "id": "card_2_title", "label": "Title", "default": "Basic Bundle" },
+    { "type": "text", "id": "card_2_subtitle_bottom", "label": "Bottom subtitle", "default": "Perfect for beginners" },
+    { "type": "textarea", "id": "card_2_text", "label": "Description", "default": "Get started with our carefully curated basic bundle at an affordable price." },
+    { "type": "text", "id": "card_2_bullet_1", "label": "Bullet point 1", "default": "High-quality essentials" },
+    { "type": "text", "id": "card_2_bullet_2", "label": "Bullet point 2", "default": "Easy to use" },
+    { "type": "text", "id": "card_2_bullet_3", "label": "Bullet point 3", "default": "Great value for money" },
+    { "type": "image_picker", "id": "card_2_image", "label": "Image" },
+    { "type": "text", "id": "card_2_cta_text", "label": "CTA text", "default": "Shop Now" },
+    { "type": "url", "id": "card_2_cta_link", "label": "CTA link" },
+    { "type": "color", "id": "card_2_bg", "label": "Card background (optional override)" },
+    { "type": "color", "id": "card_2_text_color", "label": "Card text color (optional override)" },
+
+    { "type": "header", "content": "Card 3" },
+    { "type": "text", "id": "card_3_badge", "label": "Badge", "default": "New" },
+    { "type": "text", "id": "card_3_subtitle_top", "label": "Top subtitle", "default": "Advanced" },
+    { "type": "text", "id": "card_3_title", "label": "Title", "default": "Pro Bundle" },
+    { "type": "text", "id": "card_3_subtitle_bottom", "label": "Bottom subtitle", "default": "For professionals" },
+    { "type": "textarea", "id": "card_3_text", "label": "Description", "default": "Advanced features and premium accessories for the ultimate experience." },
+    { "type": "text", "id": "card_3_bullet_1", "label": "Bullet point 1", "default": "Professional-grade quality" },
+    { "type": "text", "id": "card_3_bullet_2", "label": "Bullet point 2", "default": "Extended warranty" },
+    { "type": "text", "id": "card_3_bullet_3", "label": "Bullet point 3", "default": "Priority support" },
+    { "type": "image_picker", "id": "card_3_image", "label": "Image" },
+    { "type": "text", "id": "card_3_cta_text", "label": "CTA text", "default": "Shop Now" },
+    { "type": "url", "id": "card_3_cta_link", "label": "CTA link" },
+    { "type": "color", "id": "card_3_bg", "label": "Card background (optional override)" },
+    { "type": "color", "id": "card_3_text_color", "label": "Card text color (optional override)" },
+
+    { "type": "header", "content": "Card 4" },
+    { "type": "text", "id": "card_4_badge", "label": "Badge", "default": "Limited" },
+    { "type": "text", "id": "card_4_subtitle_top", "label": "Top subtitle", "default": "Deluxe" },
+    { "type": "text", "id": "card_4_title", "label": "Title", "default": "Ultimate Bundle" },
+    { "type": "text", "id": "card_4_subtitle_bottom", "label": "Bottom subtitle", "default": "The complete collection" },
+    { "type": "textarea", "id": "card_4_text", "label": "Description", "default": "Everything we offer in one comprehensive package with exclusive bonuses." },
+    { "type": "text", "id": "card_4_bullet_1", "label": "Bullet point 1", "default": "All products included" },
+    { "type": "text", "id": "card_4_bullet_2", "label": "Bullet point 2", "default": "Exclusive accessories" },
+    { "type": "text", "id": "card_4_bullet_3", "label": "Bullet point 3", "default": "Lifetime support" },
+    { "type": "image_picker", "id": "card_4_image", "label": "Image" },
+    { "type": "text", "id": "card_4_cta_text", "label": "CTA text", "default": "Shop Now" },
+    { "type": "url", "id": "card_4_cta_link", "label": "CTA link" },
+    { "type": "color", "id": "card_4_bg", "label": "Card background (optional override)" },
+    { "type": "color", "id": "card_4_text_color", "label": "Card text color (optional override)" },
+
+    { "type": "header", "content": "Bottom helper bar" },
+    { "type": "checkbox", "id": "show_bottombar", "label": "Show bottom bar", "default": true },
+    { "type": "richtext", "id": "bottombar_text", "label": "Text", "default": "<p>Not sure where to start? Shop by your child's age and we'll match you to the right snacks automatically.</p>" },
+    { "type": "color", "id": "bottombar_bg", "label": "Bar background", "default": "#dfe1e5" },
+    { "type": "color", "id": "bottombar_text_color", "label": "Text color", "default": "#192e59" },
+    { "type": "range", "id": "bottombar_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "bottombar_radius", "label": "Bar border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "bottombar_padding", "label": "Bar padding", "min": 12, "max": 60, "step": 4, "unit": "px", "default": 28 },
+    { "type": "range", "id": "bottombar_spacing", "label": "Space above bar", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 40 },
+    { "type": "color", "id": "bottombar_btn_bg", "label": "Button background", "default": "#ffffff" },
+    { "type": "color", "id": "bottombar_btn_text_color", "label": "Button text", "default": "#192e59" },
+    { "type": "color", "id": "bottombar_btn_border_color", "label": "Button border color", "default": "#192e59" },
+    { "type": "range", "id": "bottombar_btn_border_thickness", "label": "Button border thickness", "min": 0, "max": 4, "step": 1, "unit": "px", "default": 1 },
+    { "type": "range", "id": "bottombar_btn_radius", "label": "Button border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "bottombar_btn_font_size", "label": "Button font size", "min": 11, "max": 18, "step": 1, "unit": "px", "default": 13 },
+    { "type": "text", "id": "bottombar_btn_1_label", "label": "Button 1 label", "default": "Shop 6M+" },
+    { "type": "url", "id": "bottombar_btn_1_link", "label": "Button 1 link" },
+    { "type": "text", "id": "bottombar_btn_2_label", "label": "Button 2 label", "default": "Shop 12M+" },
+    { "type": "url", "id": "bottombar_btn_2_link", "label": "Button 2 link" },
+    { "type": "text", "id": "bottombar_btn_3_label", "label": "Button 3 label", "default": "Shop 18M+" },
+    { "type": "url", "id": "bottombar_btn_3_link", "label": "Button 3 link" }
+  ],
+  "presets": [
+    { "name": "Bundle product section" }
+  ]
+}
+{% endschema %}

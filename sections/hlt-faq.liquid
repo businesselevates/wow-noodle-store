@@ -1,0 +1,69 @@
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-faq hlt-faq--{{ section.settings.layout }}"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hlt__inner hlt-faq__grid">
+    <div class="hlt-stack hlt-faq__head" data-hlt-stagger>
+      {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="hlt-body" data-hlt-reveal>{{ section.settings.text }}</div>{%- endif -%}
+      {%- if section.settings.image != blank -%}
+        <div class="hlt-media hlt-faq__img" style="--hlt-ratio: 4 / 3;" data-hlt-reveal="zoom">
+          {{ section.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 700, 900', sizes: '(min-width: 990px) 35vw, 100vw' }}
+        </div>
+      {%- endif -%}
+    </div>
+    <div class="hlt-faq__list" data-hlt-reveal>
+      {%- for block in section.blocks -%}
+        {%- if block.settings.show -%}
+          <details class="hlt-acc" {{ block.shopify_attributes }}>
+            <summary>{{ block.settings.question }}<span class="hlt-acc__icon" aria-hidden="true"></span></summary>
+            <div class="hlt-acc__body"><div class="hlt-acc__content hlt-body">{{ block.settings.answer }}</div></div>
+          </details>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-faq__grid { display: grid; gap: 32px; }
+  .hlt-faq--stacked .hlt-faq__grid { max-width: 880px; }
+  .hlt-faq--stacked .hlt-faq__head { text-align: center; }
+  .hlt-faq__list .hlt-acc summary { font-size: clamp(18px, 1.6vw, 21px); padding: 22px 2px; }
+  @media (min-width: 990px) {
+    .hlt-faq--split .hlt-faq__grid { grid-template-columns: 4fr 7fr; gap: 72px; align-items: start; }
+    .hlt-faq--split .hlt-faq__head { position: sticky; top: calc(var(--header-height, 80px) + 24px); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT FAQ",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 30,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions parents ask" },
+    { "type": "richtext", "id": "text", "label": "Text under the heading" },
+    { "type": "image_picker", "id": "image", "label": "Image under the heading" },
+    { "type": "select", "id": "layout", "label": "Layout", "default": "split", "options": [ { "value": "split", "label": "Heading left, questions right" }, { "value": "stacked", "label": "Centred, stacked" } ] },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "checkbox", "id": "show", "label": "Show this question", "info": "Turn off for answers still waiting on HLT One.", "default": true },
+        { "type": "text", "id": "question", "label": "Question", "default": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "HLT FAQ", "blocks": [ { "type": "question" }, { "type": "question" } ] } ]
+}
+{% endschema %}

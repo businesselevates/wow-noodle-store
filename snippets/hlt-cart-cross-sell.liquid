@@ -1,0 +1,52 @@
+{%- comment -%}
+  One "Add to your order" card for the cart page.
+
+  Usage:
+  {% render 'hlt-cart-cross-sell', product: some_product, add_label: 'Add' %}
+
+  Renders nothing unless the product has an available variant, so an unset or
+  sold-out picker simply disappears.
+{%- endcomment -%}
+
+{%- liquid
+  assign hlt_x_variant = nil
+  if product != blank
+    assign hlt_x_variant = product.selected_or_first_available_variant
+  endif
+  assign hlt_x_label = add_label | default: 'Add'
+-%}
+
+{%- if hlt_x_variant and hlt_x_variant.available -%}
+  <article class="hlt-cart__x" data-hlt-cart-x>
+    <a class="hlt-cart__x-media" href="{{ product.url }}" tabindex="-1" aria-hidden="true">
+      {%- if product.featured_image != blank -%}
+        {{
+          product.featured_image
+          | image_url: width: 200
+          | image_tag: loading: 'lazy', widths: '64, 128, 200', sizes: '64px', alt: product.title
+        }}
+      {%- else -%}
+        {{ 'product-3' | placeholder_svg_tag: 'hlt-placeholder' }}
+      {%- endif -%}
+    </a>
+
+    <div class="hlt-cart__x-info">
+      <div class="hlt-cart__x-text">
+        <a class="hlt-cart__x-title" href="{{ product.url }}">{{ product.title | escape }}</a>
+        <span class="hlt-cart__x-price">{{ hlt_x_variant.price | money }}</span>
+      </div>
+
+      <button
+        type="button"
+        class="hlt-cart__x-add"
+        data-hlt-cart-add="{{ hlt_x_variant.id }}"
+        aria-label="{{ hlt_x_label }} {{ product.title | escape }}"
+      >
+        {% render 'hlt-icon', name: 'plus', size: 16 %}
+        <span>{{ hlt_x_label }}</span>
+      </button>
+    </div>
+
+    <p class="hlt-cart__x-error" role="alert" data-hlt-cart-error hidden></p>
+  </article>
+{%- endif -%}

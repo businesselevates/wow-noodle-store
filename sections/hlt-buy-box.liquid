@@ -1,0 +1,1119 @@
+{%- liquid
+  comment
+    The section normally follows the page it sits on, so one template serves
+    every product. Picking a product in the settings pins it to that one
+    instead, which is what a landing page outside /products/... needs.
+  endcomment
+  assign page_product = product
+  assign product = section.settings.product
+  if product == blank
+    assign product = page_product
+  endif
+
+  comment
+    'bundle' is the age + pack buy box. 'simple' is the same page for a product
+    that has no such options: the variants become one row of chips, or nothing
+    at all when there is only one.
+  endcomment
+  assign buy_mode = section.settings.buy_mode
+  if buy_mode == blank
+    assign buy_mode = 'bundle'
+  endif
+
+  assign prefix = section.settings.price_prefix
+  assign anchor = section.settings.anchor_id | default: 'hlt-buy-box'
+  assign age_blocks = section.blocks | where: 'type', 'age'
+  if buy_mode == 'simple'
+    assign age_blocks = section.blocks | where: 'type', 'hlt-no-such-block'
+  endif
+  assign first_age = age_blocks.first
+  assign use_product_images = section.settings.gallery_from_product
+  assign variant_image_ids = ''
+  if product != blank
+    for v in product.variants
+      if v.image != blank
+        assign variant_image_ids = variant_image_ids | append: ',' | append: v.image.id
+      endif
+    endfor
+    assign variant_image_ids = variant_image_ids | append: ','
+  endif
+
+  comment
+    Bundle mode keeps each variant's own shot for the main image, so those are
+    held back from the tiles. Simple mode has no per-variant main image, so
+    every product image is a tile.
+  endcomment
+  assign skip_image_ids = variant_image_ids
+  if buy_mode == 'simple'
+    assign skip_image_ids = ''
+  endif
+
+  assign bb_title = section.settings.title
+  if bb_title == blank and product != blank
+    assign bb_title = product.title
+  endif
+-%}
+
+{%- capture bundle_json -%}
+{
+  "addLabel": {{ section.settings.add_label | json }},
+  "soldOutLabel": {{ section.settings.sold_out_label | json }},
+  "ages": [
+    {%- if buy_mode == 'simple' -%}
+      {%- comment -%}
+        One entry per variant, with the same variant under both keys. The buy
+        box script reads this shape either way, so nothing in it has to know
+        which mode the section is in.
+      {%- endcomment -%}
+      {%- if product != blank -%}
+        {%- for v in product.variants -%}
+          {%- liquid
+            assign v_key = 'v' | append: v.id
+            assign v_compare = nil
+            assign v_save = nil
+            if v.compare_at_price > v.price
+              assign v_compare = v.compare_at_price
+              assign v_save = v.compare_at_price | minus: v.price
+            endif
+          -%}
+          {%- capture v_money -%}
+            "id": {{ v.id }},
+            "available": {{ v.available }},
+            "price": {{ v.price | money_without_currency | json }},
+            "compare": {% if v_compare %}{{ v_compare | money_without_currency | json }}{% else %}null{% endif %},
+            "save": {% if v_save %}{{ v_save | money_without_currency | json }}{% else %}null{% endif %}
+          {%- endcapture -%}
+          {
+            "key": {{ v_key | json }},
+            "standard": { {{ v_money }} },
+            "value": { {{ v_money }} }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- else -%}
+    {%- for age in age_blocks -%}
+      {%- liquid
+        assign v_std = nil
+        assign v_val = nil
+        if product != blank
+          for v in product.variants
+            if v.option1 == age.settings.option_value and v.option2 == section.settings.standard_value
+              assign v_std = v
+            endif
+            if v.option1 == age.settings.option_value and v.option2 == section.settings.value_value
+              assign v_val = v
+            endif
+          endfor
+        endif
+      -%}
+      {
+        "key": {{ age.id | json }},
+        "standard": {
+          "id": {% if v_std %}{{ v_std.id }}{% else %}null{% endif %},
+          "available": {% if v_std %}{{ v_std.available }}{% else %}false{% endif %},
+          "price": {% if v_std %}{{ v_std.price | money_without_currency | json }}{% else %}{{ age.settings.fallback_standard | json }}{% endif %},
+          "compare": null,
+          "save": null
+        },
+        "value": {
+          "id": {% if v_val %}{{ v_val.id }}{% else %}null{% endif %},
+          "available": {% if v_val %}{{ v_val.available }}{% else %}false{% endif %},
+          "price": {% if v_val %}{{ v_val.price | money_without_currency | json }}{% else %}{{ age.settings.fallback_value | json }}{% endif %},
+          "compare": null,
+          "save": null
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+    {%- endif -%}
+  ]
+}
+{%- endcapture -%}
+
+<section
+  id="{{ anchor }}"
+  class="hlt hlt--{{ section.settings.background }} hlt-bb"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+  data-hlt-buy-box
+  tabindex="-1"
+>
+  <script type="application/json" data-hlt-bundle-data>{{ bundle_json }}</script>
+
+  <div class="hlt__inner hlt-bb__grid">
+    {%- comment -%} ---------------- Gallery ---------------- {%- endcomment -%}
+    <div class="hlt-bb__gallery" data-hlt-gallery data-hlt-reveal="left">
+      <div class="hlt-bb__stage">
+        <div class="hlt-bb__track" data-hlt-gallery-track>
+          {%- if section.settings.age_image_first -%}
+            {%- for age in age_blocks -%}
+              {%- liquid
+                assign img_std = blank
+                assign img_val = blank
+                if use_product_images and product != blank
+                  for v in product.variants
+                    if v.option1 == age.settings.option_value and v.image != blank
+                      if v.option2 == section.settings.standard_value
+                        assign img_std = v.image
+                      elsif v.option2 == section.settings.value_value
+                        assign img_val = v.image
+                      endif
+                    endif
+                  endfor
+                endif
+                if img_std == blank
+                  assign img_std = age.settings.image
+                endif
+              -%}
+              <figure class="hlt-bb__slide" data-hlt-slide="age-{{ age.id }}" data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %}>
+                <div class="hlt-media" style="--hlt-ratio: 1 / 1;"{% if img_val != blank %} data-hlt-size-only="standard" data-hlt-age-only="{{ age.id }}"{% endif %}>
+                  {%- if img_std != blank -%}
+                    {{ img_std | image_url: width: 1400 | image_tag: loading: 'eager', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'hlt-placeholder' }}
+                  {%- endif -%}
+                </div>
+                {%- if img_val != blank -%}
+                  <div class="hlt-media" style="--hlt-ratio: 1 / 1;" data-hlt-size-only="value" data-hlt-age-only="{{ age.id }}" hidden>
+                    {{ img_val | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+                  </div>
+                {%- endif -%}
+                {%- if age.settings.image_text_standard != blank -%}
+                  <figcaption class="hlt-bb__caption" data-hlt-size-only="standard" data-hlt-age-only="{{ age.id }}">{{ age.settings.image_text_standard }}</figcaption>
+                {%- endif -%}
+                {%- if age.settings.image_text_value != blank -%}
+                  <figcaption class="hlt-bb__caption" data-hlt-size-only="value" data-hlt-age-only="{{ age.id }}" hidden>{{ age.settings.image_text_value }}</figcaption>
+                {%- endif -%}
+              </figure>
+            {%- endfor -%}
+          {%- endif -%}
+
+          {%- assign hlt_tile_n = 0 -%}
+          {%- if use_product_images and product != blank -%}
+            {%- for image in product.images -%}
+              {%- assign needle = ',' | append: image.id | append: ',' -%}
+              {%- unless skip_image_ids contains needle -%}
+                {%- assign hlt_tile_n = hlt_tile_n | plus: 1 -%}
+                <figure class="hlt-bb__slide{% if hlt_tile_n > 4 %} hlt-bb__slide--extra{% endif %}" data-hlt-slide="prod-{{ image.id }}">
+                  <div class="hlt-media" style="--hlt-ratio: 1 / 1;">
+                    {{ image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+                  </div>
+                  {%- if section.settings.tile_captions and image.alt != blank -%}
+                    <figcaption class="hlt-bb__caption">{{ image.alt }}</figcaption>
+                  {%- endif -%}
+                </figure>
+              {%- endunless -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'gallery_image' and block.settings.show -%}
+              {%- if use_product_images and block.settings.style != 'quote' -%}{%- continue -%}{%- endif -%}
+              {%- liquid
+                assign hlt_tile_n = hlt_tile_n | plus: 1
+                assign caption = block.settings.image_text
+                if block.settings.use_pending_text and block.settings.pending_text != blank
+                  assign caption = block.settings.pending_text
+                endif
+              -%}
+              <figure
+                class="hlt-bb__slide{% if block.settings.style == 'quote' %} hlt-bb__slide--quote{% endif %}{% if hlt_tile_n > 4 %} hlt-bb__slide--extra{% endif %}"
+                data-hlt-slide="{{ block.id }}"
+                {% if block.settings.only_for == 'value' %}data-hlt-size-only="value" hidden{% endif %}
+                {{ block.shopify_attributes }}
+              >
+                {%- if block.settings.style == 'quote' -%}
+                  <div class="hlt-media hlt-bb__quote" style="--hlt-ratio: 1 / 1;">
+                    <div class="hlt-bb__quote-inner">
+                      <span class="hlt-bb__stars" aria-hidden="true">✦</span>
+                      <p class="hlt-bb__quote-text">{{ caption }}</p>
+                      {%- if block.settings.image != blank -%}
+                        {{ block.settings.image | image_url: width: 400 | image_tag: class: 'hlt-bb__quote-img', loading: 'lazy' }}
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- else -%}
+                  <div class="hlt-media" style="--hlt-ratio: 1 / 1;">
+                    {%- if block.settings.video != blank -%}
+                      {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1100x' }}
+                    {%- elsif block.settings.image != blank -%}
+                      {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+                    {%- else -%}
+                      {{ 'product-2' | placeholder_svg_tag: 'hlt-placeholder' }}
+                    {%- endif -%}
+                  </div>
+                  {%- if section.settings.tile_captions and caption != blank -%}<figcaption class="hlt-bb__caption">{{ caption }}</figcaption>{%- endif -%}
+                {%- endif -%}
+              </figure>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="hlt-bb__dots" data-hlt-dots aria-hidden="true"></div>
+      </div>
+
+      {%- if hlt_tile_n > 4 -%}
+        <button type="button" class="hlt-bb__view-all" data-hlt-view-all data-hlt-label-more="{{ section.settings.view_all_label | default: 'View all' | escape }}" data-hlt-label-less="{{ section.settings.view_less_label | default: 'View less' | escape }}" aria-expanded="false">
+          <span data-hlt-view-all-label>{{ section.settings.view_all_label | default: 'View all' }}</span>
+        </button>
+      {%- endif -%}
+
+      <div class="hlt-bb__thumbs" role="list">
+        {%- if section.settings.age_image_first -%}
+          {%- for age in age_blocks -%}
+            {%- liquid
+              assign thumb_image = blank
+              if use_product_images and product != blank
+                for v in product.variants
+                  if v.option1 == age.settings.option_value and v.option2 == section.settings.standard_value and v.image != blank
+                    assign thumb_image = v.image
+                    break
+                  endif
+                endfor
+              endif
+              if thumb_image == blank
+                assign thumb_image = age.settings.image
+              endif
+            -%}
+            <button type="button" class="hlt-bb__thumb" role="listitem" data-hlt-thumb="age-{{ age.id }}" data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %} aria-label="Image {{ forloop.index }}">
+              {%- if thumb_image != blank -%}{{ thumb_image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}{%- else -%}{{ 'product-1' | placeholder_svg_tag: 'hlt-placeholder' }}{%- endif -%}
+            </button>
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if use_product_images and product != blank -%}
+          {%- for image in product.images -%}
+            {%- assign needle = ',' | append: image.id | append: ',' -%}
+            {%- unless skip_image_ids contains needle -%}
+              <button type="button" class="hlt-bb__thumb" role="listitem" data-hlt-thumb="prod-{{ image.id }}" aria-label="Image">
+                {{ image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+            {%- endunless -%}
+          {%- endfor -%}
+        {%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'gallery_image' and block.settings.show -%}
+            {%- if use_product_images and block.settings.style != 'quote' -%}{%- continue -%}{%- endif -%}
+            <button type="button" class="hlt-bb__thumb{% if block.settings.style == 'quote' %} hlt-bb__thumb--quote{% endif %}" role="listitem" data-hlt-thumb="{{ block.id }}" {% if block.settings.only_for == 'value' %}data-hlt-size-only="value" hidden{% endif %} aria-label="Image">
+              {%- if block.settings.style == 'quote' -%}
+                <span aria-hidden="true">“ ”</span>
+              {%- elsif block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
+              {%- else -%}
+                {{ 'product-2' | placeholder_svg_tag: 'hlt-placeholder' }}
+              {%- endif -%}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} ---------------- Right column ----------------
+      One card on desktop (title block + buy box, sticky). On phones the wrapper
+      uses display: contents so the title still sits above the gallery. {%- endcomment -%}
+    <div class="hlt-bb__side">
+    <div class="hlt-bb__card">
+    {%- comment -%} ---------------- Title block ----------------
+      Sits above the gallery on phones and beside it on desktop (see the
+      grid areas in hlt-buy-box.css). {%- endcomment -%}
+    <div class="hlt-bb__head hlt-stack" style="--hlt-gap: 12px;" data-hlt-reveal="right">
+    <div class="hlt-stack" style="--hlt-gap: 12px;">
+      {%- if section.settings.show_rating or section.settings.show_badge2 -%}
+        <ul class="hlt-bb__pills">
+          {%- if section.settings.show_rating -%}
+            <li class="hlt-bb__pill">
+              <span class="hlt-bb__pill-stars" aria-hidden="true">
+                {%- for i in (1..5) -%}
+                  {%- if i <= section.settings.rating_value -%}
+                    {% render 'hlt-icon', name: 'star', size: 15 %}
+                  {%- else -%}
+                    <span class="is-empty">{% render 'hlt-icon', name: 'star', size: 15 %}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </span>
+              {%- if section.settings.rating_text != blank -%}<span>{{ section.settings.rating_text }}</span>{%- endif -%}
+            </li>
+          {%- endif -%}
+          {%- if section.settings.show_badge2 and section.settings.badge2_text != blank -%}
+            <li class="hlt-bb__pill">{{ section.settings.badge2_text }}</li>
+          {%- endif -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.show_eyebrow and section.settings.eyebrow != blank -%}<p class="hlt-overline">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      {%- if bb_title != blank -%}<h2 class="hlt-h2 hlt-bb__title" style="--hlt-title-size: {{ section.settings.title_size }}px;">{{ bb_title }}</h2>{%- endif -%}
+      {%- if section.settings.body != blank -%}<div class="hlt-body">{{ section.settings.body }}</div>{%- endif -%}
+    </div>
+
+    {%- assign tag_blocks = section.blocks | where: 'type', 'tag' -%}
+    {%- if tag_blocks.size > 0 -%}
+      <ul class="hlt-tags">
+        {%- for tag in tag_blocks -%}
+          {%- if tag.settings.text != blank -%}
+            <li class="hlt-tag" {{ tag.shopify_attributes }}>{% render 'hlt-icon', name: tag.settings.icon, size: 17 %}{{ tag.settings.text }}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      {%- assign tags = section.settings.tags | split: '|' -%}
+      {%- if tags.size > 0 -%}
+        <ul class="hlt-tags">
+          {%- for t in tags -%}
+            {%- assign tt = t | strip -%}
+            {%- if tt != blank -%}<li class="hlt-tag">{% render 'hlt-icon', name: 'check', size: 17 %}{{ tt }}</li>{%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    {%- endif -%}
+    </div>
+
+    {%- comment -%} ---------------- Buy box ---------------- {%- endcomment -%}
+    <div class="hlt-bb__panel" data-hlt-reveal="right">
+      <div class="hlt-bb__panel-inner hlt-stack" style="--hlt-gap: 26px;">
+        {%- if product == blank and request.design_mode -%}
+          <p class="hlt-bb__notice">This section found no product. Put it on a product page, or pick one in its settings, so "Add to cart" works.</p>
+        {%- endif -%}
+
+        {%- if buy_mode == 'simple' and product != blank -%}
+          {%- liquid
+            assign solo_variant = product.selected_or_first_available_variant
+            assign variant_label = section.settings.variant_label
+            if variant_label == blank
+              assign variant_label = product.options.first
+            endif
+            assign solo_bullets = section.settings.solo_bullets | newline_to_br | split: '<br />'
+            assign solo_has_head = false
+            if section.settings.solo_title != blank or section.settings.solo_line != blank
+              assign solo_has_head = true
+            endif
+          -%}
+
+          {%- comment -%}
+            Same rhythm as bundle mode: the choice first, then one panel that
+            carries the price, the saving and what the money buys. With one
+            variant the chips have nothing to offer, so only the panel shows.
+          {%- endcomment -%}
+          {%- if product.variants.size > 1 -%}
+            <div class="hlt-bb__group">
+              <p class="hlt-bb__label">{{ variant_label }}</p>
+              <div class="hlt-bb__chips" role="group" aria-label="{{ variant_label | escape }}">
+                {%- for v in product.variants -%}
+                  <button type="button" class="hlt-bb__chip" data-hlt-age="v{{ v.id }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <strong>{{ v.title }}</strong>
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          <div class="hlt-bb__solo">
+            <span class="hlt-bb__card-save hlt-bb__solo-save" data-hlt-save-wrap hidden>{{ section.settings.save_label | default: 'Save' }} {{ prefix }}<span data-hlt-save></span></span>
+
+            {%- if solo_has_head -%}
+              <div class="hlt-bb__card-head">
+                <div>
+                  {%- if section.settings.solo_title != blank -%}<p class="hlt-h4">{{ section.settings.solo_title }}</p>{%- endif -%}
+                  {%- if section.settings.solo_line != blank -%}<p class="hlt-bb__card-line">{{ section.settings.solo_line }}</p>{%- endif -%}
+                </div>
+                <div class="hlt-bb__card-price">
+                  <p class="hlt-bb__price">{{ prefix }}<span data-hlt-btn-price>{{ solo_variant.price | money_without_currency }}</span></p>
+                  <p class="hlt-bb__was" data-hlt-compare-wrap hidden>{{ section.settings.compare_label | default: 'was' }} {{ prefix }}<span data-hlt-compare></span></p>
+                </div>
+              </div>
+            {%- else -%}
+              <div class="hlt-bb__solo-price">
+                <p class="hlt-bb__price">{{ prefix }}<span data-hlt-btn-price>{{ solo_variant.price | money_without_currency }}</span></p>
+                <p class="hlt-bb__was" data-hlt-compare-wrap hidden>{{ section.settings.compare_label | default: 'was' }} {{ prefix }}<span data-hlt-compare></span></p>
+              </div>
+            {%- endif -%}
+
+            {%- assign solo_gift = false -%}
+            {%- if section.settings.show_gift and section.settings.gift_bullet != blank -%}{%- assign solo_gift = true -%}{%- endif -%}
+            {%- if solo_bullets.size > 0 or solo_gift -%}
+              <ul class="hlt-bb__bullets">
+                {%- for b in solo_bullets -%}
+                  {%- assign bb = b | strip -%}
+                  {%- if bb != blank -%}<li>{{ bb }}</li>{%- endif -%}
+                {%- endfor -%}
+                {%- if solo_gift -%}
+                  <li class="hlt-bb__gift">{% render 'hlt-icon', name: 'gift', size: 18 %}{{ section.settings.gift_bullet }}</li>
+                {%- endif -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if age_blocks.size > 0 -%}
+        <div class="hlt-bb__group">
+          <p class="hlt-bb__label">{{ section.settings.age_label }}</p>
+          <div class="hlt-bb__chips" role="group" aria-label="{{ section.settings.age_label | escape }}">
+            {%- for age in age_blocks -%}
+              <button type="button" class="hlt-bb__chip" data-hlt-age="{{ age.id }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" {{ age.shopify_attributes }}>
+                {%- assign chip_parts = age.settings.chip_label | split: ',' -%}
+                <strong>{{ chip_parts.first | strip }}</strong>
+                {%- if chip_parts.size > 1 -%}<span>{{ age.settings.chip_label | remove_first: chip_parts.first | remove_first: ',' | strip }}</span>{%- endif -%}
+              </button>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- endif -%}
+
+        {%- if buy_mode == 'bundle' -%}
+        <div class="hlt-bb__group">
+          <p class="hlt-bb__label">{{ section.settings.bundle_label }}</p>
+          <div class="hlt-bb__cards" role="radiogroup" aria-label="{{ section.settings.bundle_label | escape }}">
+            {%- for size in (1..2) -%}
+              {%- liquid
+                if size == 1
+                  assign size_key = 'standard'
+                  assign card_title = section.settings.card1_title
+                  assign card_tag = section.settings.card1_tag
+                  assign bullets = section.settings.card1_bullets | newline_to_br | split: '<br />'
+                else
+                  assign size_key = 'value'
+                  assign card_title = section.settings.card2_title
+                  assign card_tag = section.settings.card2_tag
+                  assign bullets = section.settings.card2_bullets | newline_to_br | split: '<br />'
+                endif
+              -%}
+              <div class="hlt-bb__card{% if size == 1 %} is-selected{% endif %}" role="radio" tabindex="0" data-hlt-size="{{ size_key }}" aria-checked="{% if size == 1 %}true{% else %}false{% endif %}">
+                {%- if card_tag != blank -%}<span class="hlt-bb__card-tag">{{ card_tag }}</span>{%- endif -%}
+                {%- for age in age_blocks -%}
+                  {%- if size == 1 -%}{%- assign save_text = age.settings.card1_save -%}{%- else -%}{%- assign save_text = age.settings.card2_save -%}{%- endif -%}
+                  {%- if save_text != blank -%}
+                    <span class="hlt-bb__card-save" data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %}>{{ save_text }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+                <span class="hlt-bb__radio" aria-hidden="true"></span>
+                <div class="hlt-bb__card-head">
+                  <div>
+                    <p class="hlt-h4">{{ card_title }}</p>
+                    {%- for age in age_blocks -%}
+                      <p class="hlt-bb__card-line" data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %}>{% if size == 1 %}{{ age.settings.card1_line }}{% else %}{{ age.settings.card2_line }}{% endif %}</p>
+                    {%- endfor -%}
+                  </div>
+                  <div class="hlt-bb__card-price">
+                    {%- for age in age_blocks -%}
+                      <div data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %}>
+                        <p class="hlt-bb__price">{% if size == 1 %}{{ age.settings.card1_price }}{% else %}{{ age.settings.card2_price }}{% endif %}</p>
+                        <p class="hlt-bb__per">{% if size == 1 %}{{ age.settings.card1_per }}{% else %}{{ age.settings.card2_per }}{% endif %}</p>
+                      </div>
+                    {%- endfor -%}
+                  </div>
+                </div>
+                <ul class="hlt-bb__bullets">
+                  {%- for age in age_blocks -%}
+                    <li data-hlt-age-only="{{ age.id }}"{% unless forloop.first %} hidden{% endunless %}>{% if size == 1 %}{{ age.settings.card1_first_bullet }}{% else %}{{ age.settings.card2_first_bullet }}{% endif %}</li>
+                  {%- endfor -%}
+                  {%- for b in bullets -%}
+                    {%- assign bb = b | strip -%}
+                    {%- if bb != blank -%}<li>{{ bb }}</li>{%- endif -%}
+                  {%- endfor -%}
+                  {%- if size == 2 and section.settings.show_gift and section.settings.gift_bullet != blank -%}
+                    <li class="hlt-bb__gift">{% render 'hlt-icon', name: 'gift', size: 18 %}{{ section.settings.gift_bullet }}</li>
+                  {%- endif -%}
+                </ul>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- endif -%}
+
+        <div class="hlt-stack" style="--hlt-gap: 14px;">
+          <button type="button" class="hlt-btn hlt-btn--block hlt-bb__add" data-hlt-add-bundle>
+            {%- liquid
+              if buy_mode == 'simple' and product != blank
+                assign add_fallback_price = product.selected_or_first_available_variant.price | money_without_currency
+              else
+                assign add_fallback_price = first_age.settings.fallback_standard
+              endif
+            -%}
+            <span><span data-hlt-btn-label>{{ section.settings.add_label }}</span><span class="hlt-bb__add-price" data-hlt-price-wrap>, {{ prefix }}<span data-hlt-btn-price>{{ add_fallback_price }}</span></span></span>
+          </button>
+          <p class="hlt-bb__error" role="alert" data-hlt-error hidden></p>
+
+          {%- assign badge_blocks = section.blocks | where: 'type', 'badge' -%}
+          {%- assign badge_cols = badge_blocks.size -%}
+          {%- if badge_cols > 5 -%}{%- assign badge_cols = 5 -%}{%- endif -%}
+          {%- if badge_cols < 1 -%}{%- assign badge_cols = 1 -%}{%- endif -%}
+          <ul class="hlt-badges hlt-bb__badges" style="--hlt-badge-cols: {{ badge_cols }};">
+            {%- for block in badge_blocks -%}
+              <li class="hlt-badge" {{ block.shopify_attributes }}>
+                <span class="hlt-bb__badge-ring">
+                  {%- if block.settings.logo != blank -%}
+                    {{ block.settings.logo | image_url: width: 80 | image_tag: class: 'hlt-bb__badge-logo', loading: 'lazy' }}
+                  {%- else -%}
+                    {% render 'hlt-icon', name: block.settings.icon, size: 24 %}
+                  {%- endif -%}
+                </span>
+                <span>{{ block.settings.text }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+
+        <div class="hlt-bb__dropdowns">
+          {%- comment -%}
+            What a bundle holds is written on the product, not in this template,
+            so Single mode offers the product's own description as the first row.
+            That is the one place a shared template can carry copy that differs
+            per product.
+          {%- endcomment -%}
+          {%- if buy_mode == 'simple' and section.settings.solo_description and product != blank and product.description != blank -%}
+            <details class="hlt-acc"{% if section.settings.solo_description_open %} open{% endif %}>
+              <summary>{{ section.settings.solo_description_title | default: "What's inside" }}<span class="hlt-acc__icon" aria-hidden="true"></span></summary>
+              <div class="hlt-acc__body">
+                <div class="hlt-acc__content hlt-body hlt-bb__desc">{{ product.description }}</div>
+              </div>
+            </details>
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'dropdown' and block.settings.show -%}
+              <details class="hlt-acc" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                <summary>{{ block.settings.title }}<span class="hlt-acc__icon" aria-hidden="true"></span></summary>
+                <div class="hlt-acc__body">
+                  <div class="hlt-acc__content hlt-body">
+                    {{ block.settings.text }}
+                    {%- if block.settings.show_pending and block.settings.pending_text != blank -%}{{ block.settings.pending_text }}{%- endif -%}
+                    {%- if block.settings.link_label != blank and block.settings.link != blank -%}
+                      <p><a class="hlt-bb__link" href="{{ block.settings.link | default: '#' }}">{{ block.settings.link_label }} {% render 'hlt-icon', name: 'arrow-right', size: 16 %}</a></p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+    </div>
+
+    {%- comment -%} ---------------- Pair it with ----------------
+      Bloom-style add-on carousel in the same column as the buy box: a tab on
+      top, one add-on per view, dots underneath. Product add-ons can hide
+      while the Value pack is selected; the next-age card follows the age. {%- endcomment -%}
+    {%- liquid
+      assign pair_products = section.blocks | where: 'type', 'pair_product'
+      assign pair_nexts = section.blocks | where: 'type', 'pair_next'
+      assign pair_total = pair_products.size | plus: pair_nexts.size
+      assign pair_prefix = section.settings.price_prefix
+      assign pair_add = section.settings.add_label | default: 'Add to cart'
+    -%}
+    {%- if pair_total > 0 -%}
+    <div class="hlt-bb__pair" data-hlt-pair="{{ section.id }}" data-hlt-reveal="right">
+      <div class="hlt-bb__pair-tabs" role="tablist">
+        {%- if pair_products.size > 0 -%}
+          <button type="button" class="hlt-bb__pair-tab is-active" role="tab" aria-selected="true" data-hlt-pair-tab="products">{{ section.settings.pair_heading | default: 'Pair it with' }}</button>
+        {%- endif -%}
+        {%- if pair_nexts.size > 0 -%}
+          <button type="button" class="hlt-bb__pair-tab{% if pair_products.size == 0 %} is-active{% endif %}" role="tab" aria-selected="{% if pair_products.size == 0 %}true{% else %}false{% endif %}" data-hlt-pair-tab="next">{{ section.settings.pair_next_tab | default: 'The next age bundle' }}</button>
+        {%- endif -%}
+      </div>
+      <div class="hlt-bb__pair-card">
+        {%- comment -%} Tab 1: add-on products, one per view {%- endcomment -%}
+        <div class="hlt-bb__pair-pane" data-hlt-pair-pane="products"{% if pair_products.size == 0 %} hidden{% endif %}>
+          <div class="hlt-bb__pair-track" data-hlt-pair-track>
+            {%- for block in pair_products -%}
+              {%- liquid
+                assign p = block.settings.product
+                assign variant = nil
+                if p != blank
+                  assign variant = p.selected_or_first_available_variant
+                  if block.settings.variant_title != blank
+                    for v in p.variants
+                      if v.title == block.settings.variant_title
+                        assign variant = v
+                      endif
+                    endfor
+                  endif
+                endif
+                assign pair_title = block.settings.title | default: p.title
+                assign pair_img = block.settings.image | default: p.featured_image
+              -%}
+              <article class="hlt-bb__pair-item" {% if block.settings.hide_on_value %}data-hlt-size-only="standard"{% endif %} {{ block.shopify_attributes }}>
+                <div class="hlt-media hlt-media--contain hlt-bb__pair-img" style="--hlt-ratio: 1 / 1;">
+                  {%- if pair_img != blank -%}
+                    {{ pair_img | image_url: width: 480 | image_tag: loading: 'lazy', widths: '240, 360, 480', sizes: '200px', alt: pair_title }}
+                  {%- else -%}
+                    {{ 'product-3' | placeholder_svg_tag: 'hlt-placeholder' }}
+                  {%- endif -%}
+                </div>
+                <div class="hlt-bb__pair-body">
+                  <p class="hlt-bb__pair-title">{{ pair_title }}</p>
+                  {%- if block.settings.line != blank -%}<p class="hlt-bb__pair-line">{{ block.settings.line }}</p>{%- endif -%}
+                  {%- if variant and variant.available -%}
+                    <button type="button" class="hlt-btn hlt-bb__pair-add" data-hlt-pair-add data-hlt-variant="{{ variant.id }}" aria-label="{{ pair_add | escape }}: {{ pair_title | escape }}">
+                      <span>{{ pair_add }}<span class="hlt-bb__pair-price"> · {{ pair_prefix }}{{ variant.price | money_without_currency }}</span></span>
+                    </button>
+                  {%- elsif p != blank -%}
+                    <span class="hlt-bb__pair-soldout">{{ section.settings.sold_out_label | default: 'Sold out' }}</span>
+                  {%- endif -%}
+                  <p class="hlt-bb__error hlt-bb__pair-error" role="alert" data-hlt-error hidden></p>
+                </div>
+              </article>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- comment -%} Tab 2: the next age bundle (hlt-home.js hides the card at the last age) {%- endcomment -%}
+        <div class="hlt-bb__pair-pane" data-hlt-pair-pane="next"{% if pair_products.size > 0 %} hidden{% endif %}>
+          {%- for block in pair_nexts -%}
+            {%- liquid
+              assign pair_title = block.settings.title | default: 'The next age bundle'
+              assign pair_img = block.settings.image
+            -%}
+            <article class="hlt-bb__pair-item" data-hlt-next-card {{ block.shopify_attributes }}>
+              <div class="hlt-media hlt-media--contain hlt-bb__pair-img" style="--hlt-ratio: 1 / 1;">
+                {%- if pair_img != blank -%}
+                  {{ pair_img | image_url: width: 480 | image_tag: loading: 'lazy', widths: '240, 360, 480', sizes: '200px', alt: pair_title }}
+                {%- else -%}
+                  {{ 'product-3' | placeholder_svg_tag: 'hlt-placeholder' }}
+                {%- endif -%}
+              </div>
+              <div class="hlt-bb__pair-body">
+                <p class="hlt-bb__pair-title">{{ pair_title }}</p>
+                {%- if block.settings.line != blank -%}<p class="hlt-bb__pair-line">{{ block.settings.line }}</p>{%- endif -%}
+                <button type="button" class="hlt-btn hlt-bb__pair-add" data-hlt-pair-add data-hlt-add-next data-hlt-variant="" aria-label="{{ pair_add | escape }}: {{ pair_title | escape }}">
+                  <span>{{ pair_add }}</span>
+                </button>
+                <p class="hlt-bb__error hlt-bb__pair-error" role="alert" data-hlt-error hidden></p>
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="hlt-bb__pair-dots" data-hlt-pair-dots role="group" aria-label="Choose which add-on to show"></div>
+    </div>
+    {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{%- liquid
+  comment
+    The bar needs something to add. In bundle mode that is the age blocks, in
+    simple mode the product's own variants.
+  endcomment
+  assign show_sticky = false
+  if section.settings.sticky_bar
+    if buy_mode == 'simple'
+      if product != blank
+        assign show_sticky = true
+      endif
+    elsif age_blocks.size > 0
+      assign show_sticky = true
+    endif
+  endif
+  assign sticky_variant_label = section.settings.variant_label
+  if sticky_variant_label == blank and product != blank
+    assign sticky_variant_label = product.options.first
+  endif
+-%}
+{%- if show_sticky -%}
+  <div class="hlt hlt-sticky" data-hlt-sticky-bar aria-hidden="true">
+    <div class="hlt-sticky__inner">
+      {%- if age_blocks.size > 0 -%}
+      <label class="hlt-sticky__field">
+        <span class="visually-hidden">{{ section.settings.age_label }}</span>
+        <select data-hlt-sticky-age>
+          {%- for age in age_blocks -%}<option value="{{ age.id }}">{{ age.settings.chip_label }}</option>{%- endfor -%}
+        </select>
+      </label>
+      {%- elsif buy_mode == 'simple' and product.variants.size > 1 -%}
+      <label class="hlt-sticky__field">
+        <span class="visually-hidden">{{ sticky_variant_label }}</span>
+        <select data-hlt-sticky-age>
+          {%- for v in product.variants -%}<option value="v{{ v.id }}">{{ v.title }}</option>{%- endfor -%}
+        </select>
+      </label>
+      {%- endif -%}
+      {%- if buy_mode == 'bundle' -%}
+      <label class="hlt-sticky__field">
+        <span class="visually-hidden">{{ section.settings.bundle_label }}</span>
+        <select data-hlt-sticky-size>
+          <option value="standard">{{ section.settings.card1_title }}</option>
+          <option value="value">{{ section.settings.card2_title }}</option>
+        </select>
+      </label>
+      {%- endif -%}
+      <button type="button" class="hlt-btn hlt-sticky__btn" data-hlt-sticky-add>
+        <span><span data-hlt-sticky-label>{{ section.settings.add_label }}</span></span>
+      </button>
+      <p class="hlt-bb__error hlt-sticky__error" role="alert" data-hlt-error hidden></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var bar = document.querySelector('[data-hlt-sticky-bar]');
+      var box = document.querySelector('[data-hlt-buy-box]');
+      if (!bar || !box || bar.hltReady) return;
+      bar.hltReady = true;
+
+      var data = {};
+      try { data = JSON.parse(box.querySelector('[data-hlt-bundle-data]').textContent) || {}; } catch (e) {}
+
+      var ageSel = bar.querySelector('[data-hlt-sticky-age]');
+      var sizeSel = bar.querySelector('[data-hlt-sticky-size]');
+      var price = bar.querySelector('[data-hlt-sticky-price]');
+      var btn = bar.querySelector('[data-hlt-sticky-add]');
+      var label = bar.querySelector('[data-hlt-sticky-label]');
+      var wrap = btn ? btn.querySelector('[data-hlt-price-wrap]') : null;
+      var err = bar.querySelector('[data-hlt-error]');
+
+      var onChange = function (e) {
+        var d = e.detail || {};
+        var v = d.variant || {};
+        if (ageSel && d.age) ageSel.value = d.age;
+        if (sizeSel && d.size) sizeSel.value = d.size;
+        if (price) price.textContent = v.price || '';
+        if (btn) {
+          var off = !v.id || v.available === false;
+          btn.disabled = off;
+          btn.setAttribute('data-variant-id', v.id || '');
+          if (label) label.textContent = off ? (data.soldOutLabel || 'Sold out') : (data.addLabel || 'Add to cart');
+          if (wrap) wrap.hidden = off;
+        }
+      };
+      document.addEventListener('hlt:bundle-change', onChange);
+
+      if (ageSel) ageSel.addEventListener('change', function () { if (box.hltSet) box.hltSet(ageSel.value, null); });
+      if (sizeSel) sizeSel.addEventListener('change', function () { if (box.hltSet) box.hltSet(null, sizeSel.value); });
+      if (btn) {
+        btn.addEventListener('click', function () {
+          if (window.HLT && window.HLT.addToCart) window.HLT.addToCart(btn.getAttribute('data-variant-id'), btn, err);
+        });
+      }
+
+      function syncNow() {
+        if (box.hltState) document.dispatchEvent(new CustomEvent('hlt:bundle-change', { detail: box.hltState() }));
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncNow);
+      else setTimeout(syncNow, 0);
+
+      /* Visible from the moment the page loads, and hidden only while the real
+         Add to cart button is on screen. */
+      var target = box.querySelector('[data-hlt-add-bundle]');
+      var observer = null;
+      function show(on) {
+        bar.classList.toggle('is-visible', on);
+        bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+        document.body.classList.toggle('hlt-sticky-on', on);
+      }
+      if (target && 'IntersectionObserver' in window) {
+        observer = new IntersectionObserver(function (entries) {
+          show(!entries[0].isIntersecting);
+        }, { threshold: 0, rootMargin: '0px 0px -96px 0px' });
+        observer.observe(target);
+      } else {
+        show(true);
+      }
+
+      document.addEventListener('shopify:section:unload', function cleanup() {
+        if (bar.isConnected) return;
+        document.removeEventListener('hlt:bundle-change', onChange);
+        if (observer) observer.disconnect();
+        document.removeEventListener('shopify:section:unload', cleanup);
+        document.body.classList.remove('hlt-sticky-on');
+      });
+    })();
+  </script>
+{%- endif -%}
+
+<script>
+  (function () {
+    /* Pair it with: two tabs (add-on products, next age bundle). The products
+       tab shows one add-on per view with dots. Tabs hide themselves when the
+       chosen bundle leaves them nothing to show. The global cross-sell click
+       handler in hlt-home.js ignores buttons inside the buy box, so the pair
+       buttons are wired here. */
+    var wrap = document.querySelector('[data-hlt-pair="{{ section.id }}"]');
+    if (!wrap || wrap.hltReady) return;
+    wrap.hltReady = true;
+    var track = wrap.querySelector('[data-hlt-pair-track]');
+    var dots = wrap.querySelector('[data-hlt-pair-dots]');
+    var tabs = Array.prototype.slice.call(wrap.querySelectorAll('[data-hlt-pair-tab]'));
+    var panes = Array.prototype.slice.call(wrap.querySelectorAll('[data-hlt-pair-pane]'));
+    var nextCard = wrap.querySelector('[data-hlt-next-card]');
+    var firstTab = tabs.filter(function (t) { return t.classList.contains('is-active'); })[0] || tabs[0];
+    var current = firstTab ? firstTab.getAttribute('data-hlt-pair-tab') : null;
+
+    function visible() {
+      if (!track) return [];
+      return Array.prototype.filter.call(track.children, function (c) { return !c.hidden; });
+    }
+    function available(name) {
+      if (name === 'products') return visible().length > 0;
+      if (name === 'next') return !!nextCard && !nextCard.hidden;
+      return false;
+    }
+    function activeIndex(cards) {
+      var left = track.scrollLeft, idx = 0, best = Infinity;
+      cards.forEach(function (c, i) {
+        var d = Math.abs(c.offsetLeft - track.offsetLeft - left);
+        if (d < best) { best = d; idx = i; }
+      });
+      return idx;
+    }
+    function show(name) {
+      current = name;
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('data-hlt-pair-tab') === name;
+        t.classList.toggle('is-active', on);
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      panes.forEach(function (pn) { pn.hidden = pn.getAttribute('data-hlt-pair-pane') !== name; });
+    }
+    function paint() {
+      var names = tabs.map(function (t) { return t.getAttribute('data-hlt-pair-tab'); });
+      var open = names.filter(available);
+      tabs.forEach(function (t) { t.hidden = open.indexOf(t.getAttribute('data-hlt-pair-tab')) === -1; });
+      wrap.hidden = open.length === 0;
+      if (open.length && open.indexOf(current) === -1) show(open[0]);
+      else show(current);
+      if (!dots) return;
+      var cards = current === 'products' ? visible() : [];
+      if (dots.children.length !== cards.length) {
+        dots.innerHTML = '';
+        cards.forEach(function (c, i) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'hlt-dot hlt-bb__pair-dot';
+          b.setAttribute('aria-label', 'Show item ' + (i + 1) + ' of ' + cards.length);
+          dots.appendChild(b);
+        });
+      }
+      if (cards.length) {
+        var idx = activeIndex(cards);
+        Array.prototype.forEach.call(dots.children, function (b, i) {
+          var on = i === idx;
+          b.classList.toggle('is-active', on);
+          b.setAttribute('aria-current', on ? 'true' : 'false');
+        });
+      }
+      dots.hidden = cards.length < 2;
+    }
+    function goTo(i) {
+      var cards = visible();
+      if (!cards[i]) return;
+      track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+    }
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () { show(t.getAttribute('data-hlt-pair-tab')); paint(); });
+    });
+    if (dots) dots.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('button') : null;
+      if (!b || b.parentElement !== dots) return;
+      goTo(Array.prototype.indexOf.call(dots.children, b));
+    });
+    wrap.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-hlt-pair-add]');
+      if (!btn || !window.HLT || !window.HLT.addToCart) return;
+      e.preventDefault();
+      var item = btn.closest('.hlt-bb__pair-item');
+      var err = item ? item.querySelector('[data-hlt-error]') : null;
+      window.HLT.addToCart(btn.getAttribute('data-hlt-variant'), btn, err);
+    });
+
+    var frame = null;
+    function schedule() {
+      if (frame) return;
+      frame = window.requestAnimationFrame(function () { frame = null; paint(); });
+    }
+    if (track) track.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    function onBundleChange() {
+      window.requestAnimationFrame(function () { if (track) track.scrollLeft = 0; paint(); });
+    }
+    document.addEventListener('hlt:bundle-change', onBundleChange);
+    paint();
+    schedule();
+    document.addEventListener('shopify:section:unload', function cleanup() {
+      if (wrap.isConnected) return;
+      document.removeEventListener('hlt:bundle-change', onBundleChange);
+      window.removeEventListener('resize', schedule);
+      document.removeEventListener('shopify:section:unload', cleanup);
+    });
+  })();
+</script>
+
+{{ 'hlt-buy-box.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "HLT Gallery and buy box",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 40,
+  "settings": [
+    { "type": "header", "content": "Product" },
+    { "type": "select", "id": "buy_mode", "label": "Buy box", "default": "bundle", "info": "Bundle needs an age option (first) and a size option (second). Single suits any other product, including one with no options at all.", "options": [ { "value": "bundle", "label": "Bundle (age + pack)" }, { "value": "simple", "label": "Single product" } ] },
+    { "type": "product", "id": "product", "label": "Product", "info": "Leave empty and the section shows the product whose page it is on, so one template serves every product. Pick one to pin the section to it." },
+    { "type": "header", "content": "Single product panel" },
+    { "type": "paragraph", "content": "The panel that replaces the two pack cards. It carries the price, the saving and what the money buys." },
+    { "type": "text", "id": "variant_label", "label": "Variant label", "info": "Above the variant chips. Empty uses the product's own option name. The chips hide when the product has one variant." },
+    { "type": "text", "id": "solo_title", "label": "Panel title", "info": "Empty leaves the panel with the price alone, which reads well when the page title already says what this is." },
+    { "type": "text", "id": "solo_line", "label": "Panel line", "info": "A short line under the title, for example what is in the box." },
+    { "type": "textarea", "id": "solo_bullets", "label": "Panel bullets", "info": "One per line.", "default": "Free delivery" },
+    { "type": "text", "id": "compare_label", "label": "Compare-at word", "info": "Before the crossed-out price.", "default": "was" },
+    { "type": "text", "id": "save_label", "label": "Savings word", "info": "Before the amount in the savings pill. The pill shows only when the variant has a compare-at price.", "default": "Save" },
+    { "type": "checkbox", "id": "solo_description", "label": "Show the product description", "info": "As the first collapsible row under Add to cart. This is what lets one template carry different contents per product.", "default": true },
+    { "type": "text", "id": "solo_description_title", "label": "Description row title", "default": "What's inside" },
+    { "type": "checkbox", "id": "solo_description_open", "label": "Open the description row by default", "default": true },
+    { "type": "text", "id": "standard_value", "label": "Size option value for Standard", "default": "Standard" },
+    { "type": "text", "id": "value_value", "label": "Size option value for Value pack", "default": "Value Pack" },
+    { "type": "text", "id": "price_prefix", "label": "Price prefix", "default": "S$" },
+    { "type": "text", "id": "anchor_id", "label": "Anchor ID", "info": "Buttons elsewhere scroll to #this-id.", "default": "hlt-buy-box" },
+    { "type": "checkbox", "id": "age_image_first", "label": "Show each age's bundle image first in the gallery", "default": true },
+    { "type": "checkbox", "id": "gallery_from_product", "label": "Take the gallery images from the product", "info": "The main image follows the chosen age and pack, using each variant's own image. The product's remaining images become the smaller tiles, and the uploaded photo blocks below are ignored while this is on. Quote blocks still show.", "default": true },
+    { "type": "text", "id": "view_all_label", "label": "Gallery 'View all' label", "info": "Shown on desktop when there are more than 4 gallery images under the main image.", "default": "View all" },
+    { "type": "text", "id": "view_less_label", "label": "Gallery 'View less' label", "default": "View less" },
+    { "type": "checkbox", "id": "tile_captions", "label": "Show text on the smaller gallery images", "info": "The main bundle image always keeps its text.", "default": false },
+    { "type": "checkbox", "id": "sticky_bar", "label": "Sticky add-to-cart bar", "info": "Shows from the moment the page loads and hides only while the main Add to cart button is on screen.", "default": true },
+    { "type": "header", "content": "Pair it with" },
+    { "type": "paragraph", "content": "Add-ons shown under the buy box, one per view with dots. Add them as 'Pair: product' and 'Pair: next age bundle' blocks. They use the price prefix and Add to cart label above." },
+    { "type": "text", "id": "pair_heading", "label": "Tab 1 label (add-on products)", "default": "Pair it with" },
+    { "type": "text", "id": "pair_next_tab", "label": "Tab 2 label (next age bundle)", "default": "The next age bundle" },
+    { "type": "header", "content": "Rating" },
+    { "type": "checkbox", "id": "show_rating", "label": "Show the star rating line", "info": "Turn on once there is a rating to claim.", "default": false },
+    { "type": "range", "id": "rating_value", "label": "Stars filled", "min": 1, "max": 5, "step": 1, "default": 5 },
+    { "type": "text", "id": "rating_text", "label": "Rating text", "default": "4.9 average from Singapore parents" },
+    { "type": "checkbox", "id": "show_badge2", "label": "Show the second pill", "info": "Turn on once there is a claim to put in it.", "default": false },
+    { "type": "text", "id": "badge2_text", "label": "Second pill text", "info": "For example a bestseller or award line." },
+    { "type": "header", "content": "Text" },
+    { "type": "checkbox", "id": "show_eyebrow", "label": "Show the eyebrow line", "default": true },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "info": "Sits above the title. Use it for a tagline, or turn it off.", "default": "Yummybara by HLT One" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Yummybara Age Bundle" },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 24, "max": 56, "step": 2, "unit": "px", "default": 36, "info": "Lower this until the title sits on one line." },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Snacks you can hand over anywhere: made for your child's age, with no added refined sugar or salt, in snack-sized packs sealed one by one.</p>" },
+    { "type": "text", "id": "tags", "label": "Tags", "info": "Only used when there are no Benefit tag blocks. Separate with |.", "default": "Easy for little mouths | No added sugar or salt | Sealed one by one" },
+    { "type": "text", "id": "age_label", "label": "Age label", "default": "Pick your child's age" },
+    { "type": "text", "id": "bundle_label", "label": "Bundle label", "default": "Pick your bundle" },
+    { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
+    { "type": "header", "content": "Card 1 (Standard)" },
+    { "type": "text", "id": "card1_title", "label": "Title", "default": "Standard" },
+    { "type": "text", "id": "card1_tag", "label": "Corner tag" },
+    { "type": "textarea", "id": "card1_bullets", "label": "Bullets after the age bullet", "info": "One per line", "default": "About two months of one snack a day\nFree delivery" },
+    { "type": "header", "content": "Card 2 (Value pack)" },
+    { "type": "text", "id": "card2_title", "label": "Title", "default": "Value pack" },
+    { "type": "text", "id": "card2_tag", "label": "Corner tag", "default": "Best value" },
+    { "type": "textarea", "id": "card2_bullets", "label": "Bullets after the age bullet", "info": "One per line", "default": "Made for homes with two or more little ones\nFree delivery" },
+    { "type": "checkbox", "id": "show_gift", "label": "Show free gift bullet", "info": "Waiting on HLT One. Turn on once the gift is agreed.", "default": false },
+    { "type": "text", "id": "gift_bullet", "label": "Free gift bullet", "default": "Free gift: Habibara wet wipes (80 sheets) and a 3-pack of Habibara baby wipes, worth S$8.75" },
+    { "type": "header", "content": "Colours and spacing" },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 32 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 8, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "age",
+      "name": "Age option",
+      "settings": [
+        { "type": "text", "id": "chip_label", "label": "Chip label", "info": "Text before the comma is bold.", "default": "8 months+, First Melts" },
+        { "type": "text", "id": "option_value", "label": "Matching product option value", "default": "8 months +" },
+        { "type": "image_picker", "id": "image", "label": "Gallery image 1 (whole bundle)" },
+        { "type": "text", "id": "image_text_standard", "label": "Image text, Standard", "default": "12 boxes. 10 different snacks. 56 snack packs." },
+        { "type": "text", "id": "image_text_value", "label": "Image text, Value pack", "default": "24 boxes. 10 different snacks. 112 snack packs." },
+        { "type": "header", "content": "Card 1 (Standard)" },
+        { "type": "text", "id": "card1_line", "label": "Line", "default": "12 boxes, 56 snack packs" },
+        { "type": "text", "id": "card1_price", "label": "Price", "info": "Just the price, for example S$64.99. The discount goes in 'Savings badge' below.", "default": "S$64.99" },
+        { "type": "text", "id": "card1_save", "label": "Savings badge", "info": "Sits on the card's top border. Leave empty to hide it.", "default": "Save S$7.21" },
+        { "type": "text", "id": "card1_per", "label": "Per snack", "default": "About S$1.16 a snack" },
+        { "type": "text", "id": "card1_first_bullet", "label": "First bullet", "default": "One box of nearly every flavour for this age" },
+        { "type": "text", "id": "fallback_standard", "label": "Button price if the product is unavailable", "default": "64.99" },
+        { "type": "header", "content": "Card 2 (Value pack)" },
+        { "type": "text", "id": "card2_line", "label": "Line", "default": "24 boxes, 112 snack packs" },
+        { "type": "text", "id": "card2_price", "label": "Price", "info": "Just the price, for example S$119.99. The discount goes in 'Savings badge' below.", "default": "S$119.99" },
+        { "type": "text", "id": "card2_save", "label": "Savings badge", "info": "Sits on the card's top border and shows in gold, since this is the pack we push.", "default": "Save S$24.41" },
+        { "type": "text", "id": "card2_per", "label": "Per snack", "default": "About S$1.07 a snack" },
+        { "type": "text", "id": "card2_first_bullet", "label": "First bullet", "default": "Every flavour for this age, two or three boxes each" },
+        { "type": "text", "id": "fallback_value", "label": "Button price if the product is unavailable", "default": "119.99" }
+      ]
+    },
+    {
+      "type": "gallery_image",
+      "name": "Gallery image",
+      "settings": [
+        { "type": "checkbox", "id": "show", "label": "Show this image", "default": true },
+        { "type": "select", "id": "style", "label": "Style", "default": "photo", "options": [
+          { "value": "photo", "label": "Photo with text" }, { "value": "quote", "label": "Review card on brand blue" }
+        ] },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "video", "id": "video", "label": "Video (replaces image)" },
+        { "type": "text", "id": "image_text", "label": "Image text" },
+        { "type": "select", "id": "only_for", "label": "Show for", "default": "all", "options": [
+          { "value": "all", "label": "Every bundle" }, { "value": "value", "label": "Value pack only" }
+        ] },
+        { "type": "header", "content": "Waiting on HLT One" },
+        { "type": "text", "id": "pending_text", "label": "Alternative image text" },
+        { "type": "checkbox", "id": "use_pending_text", "label": "Use the alternative text", "default": false }
+      ]
+    },
+    {
+      "type": "tag",
+      "name": "Benefit tag",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "info": "Keep it short so the row stays on one line.", "default": "Easy for little mouths" },
+        { "type": "select", "id": "icon", "label": "Icon", "default": "check", "options": [
+          { "value": "smile", "label": "Smile" }, { "value": "sugar-off", "label": "No sugar" }, { "value": "package", "label": "Sealed pack" },
+          { "value": "leaf", "label": "Leaf" }, { "value": "certificate", "label": "Certificate" }, { "value": "flask-off", "label": "No preservatives" },
+          { "value": "droplet", "label": "Droplet" }, { "value": "heart", "label": "Heart" }, { "value": "sparkle", "label": "Sparkle" },
+          { "value": "clock", "label": "Clock" }, { "value": "truck", "label": "Truck" }, { "value": "stroller", "label": "Stroller" },
+          { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "star", "label": "Star" },
+          { "value": "check", "label": "Check" }
+        ] }
+      ]
+    },
+    {
+      "type": "badge",
+      "name": "Trust badge",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "certificate", "options": [
+          { "value": "certificate", "label": "Certificate" }, { "value": "leaf", "label": "Leaf" }, { "value": "truck", "label": "Truck" },
+          { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "package", "label": "Package" },
+          { "value": "clock", "label": "Clock" }, { "value": "heart", "label": "Heart" }, { "value": "check", "label": "Check" }
+        ] },
+        { "type": "image_picker", "id": "logo", "label": "Logo (replaces icon)", "info": "For example the organic certifier's logo." },
+        { "type": "text", "id": "text", "label": "Text", "info": "Keep it to two or three words so the grid stays tidy.", "default": "Halal certified" }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        { "type": "checkbox", "id": "show", "label": "Show this row", "info": "Turn it off for a product this row's text was not written for. The row keeps its copy for whenever it is wanted back.", "default": true },
+        { "type": "text", "id": "title", "label": "Title", "default": "Tell me more" },
+        { "type": "richtext", "id": "text", "label": "Text" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false },
+        { "type": "text", "id": "link_label", "label": "Link label" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "header", "content": "Waiting on HLT One" },
+        { "type": "richtext", "id": "pending_text", "label": "Extra text to confirm" },
+        { "type": "checkbox", "id": "show_pending", "label": "Show the extra text", "default": false }
+      ]
+    },
+    {
+      "type": "pair_product",
+      "name": "Pair: product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "variant_title", "label": "Variant name to add", "info": "For example: 3 Packs. Leave empty for the first available." },
+        { "type": "text", "id": "title", "label": "Title (replaces product name)" },
+        { "type": "text", "id": "line", "label": "Line" },
+        { "type": "image_picker", "id": "image", "label": "Image (replaces product image)" },
+        { "type": "checkbox", "id": "hide_on_value", "label": "Hide while the Value pack is selected", "default": true }
+      ]
+    },
+    {
+      "type": "pair_next",
+      "name": "Pair: next age bundle",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "The next age bundle" },
+        { "type": "text", "id": "line", "label": "Line", "default": "Ready for when they move up." },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "HLT Gallery and buy box" }]
+}
+{% endschema %}
+
+

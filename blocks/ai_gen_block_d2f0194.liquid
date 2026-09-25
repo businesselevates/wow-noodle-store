@@ -1,0 +1,842 @@
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-multi-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .ai-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_max_width }}px;
+    margin: 0 auto;
+    padding-left: {{ block.settings.horizontal_padding }}px;
+    padding-right: {{ block.settings.horizontal_padding }}px;
+  }
+
+  .ai-section-{{ ai_gen_id }} {
+    padding: {{ block.settings.section_padding }}px 0;
+  }
+
+  /* Section 1: intro */
+  .ai-intro-{{ ai_gen_id }} {
+    text-align: {{ block.settings.intro_alignment }};
+    background-color: {{ block.settings.intro_bg_color }};
+    padding: {{ block.settings.intro_padding }}px;
+    border-radius: {{ block.settings.intro_border_radius }}px;
+  }
+
+  .ai-intro-subheading-{{ ai_gen_id }} {
+    color: {{ block.settings.intro_subheading_color }};
+    font-size: {{ block.settings.intro_subheading_size }}px;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-intro-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.intro_heading_color }};
+    font-size: {{ block.settings.intro_heading_size }}px;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+
+  .ai-intro-text-{{ ai_gen_id }} {
+    color: {{ block.settings.intro_text_color }};
+    font-size: {{ block.settings.intro_text_size }}px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Section 2: image with text */
+  .ai-image-text-card-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.image_text_gap }}px;
+    background-color: {{ block.settings.image_text_bg_color }};
+    border-radius: {{ block.settings.image_text_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-image-text-image-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ai-image-text-image-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-image-text-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-image-text-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 300px;
+    max-height: 300px;
+  }
+
+  .ai-image-text-content-{{ ai_gen_id }} {
+    flex: 1;
+    padding: {{ block.settings.image_text_content_padding }}px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ai-image-text-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.image_text_subtitle_color }};
+    font-size: {{ block.settings.image_text_subtitle_size }}px;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-image-text-title-{{ ai_gen_id }} {
+    color: {{ block.settings.image_text_title_color }};
+    font-size: {{ block.settings.image_text_title_size }}px;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+
+  .ai-image-text-text-{{ ai_gen_id }} {
+    color: {{ block.settings.image_text_text_color }};
+    font-size: {{ block.settings.image_text_text_size }}px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Section 3: three cards (colors per-card via inline style) */
+  .ai-three-cards-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.three_cards_gap }}px;
+  }
+
+  .ai-three-card-{{ ai_gen_id }} {
+    padding: {{ block.settings.three_card_padding }}px;
+    border-radius: {{ block.settings.three_card_border_radius }}px;
+  }
+
+  .ai-three-card-header-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .ai-three-card-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.three_card_subtitle_size }}px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-three-card-badge-{{ ai_gen_id }} {
+    padding: 4px 12px;
+    border-radius: {{ block.settings.three_card_badge_radius }}px;
+    font-size: {{ block.settings.three_card_badge_size }}px;
+    font-weight: 600;
+  }
+
+  .ai-three-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.three_card_title_size }}px;
+    margin: 0 0 12px;
+    line-height: 1.2;
+  }
+
+  .ai-three-card-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.three_card_text_size }}px;
+    margin: 0 0 16px;
+    line-height: 1.6;
+  }
+
+  .ai-three-card-bullets-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-three-card-bullets-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.three_card_bullet_size }}px;
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .ai-three-card-bullets-{{ ai_gen_id }} li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: var(--ai-bullet-icon-{{ ai_gen_id }}, #192e59);
+    font-weight: bold;
+  }
+
+  /* Banner image between section 3 and 4 */
+  .ai-banner-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: {{ block.settings.banner_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-banner-media-{{ ai_gen_id }} img {
+    width: 100%;
+    height: {{ block.settings.banner_height }}px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-banner-desktop-{{ ai_gen_id }} { display: block; }
+  .ai-banner-mobile-{{ ai_gen_id }} { display: none; }
+
+  .ai-banner-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: {{ block.settings.banner_height }}px;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-banner-placeholder-{{ ai_gen_id }} svg {
+    max-width: 300px;
+    max-height: 200px;
+    opacity: 0.5;
+  }
+
+  .ai-banner-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    inset: 0;
+    background-color: {{ block.settings.banner_overlay_color }};
+    opacity: {{ block.settings.banner_overlay_opacity | divided_by: 100.0 }};
+  }
+
+  .ai-banner-content-wrap-{{ ai_gen_id }} {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: {{ block.settings.banner_content_v }};
+    justify-content: {{ block.settings.banner_content_h }};
+    padding: {{ block.settings.banner_content_padding }}px;
+  }
+
+  .ai-banner-content-{{ ai_gen_id }} {
+    max-width: {{ block.settings.banner_content_max_width }}px;
+    text-align: {{ block.settings.banner_text_align }};
+  }
+
+  .ai-banner-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_subtitle_color }};
+    font-size: {{ block.settings.banner_subtitle_size }}px;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-banner-title-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_title_color }};
+    font-size: {{ block.settings.banner_title_size }}px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+  }
+
+  .ai-banner-text-{{ ai_gen_id }} {
+    color: {{ block.settings.banner_text_color }};
+    font-size: {{ block.settings.banner_text_size }}px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Section 4: two cards (colors per-card via inline style) */
+  .ai-two-cards-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: {{ block.settings.two_cards_gap }}px;
+  }
+
+  .ai-two-card-{{ ai_gen_id }} {
+    padding: {{ block.settings.two_card_padding }}px;
+    border-radius: {{ block.settings.two_card_border_radius }}px;
+  }
+
+  .ai-two-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.two_card_title_size }}px;
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+
+  .ai-two-card-bullets-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-two-card-bullets-{{ ai_gen_id }} li {
+    font-size: {{ block.settings.two_card_bullet_size }}px;
+    padding-left: 32px;
+    position: relative;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .ai-two-card-bullets-{{ ai_gen_id }} li:before {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-two-card-cross-{{ ai_gen_id }} li:before {
+    content: "✕";
+    color: {{ block.settings.cross_icon_color }};
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .ai-two-card-check-{{ ai_gen_id }} li:before {
+    content: "✓";
+    color: {{ block.settings.check_icon_color }};
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* CTA button */
+  .ai-cta-wrap-{{ ai_gen_id }} {
+    display: flex;
+    margin-top: {{ block.settings.cta_spacing_top }}px;
+    margin-bottom: {{ block.settings.cta_spacing_bottom }}px;
+    {% if block.settings.cta_align == 'left' %}justify-content: flex-start;
+    {% elsif block.settings.cta_align == 'right' %}justify-content: flex-end;
+    {% else %}justify-content: center;{% endif %}
+  }
+
+  .ai-cta-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: {{ block.settings.cta_padding_vertical }}px {{ block.settings.cta_padding_horizontal }}px;
+    background-color: {{ block.settings.cta_bg }};
+    color: {{ block.settings.cta_text_color }};
+    border: {{ block.settings.cta_border_width }}px solid {{ block.settings.cta_border_color }};
+    border-radius: {{ block.settings.cta_radius }}px;
+    font-size: {{ block.settings.cta_font_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .ai-cta-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.cta_hover_bg }};
+    color: {{ block.settings.cta_hover_text }};
+  }
+
+  .ai-cta-arrow-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: {{ block.settings.cta_arrow_bg }};
+    color: {{ block.settings.cta_arrow_color }};
+    flex-shrink: 0;
+  }
+
+  .ai-cta-arrow-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-container-{{ ai_gen_id }} {
+      padding-left: {{ block.settings.horizontal_padding_mobile }}px;
+      padding-right: {{ block.settings.horizontal_padding_mobile }}px;
+    }
+
+    .ai-image-text-card-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-three-cards-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-two-cards-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-banner-desktop-{{ ai_gen_id }} { display: none; }
+    .ai-banner-mobile-{{ ai_gen_id }} { display: block; }
+
+    {%- if block.settings.banner_image_mobile != blank -%}
+      .ai-banner-mobile-{{ ai_gen_id }} img {
+        height: {{ block.settings.banner_height_mobile }}px;
+      }
+    {%- endif -%}
+
+    .ai-banner-media-{{ ai_gen_id }} img {
+      height: {{ block.settings.banner_height_mobile }}px;
+    }
+
+    .ai-banner-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.banner_title_size | times: 0.65 | round }}px;
+    }
+
+    .ai-cta-button-{{ ai_gen_id }} {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<multi-section-{{ ai_gen_id }} class="ai-multi-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-container-{{ ai_gen_id }}">
+    {% if block.settings.show_section_1 %}
+      <div class="ai-section-{{ ai_gen_id }} ai-section-1-{{ ai_gen_id }}">
+        <div class="ai-intro-{{ ai_gen_id }}">
+          {% if block.settings.intro_subheading != blank %}
+            <div class="ai-intro-subheading-{{ ai_gen_id }}">{{ block.settings.intro_subheading }}</div>
+          {% endif %}
+          {% if block.settings.intro_heading != blank %}
+            <h2 class="ai-intro-heading-{{ ai_gen_id }}">{{ block.settings.intro_heading }}</h2>
+          {% endif %}
+          {% if block.settings.intro_text != blank %}
+            <div class="ai-intro-text-{{ ai_gen_id }}">{{ block.settings.intro_text }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_section_2 %}
+      <div class="ai-section-{{ ai_gen_id }} ai-section-2-{{ ai_gen_id }}">
+        <div class="ai-image-text-card-{{ ai_gen_id }}">
+          <div class="ai-image-text-image-{{ ai_gen_id }}">
+            {% if block.settings.image_text_image %}
+              <img
+                src="{{ block.settings.image_text_image | image_url: width: 1200 }}"
+                alt="{{ block.settings.image_text_image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.image_text_image.width }}"
+                height="{{ block.settings.image_text_image.height }}"
+              >
+            {% else %}
+              <div class="ai-image-text-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="ai-image-text-content-{{ ai_gen_id }}">
+            {% if block.settings.image_text_subtitle != blank %}
+              <div class="ai-image-text-subtitle-{{ ai_gen_id }}">{{ block.settings.image_text_subtitle }}</div>
+            {% endif %}
+            {% if block.settings.image_text_title != blank %}
+              <h3 class="ai-image-text-title-{{ ai_gen_id }}">{{ block.settings.image_text_title }}</h3>
+            {% endif %}
+            {% if block.settings.image_text_text != blank %}
+              <div class="ai-image-text-text-{{ ai_gen_id }}">{{ block.settings.image_text_text }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_section_3 %}
+      <div class="ai-section-{{ ai_gen_id }} ai-section-3-{{ ai_gen_id }}">
+        <div class="ai-three-cards-{{ ai_gen_id }}">
+          {% for i in (1..3) %}
+            {% liquid
+              assign subtitle_key = 'card_' | append: i | append: '_subtitle'
+              assign badge_key = 'card_' | append: i | append: '_badge'
+              assign title_key = 'card_' | append: i | append: '_title'
+              assign text_key = 'card_' | append: i | append: '_text'
+              assign bullet1_key = 'card_' | append: i | append: '_bullet_1'
+              assign bullet2_key = 'card_' | append: i | append: '_bullet_2'
+              assign bullet3_key = 'card_' | append: i | append: '_bullet_3'
+
+              assign bg_key = 'card_' | append: i | append: '_bg_color'
+              assign border_key = 'card_' | append: i | append: '_border_color'
+              assign bw_key = 'card_' | append: i | append: '_border_width'
+              assign sub_color_key = 'card_' | append: i | append: '_subtitle_color'
+              assign badge_bg_key = 'card_' | append: i | append: '_badge_bg_color'
+              assign badge_text_key = 'card_' | append: i | append: '_badge_text_color'
+              assign title_color_key = 'card_' | append: i | append: '_title_color'
+              assign text_color_key = 'card_' | append: i | append: '_text_color'
+              assign bullet_color_key = 'card_' | append: i | append: '_bullet_color'
+              assign bullet_icon_key = 'card_' | append: i | append: '_bullet_icon_color'
+
+              assign subtitle = block.settings[subtitle_key]
+              assign badge = block.settings[badge_key]
+              assign title = block.settings[title_key]
+              assign text = block.settings[text_key]
+              assign bullet1 = block.settings[bullet1_key]
+              assign bullet2 = block.settings[bullet2_key]
+              assign bullet3 = block.settings[bullet3_key]
+
+              assign card_bg = block.settings[bg_key]
+              assign card_border = block.settings[border_key]
+              assign card_bw = block.settings[bw_key]
+              assign sub_color = block.settings[sub_color_key]
+              assign badge_bg = block.settings[badge_bg_key]
+              assign badge_text_color = block.settings[badge_text_key]
+              assign title_color = block.settings[title_color_key]
+              assign text_color = block.settings[text_color_key]
+              assign bullet_color = block.settings[bullet_color_key]
+              assign bullet_icon = block.settings[bullet_icon_key]
+            %}
+
+            <div class="ai-three-card-{{ ai_gen_id }}" style="background-color: {{ card_bg }}; border: {{ card_bw }}px solid {{ card_border }};">
+              <div class="ai-three-card-header-{{ ai_gen_id }}">
+                {% if subtitle != blank %}
+                  <div class="ai-three-card-subtitle-{{ ai_gen_id }}" style="color: {{ sub_color }};">{{ subtitle }}</div>
+                {% endif %}
+                {% if badge != blank %}
+                  <div class="ai-three-card-badge-{{ ai_gen_id }}" style="background-color: {{ badge_bg }}; color: {{ badge_text_color }};">{{ badge }}</div>
+                {% endif %}
+              </div>
+              {% if title != blank %}
+                <h4 class="ai-three-card-title-{{ ai_gen_id }}" style="color: {{ title_color }};">{{ title }}</h4>
+              {% endif %}
+              {% if text != blank %}
+                <div class="ai-three-card-text-{{ ai_gen_id }}" style="color: {{ text_color }};">{{ text }}</div>
+              {% endif %}
+              {% if bullet1 != blank or bullet2 != blank or bullet3 != blank %}
+                <ul class="ai-three-card-bullets-{{ ai_gen_id }}" style="--ai-bullet-icon-{{ ai_gen_id }}: {{ bullet_icon }};">
+                  {% if bullet1 != blank %}<li style="color: {{ bullet_color }};">{{ bullet1 }}</li>{% endif %}
+                  {% if bullet2 != blank %}<li style="color: {{ bullet_color }};">{{ bullet2 }}</li>{% endif %}
+                  {% if bullet3 != blank %}<li style="color: {{ bullet_color }};">{{ bullet3 }}</li>{% endif %}
+                </ul>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_section_banner %}
+      <div class="ai-section-{{ ai_gen_id }} ai-section-banner-{{ ai_gen_id }}">
+        <div class="ai-banner-{{ ai_gen_id }}">
+          <div class="ai-banner-media-{{ ai_gen_id }} ai-banner-desktop-{{ ai_gen_id }}">
+            {% if block.settings.banner_image %}
+              <img
+                src="{{ block.settings.banner_image | image_url: width: 2000 }}"
+                alt="{{ block.settings.banner_image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.banner_image.width }}"
+                height="{{ block.settings.banner_image.height }}"
+              >
+            {% else %}
+              <div class="ai-banner-placeholder-{{ ai_gen_id }}">{{ 'image' | placeholder_svg_tag }}</div>
+            {% endif %}
+          </div>
+
+          {% if block.settings.banner_image_mobile != blank %}
+            <div class="ai-banner-media-{{ ai_gen_id }} ai-banner-mobile-{{ ai_gen_id }}">
+              <img
+                src="{{ block.settings.banner_image_mobile | image_url: width: 1000 }}"
+                alt="{{ block.settings.banner_image_mobile.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.banner_image_mobile.width }}"
+                height="{{ block.settings.banner_image_mobile.height }}"
+              >
+            </div>
+          {% endif %}
+
+          {% if block.settings.banner_show_overlay %}
+            <div class="ai-banner-overlay-{{ ai_gen_id }}"></div>
+          {% endif %}
+
+          {% if block.settings.banner_subtitle != blank or block.settings.banner_title != blank or block.settings.banner_text != blank %}
+            <div class="ai-banner-content-wrap-{{ ai_gen_id }}">
+              <div class="ai-banner-content-{{ ai_gen_id }}">
+                {% if block.settings.banner_subtitle != blank %}
+                  <div class="ai-banner-subtitle-{{ ai_gen_id }}">{{ block.settings.banner_subtitle }}</div>
+                {% endif %}
+                {% if block.settings.banner_title != blank %}
+                  <h3 class="ai-banner-title-{{ ai_gen_id }}">{{ block.settings.banner_title }}</h3>
+                {% endif %}
+                {% if block.settings.banner_text != blank %}
+                  <div class="ai-banner-text-{{ ai_gen_id }}">{{ block.settings.banner_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_section_4 %}
+      <div class="ai-section-{{ ai_gen_id }} ai-section-4-{{ ai_gen_id }}">
+        <div class="ai-two-cards-{{ ai_gen_id }}">
+          <div class="ai-two-card-{{ ai_gen_id }}" style="background-color: {{ block.settings.left_card_bg_color }}; border: {{ block.settings.left_card_border_width }}px solid {{ block.settings.left_card_border_color }};">
+            {% if block.settings.left_card_title != blank %}
+              <h4 class="ai-two-card-title-{{ ai_gen_id }}" style="color: {{ block.settings.left_card_title_color }};">{{ block.settings.left_card_title }}</h4>
+            {% endif %}
+            <ul class="ai-two-card-bullets-{{ ai_gen_id }} ai-two-card-cross-{{ ai_gen_id }}">
+              {% for b in (1..8) %}
+                {% assign lkey = 'left_bullet_' | append: b %}
+                {% if block.settings[lkey] != blank %}
+                  <li style="color: {{ block.settings.left_card_body_color }};">{{ block.settings[lkey] }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="ai-two-card-{{ ai_gen_id }}" style="background-color: {{ block.settings.right_card_bg_color }}; border: {{ block.settings.right_card_border_width }}px solid {{ block.settings.right_card_border_color }};">
+            {% if block.settings.right_card_title != blank %}
+              <h4 class="ai-two-card-title-{{ ai_gen_id }}" style="color: {{ block.settings.right_card_title_color }};">{{ block.settings.right_card_title }}</h4>
+            {% endif %}
+            <ul class="ai-two-card-bullets-{{ ai_gen_id }} ai-two-card-check-{{ ai_gen_id }}">
+              {% for b in (1..8) %}
+                {% assign rkey = 'right_bullet_' | append: b %}
+                {% if block.settings[rkey] != blank %}
+                  <li style="color: {{ block.settings.right_card_body_color }};">{{ block.settings[rkey] }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_cta and block.settings.cta_text != blank %}
+      <div class="ai-cta-wrap-{{ ai_gen_id }}">
+        <a href="{{ block.settings.cta_link | default: '#' }}" class="ai-cta-button-{{ ai_gen_id }}">
+          <span>{{ block.settings.cta_text }}</span>
+          {% if block.settings.cta_show_arrow %}
+            <span class="ai-cta-arrow-{{ ai_gen_id }}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          {% endif %}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</multi-section-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Multi section layout",
+  "settings": [
+    { "type": "header", "content": "Container" },
+    { "type": "range", "id": "container_max_width", "label": "Maximum width", "min": 600, "max": 1600, "step": 50, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "horizontal_padding", "label": "Horizontal padding (desktop)", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "horizontal_padding_mobile", "label": "Horizontal padding (mobile)", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "section_padding", "label": "Section spacing", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+
+    { "type": "header", "content": "Section visibility" },
+    { "type": "checkbox", "id": "show_section_1", "label": "Show introduction section", "default": true },
+    { "type": "checkbox", "id": "show_section_2", "label": "Show image with text section", "default": true },
+    { "type": "checkbox", "id": "show_section_3", "label": "Show three cards section", "default": true },
+    { "type": "checkbox", "id": "show_section_banner", "label": "Show banner image section", "default": true },
+    { "type": "checkbox", "id": "show_section_4", "label": "Show two cards section", "default": true },
+    { "type": "checkbox", "id": "show_cta", "label": "Show CTA button", "default": true },
+
+    { "type": "header", "content": "Section 1: Introduction" },
+    { "type": "text", "id": "intro_subheading", "label": "Subheading", "default": "Welcome" },
+    { "type": "text", "id": "intro_heading", "label": "Heading", "default": "Discover Our Story" },
+    { "type": "richtext", "id": "intro_text", "label": "Text", "default": "<p>We are dedicated to bringing you the best products and services.</p>" },
+    { "type": "select", "id": "intro_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "intro_padding", "label": "Padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "intro_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "color", "id": "intro_bg_color", "label": "Background color", "default": "#f9f7f1" },
+    { "type": "color", "id": "intro_subheading_color", "label": "Subheading color", "default": "#192e59" },
+    { "type": "range", "id": "intro_subheading_size", "label": "Subheading size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "intro_heading_color", "label": "Heading color", "default": "#192e59" },
+    { "type": "range", "id": "intro_heading_size", "label": "Heading size", "min": 20, "max": 60, "step": 2, "unit": "px", "default": 36 },
+    { "type": "color", "id": "intro_text_color", "label": "Text color", "default": "#192e59" },
+    { "type": "range", "id": "intro_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Section 2: Image with text" },
+    { "type": "image_picker", "id": "image_text_image", "label": "Image" },
+    { "type": "text", "id": "image_text_subtitle", "label": "Subtitle", "default": "Our Mission" },
+    { "type": "text", "id": "image_text_title", "label": "Title", "default": "Quality First" },
+    { "type": "richtext", "id": "image_text_text", "label": "Text", "default": "<p>We believe in delivering exceptional quality in everything we do.</p>" },
+    { "type": "range", "id": "image_text_gap", "label": "Gap between image and text", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 0 },
+    { "type": "range", "id": "image_text_content_padding", "label": "Content padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "image_text_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "color", "id": "image_text_bg_color", "label": "Background color", "default": "#f9f7f1" },
+    { "type": "color", "id": "image_text_subtitle_color", "label": "Subtitle color", "default": "#192e59" },
+    { "type": "range", "id": "image_text_subtitle_size", "label": "Subtitle size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "image_text_title_color", "label": "Title color", "default": "#192e59" },
+    { "type": "range", "id": "image_text_title_size", "label": "Title size", "min": 20, "max": 50, "step": 2, "unit": "px", "default": 32 },
+    { "type": "color", "id": "image_text_text_color", "label": "Text color", "default": "#192e59" },
+    { "type": "range", "id": "image_text_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Section 3: Three cards (shared sizes)" },
+    { "type": "range", "id": "three_cards_gap", "label": "Gap between cards", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "three_card_padding", "label": "Card padding", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "three_card_border_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "three_card_subtitle_size", "label": "Subtitle size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "three_card_badge_size", "label": "Badge text size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "three_card_badge_radius", "label": "Badge border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "three_card_title_size", "label": "Title size", "min": 16, "max": 40, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "three_card_text_size", "label": "Text size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "range", "id": "three_card_bullet_size", "label": "Bullet text size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+
+    { "type": "header", "content": "Card 1 content" },
+    { "type": "text", "id": "card_1_subtitle", "label": "Subtitle", "default": "Feature" },
+    { "type": "text", "id": "card_1_badge", "label": "Badge text", "default": "New" },
+    { "type": "text", "id": "card_1_title", "label": "Title", "default": "Premium Quality" },
+    { "type": "richtext", "id": "card_1_text", "label": "Text", "default": "<p>Experience the difference with our premium products.</p>" },
+    { "type": "text", "id": "card_1_bullet_1", "label": "Bullet point 1", "default": "High-quality materials" },
+    { "type": "text", "id": "card_1_bullet_2", "label": "Bullet point 2", "default": "Expert craftsmanship" },
+    { "type": "text", "id": "card_1_bullet_3", "label": "Bullet point 3", "default": "Sustainable sourcing" },
+    { "type": "color", "id": "card_1_bg_color", "label": "Card background", "default": "#d7e6f4" },
+    { "type": "range", "id": "card_1_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 0 },
+    { "type": "color", "id": "card_1_border_color", "label": "Border color", "default": "#d7e6f4" },
+    { "type": "color", "id": "card_1_subtitle_color", "label": "Subtitle color", "default": "#5d6f8c" },
+    { "type": "color", "id": "card_1_badge_bg_color", "label": "Badge background", "default": "#bcd2ea" },
+    { "type": "color", "id": "card_1_badge_text_color", "label": "Badge text color", "default": "#41577a" },
+    { "type": "color", "id": "card_1_title_color", "label": "Title color", "default": "#192e59" },
+    { "type": "color", "id": "card_1_text_color", "label": "Text color", "default": "#3c4d6b" },
+    { "type": "color", "id": "card_1_bullet_color", "label": "Bullet text color", "default": "#3c4d6b" },
+    { "type": "color", "id": "card_1_bullet_icon_color", "label": "Bullet icon color", "default": "#4a86bf" },
+
+    { "type": "header", "content": "Card 2 content" },
+    { "type": "text", "id": "card_2_subtitle", "label": "Subtitle", "default": "Service" },
+    { "type": "text", "id": "card_2_badge", "label": "Badge text", "default": "Popular" },
+    { "type": "text", "id": "card_2_title", "label": "Title", "default": "Fast Delivery" },
+    { "type": "richtext", "id": "card_2_text", "label": "Text", "default": "<p>Get your orders delivered quickly and safely.</p>" },
+    { "type": "text", "id": "card_2_bullet_1", "label": "Bullet point 1", "default": "Same-day shipping" },
+    { "type": "text", "id": "card_2_bullet_2", "label": "Bullet point 2", "default": "Track your order" },
+    { "type": "text", "id": "card_2_bullet_3", "label": "Bullet point 3", "default": "Secure packaging" },
+    { "type": "color", "id": "card_2_bg_color", "label": "Card background", "default": "#4a86bf" },
+    { "type": "range", "id": "card_2_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 0 },
+    { "type": "color", "id": "card_2_border_color", "label": "Border color", "default": "#4a86bf" },
+    { "type": "color", "id": "card_2_subtitle_color", "label": "Subtitle color", "default": "#dbe8f5" },
+    { "type": "color", "id": "card_2_badge_bg_color", "label": "Badge background", "default": "#3a6c9c" },
+    { "type": "color", "id": "card_2_badge_text_color", "label": "Badge text color", "default": "#ffffff" },
+    { "type": "color", "id": "card_2_title_color", "label": "Title color", "default": "#ffffff" },
+    { "type": "color", "id": "card_2_text_color", "label": "Text color", "default": "#eaf2fb" },
+    { "type": "color", "id": "card_2_bullet_color", "label": "Bullet text color", "default": "#eaf2fb" },
+    { "type": "color", "id": "card_2_bullet_icon_color", "label": "Bullet icon color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Card 3 content" },
+    { "type": "text", "id": "card_3_subtitle", "label": "Subtitle", "default": "Support" },
+    { "type": "text", "id": "card_3_badge", "label": "Badge text", "default": "24/7" },
+    { "type": "text", "id": "card_3_title", "label": "Title", "default": "Customer Care" },
+    { "type": "richtext", "id": "card_3_text", "label": "Text", "default": "<p>Our team is here to help you anytime you need.</p>" },
+    { "type": "text", "id": "card_3_bullet_1", "label": "Bullet point 1", "default": "Live chat support" },
+    { "type": "text", "id": "card_3_bullet_2", "label": "Bullet point 2", "default": "Email assistance" },
+    { "type": "text", "id": "card_3_bullet_3", "label": "Bullet point 3", "default": "Phone support" },
+    { "type": "color", "id": "card_3_bg_color", "label": "Card background", "default": "#192e59" },
+    { "type": "range", "id": "card_3_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 0 },
+    { "type": "color", "id": "card_3_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "color", "id": "card_3_subtitle_color", "label": "Subtitle color", "default": "#aab8d4" },
+    { "type": "color", "id": "card_3_badge_bg_color", "label": "Badge background", "default": "#2b4170" },
+    { "type": "color", "id": "card_3_badge_text_color", "label": "Badge text color", "default": "#ffffff" },
+    { "type": "color", "id": "card_3_title_color", "label": "Title color", "default": "#ffffff" },
+    { "type": "color", "id": "card_3_text_color", "label": "Text color", "default": "#d8e0f0" },
+    { "type": "color", "id": "card_3_bullet_color", "label": "Bullet text color", "default": "#d8e0f0" },
+    { "type": "color", "id": "card_3_bullet_icon_color", "label": "Bullet icon color", "default": "#7fa8d8" },
+
+    { "type": "header", "content": "Banner image (between cards)" },
+    { "type": "image_picker", "id": "banner_image", "label": "Desktop image" },
+    { "type": "image_picker", "id": "banner_image_mobile", "label": "Mobile image (optional)" },
+    { "type": "range", "id": "banner_height", "label": "Banner height (desktop)", "min": 200, "max": 800, "step": 10, "unit": "px", "default": 420 },
+    { "type": "range", "id": "banner_height_mobile", "label": "Banner height (mobile)", "min": 160, "max": 600, "step": 10, "unit": "px", "default": 300 },
+    { "type": "range", "id": "banner_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "checkbox", "id": "banner_show_overlay", "label": "Show dark overlay (helps text readability)", "default": false },
+    { "type": "color", "id": "banner_overlay_color", "label": "Overlay color", "default": "#000000" },
+    { "type": "range", "id": "banner_overlay_opacity", "label": "Overlay opacity", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 30 },
+    { "type": "select", "id": "banner_content_h", "label": "Content horizontal position", "options": [ { "value": "flex-start", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Right" } ], "default": "flex-start" },
+    { "type": "select", "id": "banner_content_v", "label": "Content vertical position", "options": [ { "value": "flex-start", "label": "Top" }, { "value": "center", "label": "Center" }, { "value": "flex-end", "label": "Bottom" } ], "default": "center" },
+    { "type": "select", "id": "banner_text_align", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "left" },
+    { "type": "range", "id": "banner_content_max_width", "label": "Content max width", "min": 200, "max": 1000, "step": 20, "unit": "px", "default": 520 },
+    { "type": "range", "id": "banner_content_padding", "label": "Content padding", "min": 0, "max": 100, "step": 5, "unit": "px", "default": 40 },
+    { "type": "text", "id": "banner_subtitle", "label": "Subtitle", "default": "Real fruits, better ingredients, gentle on tummies." },
+    { "type": "color", "id": "banner_subtitle_color", "label": "Subtitle color", "default": "#192e59" },
+    { "type": "range", "id": "banner_subtitle_size", "label": "Subtitle size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "text", "id": "banner_title", "label": "Title", "default": "Thoughtfully made for every little moment." },
+    { "type": "color", "id": "banner_title_color", "label": "Title color", "default": "#192e59" },
+    { "type": "range", "id": "banner_title_size", "label": "Title size", "min": 20, "max": 64, "step": 2, "unit": "px", "default": 40 },
+    { "type": "richtext", "id": "banner_text", "label": "Text (optional)" },
+    { "type": "color", "id": "banner_text_color", "label": "Text color", "default": "#3c4d6b" },
+    { "type": "range", "id": "banner_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Section 4: Two cards (shared sizes)" },
+    { "type": "range", "id": "two_cards_gap", "label": "Gap between cards", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "two_card_padding", "label": "Card padding", "min": 0, "max": 60, "step": 5, "unit": "px", "default": 30 },
+    { "type": "range", "id": "two_card_border_radius", "label": "Card border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "two_card_title_size", "label": "Title size", "min": 16, "max": 40, "step": 2, "unit": "px", "default": 24 },
+    { "type": "range", "id": "two_card_bullet_size", "label": "Bullet text size", "min": 12, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "cross_icon_color", "label": "Cross icon color (left card)", "default": "#99a2b3" },
+    { "type": "color", "id": "check_icon_color", "label": "Check icon color (right card)", "default": "#4a86bf" },
+
+    { "type": "header", "content": "Left card content" },
+    { "type": "text", "id": "left_card_title", "label": "Title", "default": "Without Our Service" },
+    { "type": "color", "id": "left_card_bg_color", "label": "Card background", "default": "#ffffff" },
+    { "type": "range", "id": "left_card_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 1 },
+    { "type": "color", "id": "left_card_border_color", "label": "Border color", "default": "#e3e6ee" },
+    { "type": "color", "id": "left_card_title_color", "label": "Title color", "default": "#192e59" },
+    { "type": "color", "id": "left_card_body_color", "label": "Bullet text color", "default": "#4a4a4a" },
+    { "type": "text", "id": "left_bullet_1", "label": "Bullet point 1", "default": "Limited options" },
+    { "type": "text", "id": "left_bullet_2", "label": "Bullet point 2", "default": "Slow processing" },
+    { "type": "text", "id": "left_bullet_3", "label": "Bullet point 3", "default": "No support" },
+    { "type": "text", "id": "left_bullet_4", "label": "Bullet point 4", "default": "Higher costs" },
+    { "type": "text", "id": "left_bullet_5", "label": "Bullet point 5" },
+    { "type": "text", "id": "left_bullet_6", "label": "Bullet point 6" },
+    { "type": "text", "id": "left_bullet_7", "label": "Bullet point 7" },
+    { "type": "text", "id": "left_bullet_8", "label": "Bullet point 8" },
+
+    { "type": "header", "content": "Right card content" },
+    { "type": "text", "id": "right_card_title", "label": "Title", "default": "With Our Service" },
+    { "type": "color", "id": "right_card_bg_color", "label": "Card background", "default": "#192e59" },
+    { "type": "range", "id": "right_card_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 0 },
+    { "type": "color", "id": "right_card_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "color", "id": "right_card_title_color", "label": "Title color", "default": "#ffffff" },
+    { "type": "color", "id": "right_card_body_color", "label": "Bullet text color", "default": "#d8e0f0" },
+    { "type": "text", "id": "right_bullet_1", "label": "Bullet point 1", "default": "Wide selection" },
+    { "type": "text", "id": "right_bullet_2", "label": "Bullet point 2", "default": "Fast delivery" },
+    { "type": "text", "id": "right_bullet_3", "label": "Bullet point 3", "default": "24/7 support" },
+    { "type": "text", "id": "right_bullet_4", "label": "Bullet point 4", "default": "Best prices" },
+    { "type": "text", "id": "right_bullet_5", "label": "Bullet point 5" },
+    { "type": "text", "id": "right_bullet_6", "label": "Bullet point 6" },
+    { "type": "text", "id": "right_bullet_7", "label": "Bullet point 7" },
+    { "type": "text", "id": "right_bullet_8", "label": "Bullet point 8" },
+
+    { "type": "header", "content": "CTA button (below two cards)" },
+    { "type": "text", "id": "cta_text", "label": "Button text", "default": "Get your Yummybara snacks!" },
+    { "type": "url", "id": "cta_link", "label": "Button link" },
+    { "type": "checkbox", "id": "cta_show_arrow", "label": "Show arrow icon", "default": true },
+    { "type": "select", "id": "cta_align", "label": "Alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "color", "id": "cta_bg", "label": "Background", "default": "#192e59" },
+    { "type": "color", "id": "cta_text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "color", "id": "cta_hover_bg", "label": "Hover background", "default": "#0d1a33" },
+    { "type": "color", "id": "cta_hover_text", "label": "Hover text", "default": "#ffffff" },
+    { "type": "color", "id": "cta_arrow_bg", "label": "Arrow circle background", "default": "#ffffff" },
+    { "type": "color", "id": "cta_arrow_color", "label": "Arrow icon color", "default": "#4a86bf" },
+    { "type": "range", "id": "cta_border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 0 },
+    { "type": "color", "id": "cta_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "range", "id": "cta_radius", "label": "Border radius", "min": 0, "max": 50, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "cta_font_size", "label": "Font size", "min": 12, "max": 22, "step": 1, "unit": "px", "default": 15 },
+    { "type": "range", "id": "cta_padding_vertical", "label": "Vertical padding", "min": 8, "max": 30, "step": 2, "unit": "px", "default": 18 },
+    { "type": "range", "id": "cta_padding_horizontal", "label": "Horizontal padding", "min": 16, "max": 80, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "cta_spacing_top", "label": "Space above button", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 40 },
+    { "type": "range", "id": "cta_spacing_bottom", "label": "Space below button", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 40 }
+  ],
+  "presets": [
+    { "name": "Multi section layout" }
+  ]
+}
+{% endschema %}

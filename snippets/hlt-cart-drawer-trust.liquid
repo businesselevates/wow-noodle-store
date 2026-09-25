@@ -1,0 +1,41 @@
+{%- comment -%}
+  HLT One - reassurance line directly under the cart drawer's Checkout button.
+
+  Usage (from snippets/cart-drawer.liquid, inside .cart__ctas, after the
+  checkout <button>):
+    {%- render 'hlt-cart-drawer-trust' -%}
+
+  HONESTY NOTE
+  ------------
+  Bloom's equivalent line reads "30,000+ five-star reviews". HLT One has no
+  verified review count, so no review number or rating is shipped here: an
+  unverifiable count on a live storefront would be a false advertising claim.
+
+  The default text is "Secure checkout" - the same reassurance the cart page
+  already makes (sections/main-cart-footer.liquid, `secure_text`), and one that
+  is true of any Shopify checkout. "Free delivery" was deliberately NOT used as
+  the default, because this store quotes "Shipping: calculated at checkout" and
+  "Tracked delivery across Singapore", which do not support an unconditional
+  free-delivery claim.
+
+  The stars are behind `drawer_trust_stars`, which defaults to false, so no
+  rating renders unless the merchant deliberately switches it on and supplies
+  wording they can stand behind. Clearing the text hides the line entirely.
+{%- endcomment -%}
+
+{%- assign hlt_trust_text = settings.drawer_trust_text -%}
+
+{%- if hlt_trust_text != blank -%}
+  <p class="hlt-drawer-trust">
+    {%- if settings.drawer_trust_stars -%}
+      <span class="hlt-drawer-trust__stars" role="img" aria-label="Rated 5 out of 5 stars">
+        {%- render 'hlt-icon', name: 'star', size: 13 -%}
+        {%- render 'hlt-icon', name: 'star', size: 13 -%}
+        {%- render 'hlt-icon', name: 'star', size: 13 -%}
+        {%- render 'hlt-icon', name: 'star', size: 13 -%}
+        {%- render 'hlt-icon', name: 'star', size: 13 -%}
+      </span>
+    {%- endif -%}
+    <span class="hlt-drawer-trust__text">{{ hlt_trust_text | escape }}</span>
+  </p>
+{%- endif -%}

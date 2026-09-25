@@ -1,0 +1,713 @@
+{%- comment -%}
+  ELV Trusted-by Marquee
+  Replica of the "Athletes, Physicians, Dietitians, Biohackers" section on im8health.com PDP:
+  - cream background, serif headline with italic <em>
+  - Swiper continuous marquee (loop, autoplay delay 0, speed 7000, linear easing), pauses on hover, draggable
+  - 9:16-ish cards with autoplaying muted videos that lazy load / unload with IntersectionObserver
+  - Desktop hover: video zooms 1.08 + darkens, name badge lifts out, dark overlay fades in with
+    role (gold caps) -> name (serif italic) -> quote (serif italic), staggered 0.08s / 0.15s / 0.22s
+  - Optional stats row below, with font, size, weight and spacing controls in the editor
+{%- endcomment -%}
+
+{{ 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' | stylesheet_tag }}
+
+{%- liquid
+  assign sid = section.id
+  assign cards = section.blocks | where: 'type', 'card'
+  assign stats = section.blocks | where: 'type', 'stat'
+  assign repeats = 1
+  if cards.size > 0 and cards.size < 10
+    assign repeats = 10 | divided_by: cards.size | plus: 1
+  endif
+
+  comment
+    Stats typography. Each of the two lines (value, label) can use the
+    section serif font, the theme heading font, the theme body font, or any
+    font picked from the Shopify font library.
+  endcomment
+  assign sv_weight = section.settings.stat_value_weight | default: '400'
+  assign sv_font = nil
+  case section.settings.stat_value_font
+    when 'heading'
+      assign sv_family = 'var(--hlt-font-display, var(--font-heading-family)), Georgia, serif'
+    when 'body'
+      assign sv_family = 'var(--t-sans)'
+    when 'custom'
+      assign sv_font = section.settings.stat_value_custom_font | font_modify: 'weight', sv_weight
+      if sv_font == nil
+        assign sv_font = section.settings.stat_value_custom_font
+      endif
+      assign sv_family = '"' | append: sv_font.family | append: '", ' | append: sv_font.fallback_families
+    else
+      assign sv_family = 'var(--t-serif)'
+  endcase
+
+  assign sl_weight = section.settings.stat_label_weight | default: '600'
+  assign sl_font = nil
+  case section.settings.stat_label_font
+    when 'heading'
+      assign sl_family = 'var(--hlt-font-display, var(--font-heading-family)), Georgia, serif'
+    when 'serif'
+      assign sl_family = 'var(--t-serif)'
+    when 'custom'
+      assign sl_font = section.settings.stat_label_custom_font | font_modify: 'weight', sl_weight
+      if sl_font == nil
+        assign sl_font = section.settings.stat_label_custom_font
+      endif
+      assign sl_family = '"' | append: sl_font.family | append: '", ' | append: sl_font.fallback_families
+    else
+      assign sl_family = 'var(--t-sans)'
+  endcase
+
+  assign sl_transform = 'none'
+  if section.settings.stat_label_uppercase
+    assign sl_transform = 'uppercase'
+  endif
+  assign sl_spacing = section.settings.stat_label_spacing | divided_by: 100.0
+-%}
+
+<style>
+  {%- if sv_font != nil -%}{{ sv_font | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if sl_font != nil -%}{{ sl_font | font_face: font_display: 'swap' }}{%- endif -%}
+  #elv-trusted-{{ sid }} {
+    --t-bg: {{ section.settings.bg_color }};
+    --t-ink: {{ section.settings.ink_color }};
+    --t-gold: {{ section.settings.gold_color }};
+    --t-cream: #FFFBF1;
+    --t-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --t-serif: {{ section.settings.serif_font | default: "var(--hlt-font-display, var(--font-heading-family))" }}, Georgia, serif;
+    --t-sans: var(--hlt-font-body, var(--font-body-family)), -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+    --t-stat-value-family: {{ sv_family }};
+    --t-stat-value-weight: {{ sv_weight }};
+    --t-stat-value-size: {{ section.settings.stat_value_size }}px;
+    --t-stat-value-size-m: {{ section.settings.stat_value_size_mobile }}px;
+    --t-stat-label-family: {{ sl_family }};
+    --t-stat-label-weight: {{ sl_weight }};
+    --t-stat-label-size: {{ section.settings.stat_label_size }}px;
+    --t-stat-label-size-m: {{ section.settings.stat_label_size_mobile }}px;
+    --t-stat-label-transform: {{ sl_transform }};
+    --t-stat-label-spacing: {{ sl_spacing }}em;
+    --t-stat-label-opacity: {{ section.settings.stat_label_opacity }}%;
+    --t-stat-gap: {{ section.settings.stat_gap }}px;
+    --t-stat-inner-gap: {{ section.settings.stat_inner_gap }}px;
+  }
+</style>
+
+<section class="elv-trusted" id="elv-trusted-{{ sid }}" data-elv-trusted="{{ sid }}" data-speed="{{ section.settings.speed | times: 1000 }}">
+  <div class="elv-trusted__container">
+    <header class="elv-trusted__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="elv-trusted__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="elv-trusted__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="elv-trusted__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="elv-trusted__track-wrapper">
+      <div class="elv-trusted__track swiper">
+        <div class="swiper-wrapper">
+          {%- for r in (1..repeats) -%}
+            {%- for block in cards -%}
+              {%- liquid
+                assign vsrc = block.settings.video_url
+                if block.settings.video != blank
+                  assign mp4s = block.settings.video.sources | where: 'format', 'mp4' | sort: 'height'
+                  for s in mp4s
+                    if s.height <= 720
+                      assign vsrc = s.url
+                    endif
+                  endfor
+                  if vsrc == blank and mp4s.size > 0
+                    assign vsrc = mp4s.first.url
+                  endif
+                endif
+                assign poster = block.settings.image
+                if poster == blank and block.settings.video != blank
+                  assign poster = block.settings.video.preview_image
+                endif
+                assign tag = 'div'
+                if block.settings.link != blank
+                  assign tag = 'a'
+                endif
+              -%}
+              <div class="elv-trusted__slide swiper-slide" {% if r > 1 %}aria-hidden="true"{% else %}{{ block.shopify_attributes }}{% endif %}>
+                <{{ tag }} class="elv-trusted__card"{% if tag == 'a' %} href="{{ block.settings.link }}"{% if r > 1 %} tabindex="-1"{% endif %}{% endif %}>
+                  <div class="elv-trusted__card-media">
+                    {%- if vsrc != blank -%}
+                      <video
+                        class="elv-trusted__video"
+                        muted loop playsinline preload="none"
+                        data-video-src="{{ vsrc }}"
+                        {% if poster != blank %}poster="{{ poster | image_url: width: 700 }}"{% endif %}
+                      ></video>
+                    {%- elsif poster != blank -%}
+                      {{ poster | image_url: width: 700 | image_tag: loading: 'lazy', widths: '360, 520, 700', sizes: '(max-width: 749px) 280px, 340px', alt: block.settings.name }}
+                    {%- else -%}
+                      {{ 'lifestyle-1' | placeholder_svg_tag: 'elv-trusted__placeholder' }}
+                    {%- endif -%}
+                  </div>
+
+                  <div class="elv-trusted__card-badge">
+                    {%- if block.settings.name != blank -%}<div class="elv-trusted__card-name">{{ block.settings.name }}</div>{%- endif -%}
+                    {%- if block.settings.role != blank -%}<div class="elv-trusted__card-role">{{ block.settings.role }}</div>{%- endif -%}
+                  </div>
+
+                  <div class="elv-trusted__card-overlay" aria-hidden="true">
+                    {%- if block.settings.name != blank -%}<div class="elv-trusted__overlay-name">{{ block.settings.name }}</div>{%- endif -%}
+                    {%- if block.settings.role != blank -%}<div class="elv-trusted__overlay-role">{{ block.settings.role }}</div>{%- endif -%}
+                    {%- if block.settings.quote != blank -%}<p class="elv-trusted__card-quote">{{ block.settings.quote }}</p>{%- endif -%}
+                  </div>
+                </{{ tag }}>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    {%- if stats.size > 0 -%}
+      <div class="elv-trusted__stats">
+        {%- for block in stats -%}
+          {%- unless forloop.first -%}<span class="elv-trusted__stat-divider" aria-hidden="true"></span>{%- endunless -%}
+          <div class="elv-trusted__stat" {{ block.shopify_attributes }}>
+            <span class="elv-trusted__stat-value">{{ block.settings.value }}</span>
+            <span class="elv-trusted__stat-label">{{ block.settings.label }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .elv-trusted {
+    position: relative;
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    background: var(--t-bg);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .elv-trusted__container { position: relative; z-index: 1; }
+
+  /* ---------- Header ---------- */
+  .elv-trusted__header { text-align: center; max-width: 900px; margin: 0 auto 52px; padding: 0 48px; }
+  .elv-trusted__eyebrow {
+    display: inline-block;
+    font-family: var(--t-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--t-ink);
+    background: color-mix(in srgb, var(--t-ink) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--t-ink) 20%, transparent);
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 18px;
+  }
+  .elv-trusted__title {
+    font-family: var(--t-serif);
+    font-size: clamp(28px, 3.6vw, 40px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0;
+    color: var(--t-ink);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .elv-trusted__title em { font-style: italic; color: var(--t-ink); }
+  .elv-trusted__subtitle {
+    font-family: var(--t-sans);
+    font-size: 13px;
+    line-height: 1.55;
+    color: color-mix(in srgb, var(--t-ink) 68%, transparent);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Marquee ---------- */
+  .elv-trusted__track-wrapper { width: 100%; overflow: hidden; }
+  .elv-trusted__track { width: 100%; }
+  .elv-trusted__track .swiper-wrapper {
+    transition-timing-function: linear !important; /* this is what makes autoplay a smooth marquee */
+    will-change: transform;
+    align-items: stretch;
+  }
+  .elv-trusted__track .swiper-slide { height: auto; }
+  .elv-trusted__slide { width: 340px; flex-shrink: 0; }
+  .elv-trusted__slide .elv-trusted__card { height: 100%; display: flex; flex-direction: column; }
+
+  /* ---------- Card ---------- */
+  .elv-trusted__card {
+    position: relative;
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(165deg, rgba(27, 46, 92, 0.35) 0%, rgba(17, 29, 61, 0.5) 100%);
+    border: 1px solid rgba(27, 46, 92, 0.15);
+    box-shadow: 0 8px 32px rgba(27, 46, 92, 0.2), 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.6s var(--t-ease), border-color 0.6s var(--t-ease);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .elv-trusted__card:hover {
+    box-shadow: 0 0 60px rgba(234, 195, 91, 0.08), 0 0 30px rgba(234, 195, 91, 0.04), 0 20px 50px rgba(0, 0, 0, 0.35);
+    border-color: rgba(234, 195, 91, 0.25);
+  }
+  /* thin gold line on top edge on hover */
+  .elv-trusted__card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 10%, var(--t-gold) 50%, transparent 90%);
+    z-index: 6;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .elv-trusted__card:hover::before { opacity: 0.6; }
+
+  .elv-trusted__card-media {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 460px;
+    flex: 1;
+    overflow: hidden;
+    background: linear-gradient(135deg, #111D3D 0%, #1B2E5C 50%, #111D3D 100%);
+  }
+  .elv-trusted__card-media video,
+  .elv-trusted__card-media img,
+  .elv-trusted__card-media .elv-trusted__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 1.2s var(--t-ease), filter 0.8s var(--t-ease);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    filter: brightness(1) contrast(1);
+  }
+  .elv-trusted__card:hover .elv-trusted__card-media video,
+  .elv-trusted__card:hover .elv-trusted__card-media img {
+    transform: scale(1.08);
+    filter: brightness(0.68) contrast(1.15);
+  }
+  /* bottom gradient so the name badge is readable */
+  .elv-trusted__card-media::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(180deg, transparent 0%, rgba(17, 29, 61, 0.65) 70%, rgba(17, 29, 61, 0.85) 100%);
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.45s var(--t-ease);
+  }
+  .elv-trusted__card:hover .elv-trusted__card-media::after { opacity: 0; }
+
+  /* name + role (resting state) */
+  .elv-trusted__card-badge {
+    position: absolute;
+    bottom: 20px; left: 22px; right: 22px;
+    z-index: 3;
+    text-align: left;
+    transition: opacity 0.4s var(--t-ease), transform 0.4s var(--t-ease);
+  }
+  .elv-trusted__card:hover .elv-trusted__card-badge { opacity: 0; transform: translateY(-12px); }
+  .elv-trusted__card-name {
+    font-family: var(--t-sans);
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  .elv-trusted__card-role {
+    font-family: var(--t-sans);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  /* hover overlay: role -> name -> quote */
+  .elv-trusted__card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: left;
+    padding: 34px 30px 32px;
+    background: linear-gradient(180deg, rgba(17, 29, 61, 0) 0%, rgba(17, 29, 61, 0.35) 35%, rgba(17, 29, 61, 0.82) 70%, rgba(17, 29, 61, 0.96) 100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s var(--t-ease);
+  }
+  .elv-trusted__card:hover .elv-trusted__card-overlay { opacity: 1; pointer-events: auto; }
+  .elv-trusted__overlay-role {
+    order: 1;
+    font-family: var(--t-sans);
+    font-weight: 600;
+    font-size: 9.5px;
+    line-height: 1.3;
+    color: var(--t-gold);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin: 0 0 10px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s var(--t-ease) 0.08s, transform 0.5s var(--t-ease) 0.08s;
+  }
+  .elv-trusted__overlay-name {
+    order: 2;
+    font-family: var(--t-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.15;
+    color: var(--t-cream);
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s var(--t-ease) 0.15s, transform 0.5s var(--t-ease) 0.15s;
+  }
+  .elv-trusted__card-quote {
+    order: 3;
+    font-family: var(--t-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: rgba(255, 251, 241, 0.86);
+    letter-spacing: -0.005em;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s var(--t-ease) 0.22s, transform 0.5s var(--t-ease) 0.22s;
+  }
+  .elv-trusted__card-quote::before { content: '\201C'; color: var(--t-gold); opacity: 0.5; margin-right: 2px; }
+  .elv-trusted__card-quote::after { content: '\201D'; color: var(--t-gold); opacity: 0.5; margin-left: 1px; }
+  .elv-trusted__card:hover .elv-trusted__overlay-role { opacity: 0.85; transform: translateY(0); }
+  .elv-trusted__card:hover .elv-trusted__overlay-name,
+  .elv-trusted__card:hover .elv-trusted__card-quote { opacity: 1; transform: translateY(0); }
+
+  /* ---------- Stats (all typography comes from the editor settings) ---------- */
+  .elv-trusted__stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--t-stat-gap, 56px);
+    max-width: 1040px;
+    margin: 48px auto 0;
+    padding: 36px 32px 0;
+    border-top: 1px solid color-mix(in srgb, var(--t-ink) 10%, transparent);
+  }
+  .elv-trusted__stat { text-align: center; }
+  .elv-trusted__stat-value {
+    display: block;
+    font-family: var(--t-stat-value-family);
+    font-size: var(--t-stat-value-size);
+    font-weight: var(--t-stat-value-weight);
+    color: var(--t-ink);
+    line-height: 1;
+    margin-bottom: var(--t-stat-inner-gap, 6px);
+  }
+  .elv-trusted__stat-label {
+    display: block;
+    font-family: var(--t-stat-label-family);
+    font-size: var(--t-stat-label-size);
+    font-weight: var(--t-stat-label-weight);
+    letter-spacing: var(--t-stat-label-spacing);
+    text-transform: var(--t-stat-label-transform);
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--t-ink) var(--t-stat-label-opacity, 55%), transparent);
+  }
+  .elv-trusted__stat-divider { display: none; }
+
+  /* ---------- Tablet / mobile: no hover overlay, badge always visible ---------- */
+  @media (max-width: 749px) {
+    .elv-trusted { padding-top: {{ section.settings.padding_top | times: 0.78 | round }}px; padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round }}px; }
+    .elv-trusted__header { margin-bottom: 36px; padding: 0 20px; }
+    .elv-trusted__title { font-size: clamp(22px, 6.5vw, 30px); }
+    .elv-trusted__slide { width: 280px; }
+    .elv-trusted__card-media { min-height: 400px; }
+    .elv-trusted__card-media video,
+    .elv-trusted__card-media img { filter: brightness(0.78) contrast(1.1); object-position: center 20%; }
+    .elv-trusted__card:hover .elv-trusted__card-media video,
+    .elv-trusted__card:hover .elv-trusted__card-media img { transform: none; filter: brightness(0.78) contrast(1.1); }
+    .elv-trusted__card-badge,
+    .elv-trusted__card:hover .elv-trusted__card-badge { opacity: 1; transform: none; z-index: 6; }
+    .elv-trusted__card-media::after,
+    .elv-trusted__card:hover .elv-trusted__card-media::after { opacity: 1; }
+    .elv-trusted__card-overlay,
+    .elv-trusted__card:hover .elv-trusted__card-overlay { opacity: 0; pointer-events: none; }
+    .elv-trusted__stats { flex-wrap: wrap; gap: 24px 40px; margin-top: 40px; padding: 28px 20px 0; }
+    .elv-trusted__stat-value { font-size: var(--t-stat-value-size-m); }
+    .elv-trusted__stat-label { font-size: var(--t-stat-label-size-m); }
+  }
+  @media (max-width: 479px) {
+    .elv-trusted__slide { width: 260px; }
+    .elv-trusted__card-media { min-height: 360px; }
+    .elv-trusted__card-badge { bottom: 16px; left: 18px; right: 18px; }
+    .elv-trusted__card-name { font-size: 15px; }
+    .elv-trusted__card-role { font-size: 10.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .elv-trusted__card,
+    .elv-trusted__card-media video,
+    .elv-trusted__card-media img { transition: none; }
+    .elv-trusted__track .swiper-wrapper { transition-timing-function: ease !important; }
+  }
+</style>
+
+<script>
+  (function () {
+    var SID = {{ sid | json }};
+    var SWIPER_JS = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+
+    function loadSwiper(cb) {
+      if (window.Swiper) return cb();
+      var existing = document.querySelector('script[data-elv-swiper]');
+      if (existing) { existing.addEventListener('load', cb); return; }
+      var s = document.createElement('script');
+      s.src = SWIPER_JS;
+      s.defer = true;
+      s.setAttribute('data-elv-swiper', '');
+      s.onload = cb;
+      document.head.appendChild(s);
+    }
+
+    function init() {
+      var root = document.querySelector('[data-elv-trusted="' + SID + '"]');
+      if (!root) return;
+      var swiperEl = root.querySelector('.elv-trusted__track');
+      var speed = parseInt(root.dataset.speed, 10) || 7000;
+
+      /* Lazy load videos when on screen, unload when off screen (keeps iOS Safari memory low) */
+      function loadVideo(v) {
+        if (v.dataset.loaded) return;
+        v.dataset.loaded = 'true';
+        var src = document.createElement('source');
+        src.src = v.dataset.videoSrc;
+        src.type = 'video/mp4';
+        v.appendChild(src);
+        v.load();
+        v.addEventListener('loadeddata', function () {
+          if (v.dataset.visible) v.play().catch(function () {});
+        }, { once: true });
+      }
+      function unloadVideo(v) {
+        if (!v.dataset.loaded) return;
+        v.pause();
+        v.querySelectorAll('source').forEach(function (s) { s.remove(); });
+        v.removeAttribute('src');
+        v.load();
+        delete v.dataset.loaded;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var v = e.target;
+          if (!v.dataset.videoSrc) return;
+          if (e.isIntersecting) {
+            v.dataset.visible = 'true';
+            loadVideo(v);
+            if (v.readyState >= 2) v.play().catch(function () {});
+          } else {
+            delete v.dataset.visible;
+            unloadVideo(v);
+          }
+        });
+      }, { rootMargin: '100px', threshold: 0.1 });
+
+      var instance = null;
+      function initSwiper() {
+        if (instance) { instance.destroy(true, true); instance = null; }
+        instance = new Swiper(swiperEl, {
+          slidesPerView: 'auto',
+          spaceBetween: 22,
+          loop: true,
+          speed: speed,
+          autoplay: { delay: 0, disableOnInteraction: false },
+          grabCursor: true,
+          allowTouchMove: true,
+          watchSlidesProgress: true,
+          breakpoints: {
+            320:  { slidesPerView: 1.2, spaceBetween: 14 },
+            480:  { slidesPerView: 1.5, spaceBetween: 16 },
+            768:  { slidesPerView: 2.4, spaceBetween: 18 },
+            1024: { slidesPerView: 3.2, spaceBetween: 20 },
+            1200: { slidesPerView: 3.8, spaceBetween: 22 }
+          }
+        });
+        bindHoverPause(instance);
+      }
+
+      /* Freeze the marquee exactly where it is on hover (desktop only), resume smoothly on leave */
+      function bindHoverPause(sw) {
+        if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+        var frozen = false;
+        swiperEl.onmouseenter = function () {
+          if (!sw.autoplay || sw.destroyed) return;
+          frozen = true;
+          sw.autoplay.stop();
+          var x = sw.getTranslate();
+          sw.setTransition(0);
+          sw.setTranslate(x);
+        };
+        swiperEl.onmouseleave = function () {
+          if (!frozen || sw.destroyed) return;
+          frozen = false;
+          var target = -sw.snapGrid[sw.snapIndex];
+          var slideSize = (sw.slidesSizesGrid[sw.activeIndex] || 300) + (sw.params.spaceBetween || 0);
+          var ratio = Math.min(1, Math.abs(target - sw.getTranslate()) / slideSize);
+          var dur = Math.max(50, Math.round(speed * ratio));
+          sw.once('transitionEnd', function () { if (!frozen) sw.autoplay.start(); });
+          sw.slideTo(sw.activeIndex, dur, false);
+        };
+      }
+
+      loadSwiper(function () {
+        initSwiper();
+        root.querySelectorAll('.elv-trusted__video').forEach(function (v) { io.observe(v); });
+      });
+
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) setTimeout(initSwiper, 100);
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible' && instance && instance.autoplay && !instance.autoplay.running) {
+          instance.autoplay.start();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.detail && e.detail.sectionId === SID) init();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Trusted-by marquee",
+  "tag": "div",
+  "class": "section elv-trusted-section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow (pill)", "default": "Trusted by the best" },
+    { "type": "inline_richtext", "id": "title", "label": "Title", "info": "Select text and press italic to get the serif italic style.", "default": "Athletes, Physicians, Dietitians, Biohackers and <em>1M+ Customer Purchases.</em>" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "1M+ Customer Purchases, 64M+ Servings Worldwide" },
+    { "type": "header", "content": "Style" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#FFFBF1" },
+    { "type": "color", "id": "ink_color", "label": "Headline / text color", "default": "#1B2E5C" },
+    { "type": "color", "id": "gold_color", "label": "Accent (gold)", "default": "#EAC35B" },
+    { "type": "text", "id": "serif_font", "label": "Serif font family (optional)", "info": "Leave blank to use the theme heading font. Example: 'Playfair Display'. The font must already be loaded on the store." },
+    { "type": "header", "content": "Marquee" },
+    { "type": "range", "id": "speed", "label": "Seconds per card (higher = slower)", "min": 3, "max": 15, "step": 1, "default": 7 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+
+    { "type": "header", "content": "Stats: numbers" },
+    { "type": "select", "id": "stat_value_font", "label": "Number font", "default": "serif", "options": [
+      { "value": "serif", "label": "Section serif font" },
+      { "value": "heading", "label": "Theme heading font" },
+      { "value": "body", "label": "Theme body font" },
+      { "value": "custom", "label": "Custom (pick below)" }
+    ] },
+    { "type": "font_picker", "id": "stat_value_custom_font", "label": "Custom number font", "info": "Only used when Number font is set to Custom.", "default": "assistant_n4" },
+    { "type": "select", "id": "stat_value_weight", "label": "Number weight", "default": "400", "options": [
+      { "value": "300", "label": "Light" },
+      { "value": "400", "label": "Regular" },
+      { "value": "500", "label": "Medium" },
+      { "value": "600", "label": "Semibold" },
+      { "value": "700", "label": "Bold" },
+      { "value": "800", "label": "Extra bold" }
+    ] },
+    { "type": "range", "id": "stat_value_size", "label": "Number size, desktop", "min": 16, "max": 72, "step": 1, "unit": "px", "default": 36 },
+    { "type": "range", "id": "stat_value_size_mobile", "label": "Number size, mobile", "min": 14, "max": 56, "step": 1, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Stats: labels" },
+    { "type": "select", "id": "stat_label_font", "label": "Label font", "default": "body", "options": [
+      { "value": "body", "label": "Theme body font" },
+      { "value": "heading", "label": "Theme heading font" },
+      { "value": "serif", "label": "Section serif font" },
+      { "value": "custom", "label": "Custom (pick below)" }
+    ] },
+    { "type": "font_picker", "id": "stat_label_custom_font", "label": "Custom label font", "info": "Only used when Label font is set to Custom.", "default": "assistant_n4" },
+    { "type": "select", "id": "stat_label_weight", "label": "Label weight", "default": "600", "options": [
+      { "value": "300", "label": "Light" },
+      { "value": "400", "label": "Regular" },
+      { "value": "500", "label": "Medium" },
+      { "value": "600", "label": "Semibold" },
+      { "value": "700", "label": "Bold" },
+      { "value": "800", "label": "Extra bold" }
+    ] },
+    { "type": "range", "id": "stat_label_size", "label": "Label size, desktop", "min": 8, "max": 24, "step": 1, "unit": "px", "default": 10 },
+    { "type": "range", "id": "stat_label_size_mobile", "label": "Label size, mobile", "min": 8, "max": 20, "step": 1, "unit": "px", "default": 10 },
+    { "type": "checkbox", "id": "stat_label_uppercase", "label": "Uppercase labels", "default": true },
+    { "type": "range", "id": "stat_label_spacing", "label": "Label letter spacing", "info": "0 is normal. 20 matches the original wide spacing.", "min": 0, "max": 40, "step": 1, "default": 20 },
+    { "type": "range", "id": "stat_label_opacity", "label": "Label colour strength", "info": "100 is the full text colour. Lower is lighter.", "min": 30, "max": 100, "step": 5, "unit": "%", "default": 55 },
+
+    { "type": "header", "content": "Stats: spacing" },
+    { "type": "range", "id": "stat_gap", "label": "Space between stats", "min": 16, "max": 120, "step": 4, "unit": "px", "default": 56 },
+    { "type": "range", "id": "stat_inner_gap", "label": "Space between number and label", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 6 }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Person card",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Full Name" },
+        { "type": "text", "id": "role", "label": "Role", "default": "Professional Athlete" },
+        { "type": "textarea", "id": "quote", "label": "Quote (shows on hover)", "default": "Write a short testimonial here. It appears on hover, clamped to five lines." },
+        { "type": "video", "id": "video", "label": "Video (upload to Shopify)" },
+        { "type": "text", "id": "video_url", "label": "Or video URL (.mp4)" },
+        { "type": "image_picker", "id": "image", "label": "Poster / fallback image" },
+        { "type": "url", "id": "link", "label": "Link (optional)" }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "1M+" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Customer purchases" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trusted-by marquee",
+      "blocks": [
+        { "type": "card" }, { "type": "card" }, { "type": "card" }, { "type": "card" }, { "type": "card" }, { "type": "card" },
+        { "type": "stat", "settings": { "value": "1M+", "label": "Customer purchases" } },
+        { "type": "stat", "settings": { "value": "64M+", "label": "Servings worldwide" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

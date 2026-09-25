@@ -1,0 +1,379 @@
+{% doc %}
+  @prompt
+    Subheading, heading, text 1 in a left-aligned centered column with adjustable tight spacing. Text 2 is centered with its own width, side padding, and top spacing.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-text-block-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-text-block__content-{{ ai_gen_id }} {
+    display: block;
+  }
+
+  .ai-text-block__centered-group-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.group_spacing }}px;
+    margin: 0 auto;
+    max-width: {{ block.settings.content_max_width }}%;
+    padding: 0 {{ block.settings.content_side_padding }}px;
+  }
+
+  .ai-text-block__subheading-{{ ai_gen_id }} {
+    text-align: {{ block.settings.group_alignment }};
+    color: {{ block.settings.subheading_color }};
+    font-size: {{ block.settings.subheading_size }}px;
+    margin: 0;
+  }
+
+  .ai-text-block__heading-{{ ai_gen_id }} {
+    text-align: {{ block.settings.group_alignment }};
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0;
+  }
+
+  .ai-text-block__subheading-{{ ai_gen_id }} p,
+  .ai-text-block__heading-{{ ai_gen_id }} p {
+    margin: 0;
+  }
+
+  .ai-text-block__text1-{{ ai_gen_id }} {
+    text-align: {{ block.settings.group_alignment }};
+    color: {{ block.settings.text1_color }};
+    font-size: {{ block.settings.text1_size }}px;
+  }
+
+  .ai-text-block__text2-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text2_alignment }};
+    color: {{ block.settings.text2_color }};
+    font-size: {{ block.settings.text2_size }}px;
+    max-width: {{ block.settings.text2_max_width }}%;
+    margin: {{ block.settings.text2_top_spacing }}px auto 0 auto;
+    padding: 0 {{ block.settings.text2_side_padding }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-text-block-{{ ai_gen_id }} {
+      width: 100%;
+      padding: {{ block.settings.padding_top | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px {{ block.settings.padding_bottom | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px;
+    }
+
+    .ai-text-block__centered-group-{{ ai_gen_id }} {
+      max-width: 100%;
+      padding: 0;
+    }
+
+    .ai-text-block__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 | round: 0 }}px;
+    }
+
+    .ai-text-block__text2-{{ ai_gen_id }} {
+      max-width: 100%;
+      padding: 0 {{ block.settings.text2_side_padding | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-text-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-text-block__content-{{ ai_gen_id }}">
+    <div class="ai-text-block__centered-group-{{ ai_gen_id }}">
+      {% if block.settings.subheading != blank %}
+        <div class="ai-text-block__subheading-{{ ai_gen_id }}">
+          {{ block.settings.subheading }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-text-block__heading-{{ ai_gen_id }}">
+          {{ block.settings.heading }}
+        </h2>
+      {% endif %}
+
+      {% if block.settings.text1 != blank %}
+        <div class="ai-text-block__text1-{{ ai_gen_id }}">
+          {{ block.settings.text1 }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if block.settings.text2 != blank %}
+      <div class="ai-text-block__text2-{{ ai_gen_id }}">
+        {{ block.settings.text2 }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text block",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Subheading text</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "<p>Main heading</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text1",
+      "label": "Text 1",
+      "default": "<p>This is the first text block.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "text2",
+      "label": "Text 2",
+      "default": "<p>This is the second text block.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Alignment"
+    },
+    {
+      "type": "select",
+      "id": "group_alignment",
+      "label": "Subheading / heading / text 1 alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "text2_alignment",
+      "label": "Text 2 alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Story column width (subheading / heading / text 1)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_side_padding",
+      "label": "Story column side padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "group_spacing",
+      "label": "Header group spacing (subheading / heading / text 1)",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Padding horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Text 2 layout"
+    },
+    {
+      "type": "range",
+      "id": "text2_max_width",
+      "label": "Text 2 width",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "text2_side_padding",
+      "label": "Text 2 side padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "text2_top_spacing",
+      "label": "Space above text 2",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Subheading style"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Color",
+      "default": "#1a2c56"
+    },
+    {
+      "type": "header",
+      "content": "Heading style"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Font size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#1a2c56"
+    },
+    {
+      "type": "header",
+      "content": "Text 1 style"
+    },
+    {
+      "type": "range",
+      "id": "text1_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text1_color",
+      "label": "Color",
+      "default": "#1a2c56"
+    },
+    {
+      "type": "header",
+      "content": "Text 2 style"
+    },
+    {
+      "type": "range",
+      "id": "text2_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text2_color",
+      "label": "Color",
+      "default": "#1a2c56"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#fffbf1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text block"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,401 @@
+{% doc %}
+  @prompt
+    Create a "Meet the Bara Friends" section with the following layout and features:
+    
+    **Section Header:**
+    - Small teal/cyan uppercase eyebrow label (e.g. "MEET THE BARA FRIENDS") centered above the main title
+    - Large bold dark navy heading: "Meet the bara friends"
+    - A centered paragraph of body text below the heading (editable in theme settings)
+    - Background color: warm cream/beige (#fdf6e3 or similar)
+    
+    **Two-Column Character Cards (side by side, centered):**
+    Each card has:
+    - A rounded rectangle card with a dashed border and light mint/sage background, tall portrait-ish aspect ratio (~4:5)
+    - Inside the card: an image upload field (using Shopify's image_picker setting) so the merchant can upload a character image. The image should fill the card area with object-fit: cover and border-radius matching the card.
+    - Below the card: a bold dark navy character name
+    - Below the name: a short description text (editable per card)
+    
+    **Settings (schema):**
+    - Section-level: eyebrow label, heading, body paragraph, background color
+    - Per block (one block per character card): image (image_picker), character name (text), description (textarea)
+    - Default 2 blocks pre-configured
+    
+    **Styling:**
+    - Warm cream/beige section background
+    - Cards have soft rounded corners (~16px), dashed or subtle border, light sage/mint fill as placeholder background
+    - Character name in bold dark navy
+    - Description in dark navy, smaller font
+    - Fully responsive: stacks to single column on mobile
+    - Comfortable padding around the section and between cards
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-bara-friends-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: 60px 20px;
+  }
+
+  .ai-bara-friends-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-bara-friends-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .ai-bara-friends-eyebrow-{{ ai_gen_id }} {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: {{ block.settings.eyebrow_color }};
+    margin-bottom: 12px;
+  }
+
+  .ai-bara-friends-heading-{{ ai_gen_id }} {
+    font-size: 42px;
+    font-weight: 700;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+
+  .ai-bara-friends-body-{{ ai_gen_id }} {
+    font-size: 16px;
+    line-height: 1.6;
+    color: {{ block.settings.text_color }};
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .ai-bara-friends-cards-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .ai-bara-friends-card-{{ ai_gen_id }} {
+    flex: 0 1 calc(50% - 16px);
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .ai-bara-friends-card-inner-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border: {{ block.settings.card_border_width }}px dashed {{ block.settings.card_border_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 20px;
+    aspect-ratio: 4 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .ai-bara-friends-card-inner-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ block.settings.card_border_radius }}px;
+  }
+
+  .ai-bara-friends-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+  }
+
+  .ai-bara-friends-placeholder-{{ ai_gen_id }} svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.3;
+  }
+
+  .ai-bara-friends-character-name-{{ ai_gen_id }} {
+    font-size: 24px;
+    font-weight: 700;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 8px;
+  }
+
+  .ai-bara-friends-character-description-{{ ai_gen_id }} {
+    font-size: 14px;
+    line-height: 1.5;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-bara-friends-section-{{ ai_gen_id }} {
+      padding: 40px 16px;
+    }
+
+    .ai-bara-friends-heading-{{ ai_gen_id }} {
+      font-size: 32px;
+    }
+
+    .ai-bara-friends-cards-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .ai-bara-friends-card-{{ ai_gen_id }} {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+  }
+{% endstyle %}
+
+<bara-friends-section-{{ ai_gen_id }} class="ai-bara-friends-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-bara-friends-container-{{ ai_gen_id }}">
+    <div class="ai-bara-friends-header-{{ ai_gen_id }}">
+      {% if block.settings.eyebrow_label != blank %}
+        <div class="ai-bara-friends-eyebrow-{{ ai_gen_id }}">
+          {{ block.settings.eyebrow_label }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-bara-friends-heading-{{ ai_gen_id }}">
+          {{ block.settings.heading }}
+        </h2>
+      {% endif %}
+
+      {% if block.settings.body_text != blank %}
+        <div class="ai-bara-friends-body-{{ ai_gen_id }}">
+          {{ block.settings.body_text }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ai-bara-friends-cards-{{ ai_gen_id }}">
+      <div class="ai-bara-friends-card-{{ ai_gen_id }}">
+        <div class="ai-bara-friends-card-inner-{{ ai_gen_id }}">
+          {% if block.settings.character_1_image %}
+            <img
+              src="{{ block.settings.character_1_image | image_url: width: 800 }}"
+              alt="{{ block.settings.character_1_name | escape }}"
+              loading="lazy"
+              width="800"
+              height="1000"
+            >
+          {% else %}
+            <div class="ai-bara-friends-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        {% if block.settings.character_1_name != blank %}
+          <h3 class="ai-bara-friends-character-name-{{ ai_gen_id }}">
+            {{ block.settings.character_1_name }}
+          </h3>
+        {% endif %}
+
+        {% if block.settings.character_1_description != blank %}
+          <p class="ai-bara-friends-character-description-{{ ai_gen_id }}">
+            {{ block.settings.character_1_description }}
+          </p>
+        {% endif %}
+      </div>
+
+      <div class="ai-bara-friends-card-{{ ai_gen_id }}">
+        <div class="ai-bara-friends-card-inner-{{ ai_gen_id }}">
+          {% if block.settings.character_2_image %}
+            <img
+              src="{{ block.settings.character_2_image | image_url: width: 800 }}"
+              alt="{{ block.settings.character_2_name | escape }}"
+              loading="lazy"
+              width="800"
+              height="1000"
+            >
+          {% else %}
+            <div class="ai-bara-friends-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        {% if block.settings.character_2_name != blank %}
+          <h3 class="ai-bara-friends-character-name-{{ ai_gen_id }}">
+            {{ block.settings.character_2_name }}
+          </h3>
+        {% endif %}
+
+        {% if block.settings.character_2_description != blank %}
+          <p class="ai-bara-friends-character-description-{{ ai_gen_id }}">
+            {{ block.settings.character_2_description }}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</bara-friends-section-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class BaraFriendsSection{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('bara-friends-section-{{ ai_gen_id }}', BaraFriendsSection{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Meet the bara friends",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_label",
+      "label": "Eyebrow label",
+      "default": "MEET THE BARA FRIENDS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Meet the bara friends"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "Discover our adorable collection of bara friends, each with their own unique personality and charm."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdf6e3"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow",
+      "default": "#5ec2e7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#1b2e5c"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1b2e5c"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#eef3e6"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#8baf65"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "label": "Card border width",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Character 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "character_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "character_1_name",
+      "label": "Name",
+      "default": "Bara Friend 1"
+    },
+    {
+      "type": "textarea",
+      "id": "character_1_description",
+      "label": "Description",
+      "default": "A lovable companion with a heart of gold."
+    },
+    {
+      "type": "header",
+      "content": "Character 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "character_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "character_2_name",
+      "label": "Name",
+      "default": "Bara Friend 2"
+    },
+    {
+      "type": "textarea",
+      "id": "character_2_description",
+      "label": "Description",
+      "default": "Always ready for an adventure and fun."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Meet the bara friends"
+    }
+  ]
+}
+{% endschema %}

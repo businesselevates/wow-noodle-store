@@ -1,0 +1,117 @@
+{%- comment -%}
+  Renders one content block for the HLT Text and HLT Image with text sections.
+  Accepts: block
+{%- endcomment -%}
+{%- case block.type -%}
+  {%- when 'overline' -%}
+    <p class="hlt-overline" data-hlt-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+
+  {%- when 'heading' -%}
+    <h2 class="{{ block.settings.size }}" data-hlt-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+
+  {%- when 'subheading' -%}
+    <p class="hlt-sub" data-hlt-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+
+  {%- when 'body' -%}
+    <div class="hlt-body{% if block.settings.large %} hlt-body--lg{% endif %} hlt-rte" data-hlt-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+  {%- when 'list' -%}
+    {%- liquid
+      assign lines = block.settings.items | newline_to_br | split: '<br />'
+      assign last_index = 0
+      for l in lines
+        assign lt = l | strip
+        if lt != blank
+          assign last_index = forloop.index
+        endif
+      endfor
+    -%}
+    <ul class="hlt-list" data-hlt-reveal {{ block.shopify_attributes }}>
+      {%- for l in lines -%}
+        {%- assign line = l | strip -%}
+        {%- if forloop.index == last_index and block.settings.show_pending and block.settings.pending_last_line != blank -%}
+          {%- assign line = block.settings.pending_last_line -%}
+        {%- endif -%}
+        {%- if line != blank -%}
+          <li>
+            {%- if block.settings.bold_lead and line contains '. ' -%}
+              {%- assign lead = line | split: '. ' | first -%}
+              <strong>{{ lead }}.</strong> {{ line | remove_first: lead | remove_first: '. ' }}
+            {%- else -%}
+              {{ line }}
+            {%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+  {%- when 'icon_row' -%}
+    {%- comment -%}
+      A step in a short story: a pale disc holding one icon, with a single line
+      of copy beside it. Three of them read as a sequence without numbering.
+    {%- endcomment -%}
+    <div class="hlt-row" data-hlt-reveal {{ block.shopify_attributes }}>
+      <span class="hlt-row__ic" aria-hidden="true">{% render 'hlt-icon', name: block.settings.icon, size: 38 %}</span>
+      <p class="hlt-row__text">{{ block.settings.text }}</p>
+    </div>
+
+  {%- when 'badges' -%}
+    {%- assign items = block.settings.items | split: '|' -%}
+    <ul class="hlt-badges hlt-badges--pills" data-hlt-reveal {{ block.shopify_attributes }}>
+      {%- for it in items -%}
+        {%- liquid
+          assign t = it | strip
+          assign tl = t | downcase
+          assign icon = 'check'
+          if tl contains 'sugar' or tl contains 'salt'
+            assign icon = 'sugar-off'
+          elsif tl contains 'organic'
+            assign icon = 'leaf'
+          elsif tl contains 'preservative'
+            assign icon = 'flask-off'
+          elsif tl contains 'halal'
+            assign icon = 'certificate'
+          elsif tl contains 'delivery'
+            assign icon = 'truck'
+          elsif tl contains 'sealed' or tl contains 'pack'
+            assign icon = 'package'
+          endif
+        -%}
+        {%- if t != blank -%}<li class="hlt-badge">{% render 'hlt-icon', name: icon, size: 24 %}<span>{{ t }}</span></li>{%- endif -%}
+      {%- endfor -%}
+    </ul>
+
+  {%- when 'small_print' -%}
+    <p class="hlt-small" data-hlt-reveal {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+
+  {%- when 'quote' -%}
+    <figure class="hlt-quote" data-hlt-reveal {{ block.shopify_attributes }}>
+      <blockquote>{{ block.settings.text }}</blockquote>
+      {%- if block.settings.attribution != blank -%}<figcaption>{{ block.settings.attribution }}</figcaption>{%- endif -%}
+    </figure>
+
+  {%- when 'button' -%}
+    {%- assign target = block.settings.scroll_target | default: '#hlt-buy-box' -%}
+    <div class="hlt-btn-row" data-hlt-reveal {{ block.shopify_attributes }}>
+      <a
+        class="hlt-btn{% if block.settings.style == 'splash' %} hlt-btn--splash{% elsif block.settings.style == 'outline' %} hlt-btn--outline{% endif %}"
+        href="{% if block.settings.scroll %}{{ target }}{% else %}{{ block.settings.link | default: '#' }}{% endif %}"
+        {% if block.settings.scroll %}data-hlt-scroll-to="{{ target }}"{% endif %}
+      >
+        {{- block.settings.label -}}
+        {% render 'hlt-icon', name: 'arrow-right', size: 20 %}
+      </a>
+    </div>
+
+  {%- when 'image' -%}
+    <div class="hlt-media" style="--hlt-ratio: {{ block.settings.ratio }};" data-hlt-reveal="zoom" {{ block.shopify_attributes }}>
+      {%- if block.settings.image != blank -%}
+        {{ block.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
+      {%- else -%}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'hlt-placeholder' }}
+      {%- endif -%}
+    </div>
+
+  {%- when 'spacer' -%}
+    <div style="height: {{ block.settings.height }}px;" aria-hidden="true" {{ block.shopify_attributes }}></div>
+{%- endcase -%}

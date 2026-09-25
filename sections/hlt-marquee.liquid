@@ -1,0 +1,88 @@
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <span class="hlt-marquee__item" {{ block.shopify_attributes }}>
+      {%- if block.settings.icon != 'none' -%}{% render 'hlt-icon', name: block.settings.icon, size: 24 %}{%- endif -%}
+      {{ block.settings.text }}
+    </span>
+    {%- if section.settings.separator != blank -%}<span class="hlt-marquee__sep" aria-hidden="true">{{ section.settings.separator }}</span>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-mq hlt-mq--{{ section.settings.text_color | default: 'auto' }}"
+  style="--hlt-mq-speed: {{ section.settings.speed }}s; --hlt-mq-size: {{ section.settings.text_size }}px; --hlt-mq-gap: {{ section.settings.gap | default: 56 }}px;"
+>
+  <div class="hlt-mq__rail{% if section.settings.tilt %} hlt-mq__rail--tilt{% endif %}">
+    <div class="hlt-marquee{% if section.settings.reverse %} hlt-marquee--reverse{% endif %}">
+      {%- for i in (1..3) -%}
+        <div class="hlt-marquee__group"{% if i > 1 %} aria-hidden="true"{% endif %}>{{ items }}</div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-mq { padding: 0; }
+  .hlt-mq__rail { padding: 18px 0; }
+  .hlt-mq__rail--tilt { margin: 24px -2%; transform: rotate(-1.6deg); background: var(--hlt-bg); }
+  .hlt-marquee__item { display: inline-flex; align-items: center; gap: 12px; white-space: nowrap; font-family: var(--hlt-font-display); font-weight: 700; font-size: var(--hlt-mq-size, 22px); color: var(--hlt-heading); }
+  .hlt-marquee__item .hlt-icon { color: var(--hlt-accent); }
+  .hlt--splash .hlt-marquee__item .hlt-icon, .hlt--splash .hlt-marquee__sep { color: var(--hlt-paper); }
+  .hlt-marquee__sep { color: var(--hlt-sun); font-size: calc(var(--hlt-mq-size, 22px) * .8); }
+  /* Icons follow the text size so a small strip stays in proportion. */
+  .hlt-marquee__item .hlt-icon { width: calc(var(--hlt-mq-size, 22px) * 1.1); height: calc(var(--hlt-mq-size, 22px) * 1.1); }
+  /* Text colour override from the section settings ("auto" keeps the colour combination's own). */
+  .hlt-mq--white .hlt-marquee__item, .hlt-mq--white .hlt-marquee__item .hlt-icon, .hlt-mq--white .hlt-marquee__sep { color: #fff; }
+  .hlt-mq--navy .hlt-marquee__item, .hlt-mq--navy .hlt-marquee__item .hlt-icon, .hlt-mq--navy .hlt-marquee__sep { color: var(--hlt-navy); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Scrolling strip",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "splash", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" },
+      { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }, { "value": "deep-navy", "label": "Deep navy" }
+    ] },
+    { "type": "range", "id": "speed", "label": "Loop duration (higher is slower)", "min": 10, "max": 80, "step": 2, "unit": "s", "default": 34 },
+    { "type": "range", "id": "text_size", "label": "Text size", "min": 14, "max": 40, "step": 2, "unit": "px", "default": 22 },
+    { "type": "range", "id": "gap", "label": "Space between items", "min": 8, "max": 80, "step": 4, "unit": "px", "default": 56 },
+    { "type": "select", "id": "text_color", "label": "Text colour", "default": "auto", "options": [
+      { "value": "auto", "label": "From colour combination" }, { "value": "white", "label": "White" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "text", "id": "separator", "label": "Separator", "default": "✦" },
+    { "type": "checkbox", "id": "reverse", "label": "Scroll right instead of left", "default": false },
+    { "type": "checkbox", "id": "tilt", "label": "Slight tilt", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Organic" },
+        { "type": "select", "id": "icon", "label": "Icon", "default": "none", "options": [
+          { "value": "none", "label": "None" }, { "value": "leaf", "label": "Leaf" }, { "value": "certificate", "label": "Certificate" },
+          { "value": "flask-off", "label": "No preservatives" }, { "value": "sugar-off", "label": "No added sugar" }, { "value": "truck", "label": "Truck" },
+          { "value": "package", "label": "Package" }, { "value": "stroller", "label": "Stroller" }, { "value": "heart", "label": "Heart" },
+          { "value": "smile", "label": "Smile" }, { "value": "droplet", "label": "Droplet" }, { "value": "sparkle", "label": "Sparkle" }
+        ] }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HLT Scrolling strip",
+      "blocks": [
+        { "type": "item", "settings": { "text": "No added refined sugar or salt", "icon": "sugar-off" } },
+        { "type": "item", "settings": { "text": "Organic", "icon": "leaf" } },
+        { "type": "item", "settings": { "text": "No preservatives", "icon": "flask-off" } },
+        { "type": "item", "settings": { "text": "Halal certified", "icon": "certificate" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

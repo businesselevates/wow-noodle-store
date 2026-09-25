@@ -1,0 +1,181 @@
+{% comment %}
+  Bloom-style Shop menu for the header: one "Shop" trigger that opens a
+  full-width panel. The panel's left rail lists the header menu's top-level
+  items and the area beside it previews whatever the hovered item holds — its
+  child links, or, when it has none and points at a collection, that
+  collection's products.
+
+  A top-level item only earns a place in the panel if it has something to
+  preview -- child links, or a collection whose products can be shown. The
+  rest (About, Events and any other flat page link) sit in the header bar
+  beside Shop rather than being buried inside it.
+
+  The panel follows the header's own menu setting: a section schema accepts
+  only one link_list setting and `menu` already uses it, so pointing the panel
+  at a different menu means changing the header menu itself.
+
+  Usage:
+  {% render 'hlt-shop-menu' %}
+{% endcomment %}
+
+{%- liquid
+  assign shop_menu = section.settings.menu
+  assign shop_label = 'Shop'
+  assign shop_all_label = 'Shop all'
+  assign shop_all_url = routes.all_products_collection_url
+  assign preview_limit = 8
+  assign image_blocks = section.blocks | where: 'type', 'shop_image'
+-%}
+
+<nav class="header__inline-menu hlt-nav" data-hlt-shop-nav>
+  <ul class="list-menu list-menu--inline hlt-nav__list" role="list">
+    <li>
+      <button
+        type="button"
+        class="header__menu-item list-menu__item link focus-inset hlt-nav__trigger"
+        aria-expanded="false"
+        aria-controls="HltShopPanel"
+        data-hlt-shop-trigger
+      >
+        <span>{{ shop_label | escape }}</span>
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </button>
+    </li>
+    {%- for link in shop_menu.links -%}
+      {%- unless link.links.size > 0 or link.type == 'collection_link' -%}
+        <li>
+          <a
+            href="{{ link.url }}"
+            class="header__menu-item list-menu__item link focus-inset hlt-nav__link{% if link.current or link.child_active %} hlt-nav__link--current{% endif %}"
+            {% if link.current %}aria-current="page"{% endif %}
+          >
+            <span>{{ link.title | escape }}</span>
+          </a>
+        </li>
+      {%- endunless -%}
+    {%- endfor -%}
+  </ul>
+
+  <div
+    id="HltShopPanel"
+    class="hlt-shop-panel color-{{ section.settings.menu_color_scheme }} gradient"
+    data-hlt-shop-panel
+    hidden
+  >
+    <div class="hlt-shop-panel__inner">
+      <div class="hlt-shop-panel__side">
+        {%- assign cat_index = 0 -%}
+        {%- for link in shop_menu.links -%}
+          {%- if link.links.size > 0 or link.type == 'collection_link' -%}
+            {%- assign cat_index = cat_index | plus: 1 -%}
+            <a
+              class="hlt-shop-cat{% if cat_index == 1 %} is-active{% endif %}"
+              href="{{ link.url }}"
+              data-hlt-cat="{{ cat_index }}"
+            >
+              <span>{{ link.title | escape }}</span>
+              {{- 'icon-caret.svg' | inline_asset_content -}}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if shop_all_url != blank -%}
+          <a class="button hlt-shop-panel__all" href="{{ shop_all_url }}">{{ shop_all_label | escape }}</a>
+        {%- endif -%}
+      </div>
+
+      <div class="hlt-shop-panel__main">
+        {%- assign pane_index = 0 -%}
+        {%- for link in shop_menu.links -%}
+          {%- unless link.links.size > 0 or link.type == 'collection_link' -%}
+            {%- continue -%}
+          {%- endunless -%}
+          {%- assign pane_index = pane_index | plus: 1 -%}
+          <div class="hlt-shop-grid" data-hlt-pane="{{ pane_index }}"{% unless pane_index == 1 %} hidden{% endunless %}>
+            {%- if link.links.size > 0 -%}
+              {%- for childlink in link.links -%}
+                {%- liquid
+                  assign card_image = blank
+                  case childlink.type
+                    when 'collection_link'
+                      assign card_image = childlink.object.featured_image
+                      if card_image == blank
+                        assign card_image = childlink.object.products.first.featured_image
+                      endif
+                    when 'product_link'
+                      assign card_image = childlink.object.featured_image
+                    when 'article_link'
+                      assign card_image = childlink.object.image
+                  endcase
+                -%}
+                {% render 'hlt-shop-card', title: childlink.title, url: childlink.url, image: card_image, blocks: image_blocks %}
+              {%- endfor -%}
+            {%- elsif link.type == 'collection_link' -%}
+              {%- for product in link.object.products limit: preview_limit -%}
+                {% render 'hlt-shop-card', title: product.title, url: product.url, image: product.featured_image, blocks: image_blocks %}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  (function () {
+    var nav = document.querySelector('[data-hlt-shop-nav]');
+    if (!nav || nav.hltReady) return;
+    nav.hltReady = true;
+
+    var trigger = nav.querySelector('[data-hlt-shop-trigger]');
+    var panel = nav.querySelector('[data-hlt-shop-panel]');
+    if (!trigger || !panel) return;
+
+    var cats = Array.prototype.slice.call(panel.querySelectorAll('[data-hlt-cat]'));
+    var panes = Array.prototype.slice.call(panel.querySelectorAll('[data-hlt-pane]'));
+    var closeTimer = null;
+
+    function setOpen(on) {
+      window.clearTimeout(closeTimer);
+      panel.hidden = !on;
+      trigger.setAttribute('aria-expanded', on ? 'true' : 'false');
+      nav.classList.toggle('is-open', on);
+    }
+
+    /* A short delay on the way out, so crossing the gap between the trigger and
+       the panel does not shut it. */
+    function closeSoon() {
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(function () { setOpen(false); }, 180);
+    }
+
+    function show(key) {
+      cats.forEach(function (c) { c.classList.toggle('is-active', c.getAttribute('data-hlt-cat') === key); });
+      panes.forEach(function (p) { p.hidden = p.getAttribute('data-hlt-pane') !== key; });
+    }
+
+    trigger.addEventListener('mouseenter', function () { setOpen(true); });
+    trigger.addEventListener('focus', function () { setOpen(true); });
+    trigger.addEventListener('click', function () { setOpen(panel.hidden); });
+    panel.addEventListener('mouseenter', function () { setOpen(true); });
+    nav.addEventListener('mouseleave', closeSoon);
+
+    cats.forEach(function (c) {
+      var key = c.getAttribute('data-hlt-cat');
+      c.addEventListener('mouseenter', function () { show(key); });
+      c.addEventListener('focus', function () { show(key); });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+    ['click', 'focusin'].forEach(function (type) {
+      document.addEventListener(type, function (e) {
+        if (!panel.hidden && !nav.contains(e.target)) setOpen(false);
+      });
+    });
+  })();
+</script>

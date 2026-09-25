@@ -1,0 +1,99 @@
+{%- assign review_blocks = section.blocks | where: 'type', 'review' -%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-rv"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+  data-hlt-reviews
+>
+  {%- if section.settings.wave_top -%}
+    <div class="hlt-wave hlt-wave--top" style="--hlt-wave-color: var(--hlt-{{ section.settings.wave_top_color }});" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0 0v28c120 22 240 32 360 30c160-3 280-30 440-30s300 30 460 30c70 0 130-7 180-14V0z"/></svg>
+    </div>
+  {%- endif -%}
+  <div class="hlt__inner">
+    <div class="hlt-center hlt-stack hlt-rv__head" data-hlt-stagger>
+      {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.subheading != blank -%}<p class="hlt-body hlt-maxw" data-hlt-reveal>{{ section.settings.subheading }}</p>{%- endif -%}
+    </div>
+
+    <div class="hlt-slider hlt-rv__slider" data-hlt-slider data-hlt-reveal>
+      <div class="hlt-slider__track" style="--hlt-slide-desktop: calc((100% - 32px) / 3);">
+        {%- for block in review_blocks -%}
+          <figure class="hlt-card hlt-rv__card" data-order="{{ forloop.index }}" {% if block.settings.lead_for != '0' %}data-lead-for="{{ block.settings.lead_for }}"{% endif %} {{ block.shopify_attributes }}>
+            <span class="hlt-rv__mark" aria-hidden="true">“</span>
+            {%- if section.settings.show_stars -%}
+              <span class="hlt-rv__stars" aria-label="5 out of 5">{% for i in (1..5) %}{% render 'hlt-icon', name: 'star', size: 18 %}{% endfor %}</span>
+            {%- endif -%}
+            <blockquote class="hlt-rv__quote">{{ block.settings.text }}</blockquote>
+            {%- if block.settings.name != blank or block.settings.photo != blank or block.settings.tag != blank -%}
+              <figcaption class="hlt-rv__who">
+                {%- if block.settings.photo != blank -%}{{ block.settings.photo | image_url: width: 120 | image_tag: class: 'hlt-rv__photo', loading: 'lazy', alt: block.settings.name }}{%- endif -%}
+                <span>
+                  {%- if block.settings.name != blank -%}<strong>{{ block.settings.name }}</strong>{%- endif -%}
+                  {%- if block.settings.tag != blank -%}<span class="hlt-rv__tag">{{ block.settings.tag }}</span>{%- endif -%}
+                </span>
+              </figcaption>
+            {%- endif -%}
+          </figure>
+        {%- endfor -%}
+      </div>
+      {%- if review_blocks.size > 1 -%}
+        <div class="hlt-slider__nav">
+          <button type="button" class="hlt-arrow" data-hlt-prev aria-label="Previous reviews">{% render 'hlt-icon', name: 'arrow-left', size: 20 %}</button>
+          <button type="button" class="hlt-arrow" data-hlt-next aria-label="Next reviews">{% render 'hlt-icon', name: 'arrow-right', size: 20 %}</button>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-rv__head { margin-bottom: 36px; }
+  .hlt-rv__card { position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%; margin: 0; padding: 30px 26px 26px; }
+  .hlt-rv__mark { position: absolute; top: 6px; right: 20px; font-family: var(--hlt-font-display); font-weight: 800; font-size: 88px; line-height: 1; color: var(--hlt-splash); opacity: .35; }
+  .hlt-rv__stars { display: inline-flex; gap: 2px; color: var(--hlt-sun); }
+  .hlt-rv__quote { margin: 0; font-family: var(--hlt-font-display); font-weight: 600; font-size: 20px; line-height: 1.4; color: var(--hlt-navy); flex: 1; }
+  .hlt-rv__who { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--hlt-ocean); }
+  .hlt-rv__who strong { display: block; color: var(--hlt-navy); }
+  .hlt-rv__photo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  .hlt-rv__tag { font-family: var(--hlt-font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Reviews",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Parents say their children can't get enough." },
+    { "type": "text", "id": "subheading", "label": "Subheading" },
+    { "type": "checkbox", "id": "show_stars", "label": "Show star icons", "info": "Leave off until a review app holds real star ratings.", "default": false },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "splash-pale", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" },
+      { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }, { "value": "deep-navy", "label": "Deep navy" }
+    ] },
+    { "type": "checkbox", "id": "wave_top", "label": "Wavy top edge", "default": true },
+    { "type": "select", "id": "wave_top_color", "label": "Top wave colour (match the section above)", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 104 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Review", "info": "Copy word for word from the source." },
+        { "type": "text", "id": "name", "label": "Name", "info": "Only with written permission." },
+        { "type": "image_picker", "id": "photo", "label": "Photo", "info": "Only with written permission." },
+        { "type": "text", "id": "tag", "label": "Small label (optional)" },
+        { "type": "select", "id": "lead_for", "label": "Move to the front when this age is picked", "default": "0", "options": [
+          { "value": "0", "label": "Never" }, { "value": "1", "label": "First age option" }, { "value": "2", "label": "Second age option" }, { "value": "3", "label": "Third age option" }
+        ] }
+      ]
+    }
+  ],
+  "presets": [ { "name": "HLT Reviews", "blocks": [ { "type": "review" }, { "type": "review" }, { "type": "review" } ] } ]
+}
+{% endschema %}

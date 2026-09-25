@@ -1,0 +1,30 @@
+{%- if section.settings.hide_menu -%}
+  <style>
+    .section-header .header__inline-menu,
+    .section-header header-drawer,
+    .section-header .header__icon--account,
+    .section-header .header__search,
+    .section-header details-modal.header__search { display: none !important; }
+    .section-header .header { grid-template-columns: 1fr auto; }
+  </style>
+{%- endif -%}
+{%- if section.settings.hide_announcement -%}
+  <style>.section-announcement-bar, #shopify-section-sections--announcement-bar, .announcement-bar-section { display: none !important; }</style>
+{%- endif -%}
+{%- if request.design_mode -%}
+  <div class="hlt hlt--splash-pale" style="padding: 10px 20px; font-size: 13px; text-align: center;">
+    HLT page settings (only visible in the editor): header menu links are {% if section.settings.hide_menu %}hidden{% else %}shown{% endif %} on this page.
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "HLT Page settings",
+  "tag": "div",
+  "settings": [
+    { "type": "checkbox", "id": "hide_menu", "label": "Hide header menu links on this page", "info": "Leaves only the logo and cart, as the build spec suggests.", "default": false },
+    { "type": "checkbox", "id": "hide_announcement", "label": "Hide the announcement bar on this page", "default": false }
+  ],
+  "presets": [ { "name": "HLT Page settings" } ]
+}
+{% endschema %}

@@ -1,0 +1,357 @@
+{% doc %}
+  @prompt
+    Create a "Join the HLT One Family" CTA banner section with the following design:
+    
+    **Layout:**
+    - Full-width section with a deep navy/dark blue background (#1e2a5e or similar dark navy)
+    - All content centered horizontally
+    - Comfortable vertical padding (top and bottom)
+    
+    **Content (top to bottom):**
+    1. Small uppercase eyebrow label in teal/cyan color: "JOIN US" — centered, letter-spaced
+    2. Large bold white heading: "Join the HLT One family"
+    3. A centered body paragraph in light white/off-white text (smaller font, max-width ~600px centered): editable description text
+    4. Two side-by-side CTA buttons with a gap between them:
+       - Button 1 (primary): filled teal/cyan background, white text, pill/rounded shape — label "Shop the range"
+       - Button 2 (secondary): transparent background, white border, white text, pill/rounded shape — label "Create your account"
+    
+    **Schema settings:**
+    - Eyebrow label (text)
+    - Heading (text)
+    - Body paragraph (textarea)
+    - Button 1 label (text) and URL (url)
+    - Button 2 label (text) and URL (url)
+    - Background color (color, default dark navy)
+    
+    **Styling:**
+    - Dark navy background (#1e2a5e or similar)
+    - Teal/cyan accent color for eyebrow and primary button (~#4dd9d5 or similar)
+    - White text throughout
+    - Pill-shaped buttons (border-radius: 50px)
+    - Fully responsive: buttons stack vertically on mobile
+    - Section padding: generous top and bottom spacing
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-cta-banner-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+  }
+
+  .ai-cta-banner-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .ai-cta-banner-eyebrow-{{ ai_gen_id }} {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: {{ block.settings.eyebrow_color }};
+    margin: 0 0 16px;
+  }
+
+  .ai-cta-banner-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+
+  .ai-cta-banner-description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.description_size }}px;
+    color: {{ block.settings.description_color }};
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+
+  .ai-cta-banner-buttons-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ai-cta-banner-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-cta-banner-button-primary-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_primary_bg }};
+    color: {{ block.settings.button_primary_text }};
+    border: 2px solid {{ block.settings.button_primary_bg }};
+  }
+
+  .ai-cta-banner-button-primary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_primary_bg | color_darken: 10 }};
+    border-color: {{ block.settings.button_primary_bg | color_darken: 10 }};
+  }
+
+  .ai-cta-banner-button-secondary-{{ ai_gen_id }} {
+    background-color: transparent;
+    color: {{ block.settings.button_secondary_text }};
+    border: 2px solid {{ block.settings.button_secondary_border }};
+  }
+
+  .ai-cta-banner-button-secondary-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_secondary_border }};
+    color: {{ block.settings.background_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-cta-banner-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top | times: 0.7 }}px 16px {{ block.settings.padding_bottom | times: 0.7 }}px;
+    }
+
+    .ai-cta-banner-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.7 }}px;
+    }
+
+    .ai-cta-banner-description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.9 }}px;
+      margin-bottom: 24px;
+    }
+
+    .ai-cta-banner-buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ai-cta-banner-button-{{ ai_gen_id }} {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-cta-banner-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-cta-banner-container-{{ ai_gen_id }}">
+    {% if block.settings.eyebrow_text != blank %}
+      <div class="ai-cta-banner-eyebrow-{{ ai_gen_id }}">
+        {{ block.settings.eyebrow_text }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-cta-banner-heading-{{ ai_gen_id }}">
+        {{ block.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if block.settings.description != blank %}
+      <div class="ai-cta-banner-description-{{ ai_gen_id }}">
+        {{ block.settings.description }}
+      </div>
+    {% endif %}
+
+    <div class="ai-cta-banner-buttons-{{ ai_gen_id }}">
+      {% if block.settings.button_primary_label != blank %}
+        <a
+          href="{{ block.settings.button_primary_url }}"
+          class="ai-cta-banner-button-{{ ai_gen_id }} ai-cta-banner-button-primary-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_primary_label }}
+        </a>
+      {% endif %}
+
+      {% if block.settings.button_secondary_label != blank %}
+        <a
+          href="{{ block.settings.button_secondary_url }}"
+          class="ai-cta-banner-button-{{ ai_gen_id }} ai-cta-banner-button-secondary-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_secondary_label }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Join the HLT One family",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "JOIN US"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Eyebrow color",
+      "default": "#4dd9d5"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the HLT One family"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 24,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover premium baby products designed with care and backed by science. Join thousands of parents who trust HLT One for their little ones."
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "button_primary_label",
+      "label": "Label",
+      "default": "Shop the range"
+    },
+    {
+      "type": "url",
+      "id": "button_primary_url",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_primary_bg",
+      "label": "Background color",
+      "default": "#4dd9d5"
+    },
+    {
+      "type": "color",
+      "id": "button_primary_text",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "button_secondary_label",
+      "label": "Label",
+      "default": "Create your account"
+    },
+    {
+      "type": "url",
+      "id": "button_secondary_url",
+      "label": "Link"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_text",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_secondary_border",
+      "label": "Border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1e2a5e"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Join the HLT One family"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,440 @@
+{%- comment -%}
+  ELV Ambassador Reels
+  Replica of the "What our Ambassadors are saying" row on im8health.com PDP:
+  small 9:16 thumbnails in a Swiper row (slidesPerView auto, 12px gap),
+  click opens a centered 9:16 video popup over a blurred blush overlay,
+  octagon close button (top right) + octagon mute toggle (bottom left).
+{%- endcomment -%}
+
+{{ 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' | stylesheet_tag }}
+
+{%- liquid
+  assign sid = section.id
+-%}
+
+<style>
+  #elv-reels-{{ sid }} {
+    --elv-ink: {{ section.settings.accent_color }};
+    --elv-thumb-w: {{ section.settings.thumb_width }}px;
+    --elv-thumb-h: {{ section.settings.thumb_height }}px;
+    --elv-thumb-r: {{ section.settings.thumb_radius }}px;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #elv-reels-{{ sid }} .elv-reels__inner {
+    max-width: {{ section.settings.max_width }}px;
+    {%- case section.settings.align -%}
+      {%- when 'center' -%} margin-left: auto; margin-right: auto;
+      {%- when 'right' -%} margin-left: auto; margin-right: 0;
+      {%- else -%} margin-left: 0; margin-right: auto;
+    {%- endcase -%}
+  }
+  #elv-reels-{{ sid }} .elv-reels__title {
+    color: {{ section.settings.title_color }};
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: {{ section.settings.title_weight | default: 500 }};
+  }
+  #elv-reels-{{ sid }}.is-docked > .page-width {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #elv-reels-{{ sid }}.is-docked .elv-reels__inner {
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .elv-reels-modal[data-section="{{ sid }}"] {
+    --elv-ink: {{ section.settings.accent_color }};
+    --elv-overlay: {{ section.settings.overlay_color }};
+  }
+</style>
+
+<div class="elv-reels" id="elv-reels-{{ sid }}" data-elv-reels="{{ sid }}" data-elv-dock="{{ section.settings.dock | default: 'standalone' }}">
+  <div class="page-width">
+    <div class="elv-reels__inner">
+      {%- if section.settings.title != blank -%}
+        <div class="elv-reels__title">{{ section.settings.title }}</div>
+      {%- endif -%}
+
+      <div class="elv-reels__loops">
+        <div class="swiper elv-reels__swiper">
+          <div class="swiper-wrapper">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                assign vsrc = block.settings.video_url
+                if block.settings.video != blank
+                  assign mp4s = block.settings.video.sources | where: 'format', 'mp4' | sort: 'height'
+                  for s in mp4s
+                    if s.height <= 1080
+                      assign vsrc = s.url
+                    endif
+                  endfor
+                  if vsrc == blank and mp4s.size > 0
+                    assign vsrc = mp4s.first.url
+                  endif
+                endif
+                assign thumb = block.settings.image
+                if thumb == blank and block.settings.video != blank
+                  assign thumb = block.settings.video.preview_image
+                endif
+              -%}
+              <div class="swiper-slide elv-reels__slide" {{ block.shopify_attributes }}>
+                <button
+                  type="button"
+                  class="elv-reels__thumb"
+                  data-elv-video="{{ vsrc }}"
+                  {% if thumb != blank %}data-elv-poster="{{ thumb | image_url: width: 900 }}"{% endif %}
+                  aria-label="{{ block.settings.label | default: 'Play video' | escape }}"
+                >
+                  {%- if thumb != blank -%}
+                    {{ thumb | image_url: width: 320 | image_tag: loading: 'lazy', alt: block.settings.label, widths: '160, 240, 320', sizes: '120px' }}
+                  {%- else -%}
+                    {{ 'image' | placeholder_svg_tag: 'elv-reels__placeholder' }}
+                  {%- endif -%}
+                  <svg class="elv-reels__play" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="11.75" cy="12.25" r="9.25" fill="currentColor"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M20.4865 3.51351L12 0L3.51351 3.51351L0 12L3.51351 20.4865L12 24L20.4865 20.4865L24 12L20.4865 3.51351ZM9.75 15.8971L16.5 12L9.75 8.10289V15.8971Z" fill="#fff"/>
+                  </svg>
+                </button>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} One shared popup per section. Moved to <body> by JS so position:fixed is never trapped by a transformed/sticky parent. {%- endcomment -%}
+  <div class="elv-reels-modal" data-section="{{ sid }}" aria-hidden="true">
+    <div class="elv-reels-modal__overlay" data-elv-close></div>
+    <div class="elv-reels-modal__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.title | strip_html | escape }}">
+      <button type="button" class="elv-reels-modal__close" data-elv-close aria-label="Close">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 0L40.973 7.02703L48 24L40.973 40.973L24 48L7.02703 40.973L0 24L7.02703 7.02703L24 0Z" fill="#fff"/>
+          <path d="M30.3633 30.3646L17.6354 17.6367" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+          <path d="M30.3633 17.6367L17.6354 30.3646" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </button>
+      <div class="elv-reels-modal__media">
+        <video playsinline loop preload="metadata"></video>
+      </div>
+      <button type="button" class="elv-reels-modal__mute" aria-label="Mute / unmute">
+        {%- comment -%} Sound ON icon (shown while playing with sound) {%- endcomment -%}
+        <svg class="elv-icon-sound-on" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 0L40.973 7.02703L48 24L40.973 40.973L24 48L7.02703 40.973L0 24L7.02703 7.02703L24 0Z" fill="#fff"/>
+          <path d="M29.55 26.8a4.9 4.9 0 0 0 .78-6.05" stroke="currentColor" stroke-width="1.125" stroke-linecap="square"/>
+          <path d="M32.35 29.6a8.1 8.1 0 0 0 1.13-11.35" stroke="currentColor" stroke-width="1.125" stroke-linecap="square"/>
+          <path d="M26 33.25L19.5 28.5H15a2 2 0 0 1-2-2v-5.5a2 2 0 0 1 2-2h4.5L26 14.25v19Z" stroke="currentColor" stroke-width="1.125" stroke-linejoin="round"/>
+        </svg>
+        {%- comment -%} Sound OFF icon {%- endcomment -%}
+        <svg class="elv-icon-sound-off" width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M24 0L40.973 7.02703L48 24L40.973 40.973L24 48L7.02703 40.973L0 24L7.02703 7.02703L24 0Z" fill="#fff"/>
+          <path d="M26 33.25L19.5 28.5H15a2 2 0 0 1-2-2v-5.5a2 2 0 0 1 2-2h4.5L26 14.25v19Z" stroke="currentColor" stroke-width="1.125" stroke-linejoin="round"/>
+          <path d="M29.5 20.5l6 6M35.5 20.5l-6 6" stroke="currentColor" stroke-width="1.125" stroke-linecap="square"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .elv-reels__title {
+    font-family: var(--hlt-font-display, var(--font-heading-family)), Georgia, serif;
+    font-weight: 500;
+    line-height: 120%;
+    letter-spacing: -0.4px;
+  }
+  .elv-reels__loops { padding-top: 16px; }
+  .elv-reels__swiper { overflow: hidden; }
+  .elv-reels__slide.swiper-slide { width: var(--elv-thumb-w); }
+  .elv-reels__thumb {
+    all: unset;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 100%;
+    height: var(--elv-thumb-h);
+    cursor: pointer;
+    color: var(--elv-ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .elv-reels__thumb:focus-visible { outline: 2px solid var(--elv-ink); outline-offset: 2px; border-radius: var(--elv-thumb-r); }
+  .elv-reels__thumb img,
+  .elv-reels__thumb .elv-reels__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: var(--elv-thumb-r);
+    background: var(--hlt-splash-pale, #eaf6fb);
+  }
+  .elv-reels__play {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 1;
+    transition: transform .25s ease;
+  }
+  .elv-reels__thumb:hover .elv-reels__play { transform: scale(1.12); }
+
+  /* ---------- Popup ---------- */
+  .elv-reels-modal { position: fixed; inset: 0; z-index: 2147483000; display: none; }
+  .elv-reels-modal.is-open { display: block; }
+  .elv-reels-modal__overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--elv-overlay, rgba(234, 246, 251, .6));
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity .35s ease;
+  }
+  .elv-reels-modal__box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    height: 100%;
+    max-height: 664px;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translate(-50%, -50%) scale(.96);
+    opacity: 0;
+    transition: opacity .35s ease, transform .35s cubic-bezier(.22, 1, .36, 1);
+  }
+  .elv-reels-modal.is-visible .elv-reels-modal__overlay { opacity: 1; }
+  .elv-reels-modal.is-visible .elv-reels-modal__box { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .elv-reels-modal__media { position: relative; width: 100%; height: 100%; }
+  .elv-reels-modal__media video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: 16px;
+    background: var(--hlt-navy, #1b2e5c);
+  }
+  .elv-reels-modal__close,
+  .elv-reels-modal__mute {
+    all: unset;
+    position: absolute;
+    z-index: 2;
+    cursor: pointer;
+    color: var(--elv-ink);
+    line-height: 0;
+    transition: transform .2s ease;
+  }
+  .elv-reels-modal__close:hover,
+  .elv-reels-modal__mute:hover { transform: scale(1.06); }
+  .elv-reels-modal__close { top: 36px; right: 36px; }
+  .elv-reels-modal__close svg,
+  .elv-reels-modal__mute svg { width: 48px; height: 48px; display: block; }
+  .elv-reels-modal__mute { left: 44px; bottom: 44px; }
+  .elv-reels-modal__mute .elv-icon-sound-off { display: none; }
+  .elv-reels-modal.is-muted .elv-icon-sound-on { display: none; }
+  .elv-reels-modal.is-muted .elv-icon-sound-off { display: block; }
+  html.elv-reels-lock, html.elv-reels-lock body { overflow: hidden; }
+
+  @media (max-width: 989px) {
+    .elv-reels__swiper { margin: 0 -20px; padding: 0 20px; }
+    .elv-reels-modal__box { width: 375px; max-width: 100vw; max-height: 604px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .elv-reels-modal__overlay, .elv-reels-modal__box { transition: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    var SID = {{ sid | json }};
+    var SWIPER_JS = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+
+    function loadSwiper(cb) {
+      if (window.Swiper) return cb();
+      var existing = document.querySelector('script[data-elv-swiper]');
+      if (existing) { existing.addEventListener('load', cb); return; }
+      var s = document.createElement('script');
+      s.src = SWIPER_JS;
+      s.defer = true;
+      s.setAttribute('data-elv-swiper', '');
+      s.onload = cb;
+      document.head.appendChild(s);
+    }
+
+    /* Move the whole section into the buy box gallery column when asked.
+       The popup already lives on <body>, so it is unaffected by the move. */
+    /* .hlt-bb__side is the right column itself; .hlt-bb__card inside it carries
+       the border, so appending to the side lands the row below the card rather
+       than inside it. Falls back to the panel on a buy box without the wrapper. */
+    var DOCK_TARGETS = {
+      panel: ['.hlt-bb__side', '.hlt-bb__panel'],
+      gallery: ['.hlt-bb__gallery'],
+      buybox: ['.hlt-bb__gallery'] /* legacy value */
+    };
+
+    function dock(root) {
+      if (!root) return;
+      var candidates = DOCK_TARGETS[root.getAttribute('data-elv-dock')];
+      if (!candidates) return;
+      var target = null;
+      for (var i = 0; i < candidates.length && !target; i++) {
+        target = document.querySelector(candidates[i]);
+      }
+      var wrap = root.closest('.shopify-section') || root;
+      if (!target || wrap.parentNode === target) return;
+      target.appendChild(wrap);
+      root.classList.add('is-docked');
+    }
+
+    function init() {
+      var root = document.querySelector('[data-elv-reels="' + SID + '"]');
+      if (!root) return;
+      dock(root);
+      if (root.dataset.elvReady) return;
+      root.dataset.elvReady = '1';
+
+      var swiperEl = root.querySelector('.elv-reels__swiper');
+      loadSwiper(function () {
+        if (swiperEl.swiper) swiperEl.swiper.destroy(true, true);
+        new Swiper(swiperEl, {
+          slidesPerView: 'auto',
+          spaceBetween: 12,
+          grabCursor: true,
+          watchSlidesProgress: true
+        });
+      });
+
+      /* ---------- popup ---------- */
+      var modal = root.querySelector('.elv-reels-modal') ||
+                  document.querySelector('.elv-reels-modal[data-section="' + SID + '"]');
+      if (!modal) return;
+      /* Old copy left on <body> from a previous render (theme editor) */
+      document.querySelectorAll('body > .elv-reels-modal[data-section="' + SID + '"]').forEach(function (m) {
+        if (m !== modal) m.remove();
+      });
+      document.body.appendChild(modal);
+
+      var video = modal.querySelector('video');
+      var muteBtn = modal.querySelector('.elv-reels-modal__mute');
+      var lastFocus = null;
+      var hideTimer = null;
+
+      function syncMute() { modal.classList.toggle('is-muted', video.muted); }
+
+      function open(src, poster, trigger) {
+        if (!src) return;
+        lastFocus = trigger || null;
+        clearTimeout(hideTimer);
+        if (video.getAttribute('src') !== src) {
+          video.src = src;
+          if (poster) video.poster = poster; else video.removeAttribute('poster');
+        }
+        video.currentTime = 0;
+        video.muted = false; /* user clicked, so sound is allowed */
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('elv-reels-lock');
+        requestAnimationFrame(function () { modal.classList.add('is-visible'); });
+        var p = video.play();
+        if (p && p.catch) p.catch(function () { video.muted = true; syncMute(); video.play().catch(function () {}); });
+        syncMute();
+        modal.querySelector('.elv-reels-modal__close').focus({ preventScroll: true });
+      }
+
+      function close() {
+        modal.classList.remove('is-visible');
+        modal.setAttribute('aria-hidden', 'true');
+        video.pause();
+        document.documentElement.classList.remove('elv-reels-lock');
+        hideTimer = setTimeout(function () { modal.classList.remove('is-open'); }, 350);
+        if (lastFocus) lastFocus.focus({ preventScroll: true });
+      }
+
+      root.addEventListener('click', function (e) {
+        var t = e.target.closest('.elv-reels__thumb');
+        if (!t) return;
+        /* ignore the click that ends a swipe/drag */
+        if (swiperEl.swiper && swiperEl.swiper.allowClick === false) return;
+        open(t.dataset.elvVideo, t.dataset.elvPoster, t);
+      });
+      modal.addEventListener('click', function (e) {
+        if (e.target.closest('[data-elv-close]')) close();
+      });
+      muteBtn.addEventListener('click', function () { video.muted = !video.muted; syncMute(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
+      });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.detail && e.detail.sectionId === SID) init();
+    });
+    document.addEventListener('shopify:section:unload', function (e) {
+      if (e.detail && e.detail.sectionId === SID) {
+        document.querySelectorAll('body > .elv-reels-modal[data-section="' + SID + '"]').forEach(function (m) { m.remove(); });
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Ambassador video reels",
+  "tag": "section",
+  "class": "section elv-reels-section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "What our Ambassadors are saying" },
+    { "type": "range", "id": "title_size", "label": "Title size", "min": 14, "max": 36, "step": 1, "unit": "px", "default": 20 },
+    { "type": "color", "id": "title_color", "label": "Title color", "default": "#1B2E5C" },
+    { "type": "select", "id": "title_weight", "label": "Title weight", "default": "500",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra bold" }
+      ] },
+    { "type": "color", "id": "accent_color", "label": "Icon / accent color", "default": "#1B2E5C" },
+    { "type": "color_background", "id": "overlay_color", "label": "Popup overlay", "default": "rgba(234,246,251,0.6)" },
+    { "type": "header", "content": "Thumbnails" },
+    { "type": "range", "id": "thumb_width", "label": "Width", "min": 80, "max": 240, "step": 4, "unit": "px", "default": 104 },
+    { "type": "range", "id": "thumb_height", "label": "Height", "min": 120, "max": 420, "step": 4, "unit": "px", "default": 168 },
+    { "type": "range", "id": "thumb_radius", "label": "Corner radius", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 8 },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "dock", "label": "Placement", "default": "standalone",
+      "info": "The two buy box placements move this row into the HLT buy box on the same page. Max width and Alignment are then ignored \u2014 the column decides the width.",
+      "options": [
+        { "value": "standalone", "label": "Standalone section" },
+        { "value": "panel", "label": "In buy box, below the card (right column)" },
+        { "value": "gallery", "label": "In buy box, under the gallery (left column)" }
+      ] },
+    { "type": "range", "id": "max_width", "label": "Max width", "min": 320, "max": 1600, "step": 20, "unit": "px", "default": 620 },
+    { "type": "select", "id": "align", "label": "Alignment", "default": "right",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ] },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 24 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 4, "unit": "px", "default": 24 }
+  ],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Video reel",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Name (for accessibility)", "default": "Ambassador" },
+        { "type": "image_picker", "id": "image", "label": "Thumbnail (9:16, text can be baked in)" },
+        { "type": "video", "id": "video", "label": "Video (upload to Shopify)" },
+        { "type": "text", "id": "video_url", "label": "Or video URL (.mp4)", "info": "Used only if no video is uploaded above." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ambassador video reels",
+      "blocks": [ { "type": "reel" }, { "type": "reel" }, { "type": "reel" }, { "type": "reel" }, { "type": "reel" } ]
+    }
+  ]
+}
+{% endschema %}

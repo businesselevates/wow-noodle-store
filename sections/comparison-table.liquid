@@ -1,0 +1,1648 @@
+{%- comment -%}
+  Comparison Table section
+  Online Store 2.0, block-driven, theme color/font agnostic.
+  Everything (heading, subheading, buttons, table, rows) is a block so the
+  merchant can add, remove and reorder pieces from the theme editor.
+{%- endcomment -%}
+
+{%- assign scheme = section.settings.color_scheme.settings -%}
+{%- assign cmp_bg = scheme.background | default: 'currentColor' -%}
+{%- assign cmp_text = scheme.text | default: scheme.foreground | default: scheme.foreground_heading | default: 'currentColor' -%}
+{%- assign cmp_accent = scheme.button | default: scheme.primary_button_background | default: scheme.primary | default: scheme.accent | default: cmp_text -%}
+{%- assign cmp_accent_contrast = scheme.button_label | default: scheme.primary_button_text | default: scheme.background | default: cmp_bg -%}
+
+{%- if section.settings.highlight_color != blank -%}
+  {%- assign cmp_accent = section.settings.highlight_color -%}
+{%- endif -%}
+
+{%- assign cmp_competitor_icon_override = section.settings.competitor_icon_color -%}
+
+{%- assign pad_top_d = section.settings.padding_top -%}
+{%- assign pad_bottom_d = section.settings.padding_bottom -%}
+{%- assign pad_top_m = section.settings.padding_top_mobile -%}
+{%- assign pad_bottom_m = section.settings.padding_bottom_mobile -%}
+{%- assign radius = section.settings.corner_radius -%}
+{%- assign content_max_width = section.settings.content_max_width -%}
+
+{%- comment -%} Find the (single) table block, if any, and whether any row blocks exist. {%- endcomment -%}
+{%- assign table_block = nil -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'table' -%}
+    {%- assign table_block = block -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- assign has_rows = false -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'row' -%}
+    {%- assign has_rows = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%}
+  Free-text fields (the three column labels, the default badge word) are read
+  WITHOUT a Liquid `default` filter whenever a table block exists, so a
+  merchant can intentionally blank them (an empty label, or no badge at all).
+  The fallback text below only kicks in when there is no table block yet at
+  all, which is a different situation from a merchant clearing a field.
+{%- endcomment -%}
+{%- if table_block -%}
+  {%- assign col1_label = table_block.settings.col1_label -%}
+  {%- assign col2_label = table_block.settings.col2_label -%}
+  {%- assign col3_label = table_block.settings.col3_label -%}
+  {%- assign default_badge = table_block.settings.default_badge -%}
+{%- else -%}
+  {%- assign col1_label = 'Ingredient' -%}
+  {%- assign col2_label = 'Your product' -%}
+  {%- assign col3_label = 'Leading competitor' -%}
+  {%- assign default_badge = '' -%}
+{%- endif -%}
+
+{%- assign col2_image = table_block.settings.col2_image -%}
+{%- assign col3_image = table_block.settings.col3_image -%}
+{%- assign col2_alt = col2_image.alt | default: col2_label -%}
+{%- if col2_alt == blank -%}{%- assign col2_alt = 'Product image' -%}{%- endif -%}
+{%- assign col3_alt = col3_image.alt | default: col3_label -%}
+{%- if col3_alt == blank -%}{%- assign col3_alt = 'Competitor product image' -%}{%- endif -%}
+
+{%- assign image_height = table_block.settings.image_height | default: 110 -%}
+{%- assign table_width = table_block.settings.table_width | default: 'medium' -%}
+{%- assign mobile_layout = table_block.settings.mobile_layout | default: 'compact' -%}
+
+{%- assign float_images = true -%}
+{%- if table_block != nil and table_block.settings.float_images == false -%}
+  {%- assign float_images = false -%}
+{%- endif -%}
+
+{%- assign show_check_icons = true -%}
+{%- if table_block != nil and table_block.settings.show_check_icons == false -%}
+  {%- assign show_check_icons = false -%}
+{%- endif -%}
+
+{%- assign show_icons_mobile = false -%}
+{%- if table_block != nil and table_block.settings.show_icons_mobile == true -%}
+  {%- assign show_icons_mobile = true -%}
+{%- endif -%}
+
+{%- comment -%} Type size settings: px, desktop / mobile pairs. {%- endcomment -%}
+{%- assign table_line_height = table_block.settings.table_line_height | default: 130 | divided_by: 100.0 -%}
+{%- assign value_text_size = table_block.settings.value_text_size | default: 18 -%}
+{%- assign value_text_size_mobile = table_block.settings.value_text_size_mobile | default: 14 -%}
+{%- assign detail_text_size = table_block.settings.detail_text_size | default: 13 -%}
+{%- assign detail_text_size_mobile = table_block.settings.detail_text_size_mobile | default: 11 -%}
+{%- assign ingredient_text_size = table_block.settings.ingredient_text_size | default: 15 -%}
+{%- assign ingredient_text_size_mobile = table_block.settings.ingredient_text_size_mobile | default: 13 -%}
+{%- assign header_text_size = table_block.settings.header_text_size | default: 11 -%}
+{%- assign header_text_size_mobile = table_block.settings.header_text_size_mobile | default: 10 -%}
+
+{%- comment -%} Header font, case and letter spacing. Color always stays on the theme's own color scheme (unchanged). {%- endcomment -%}
+{%- assign header_font_setting = table_block.settings.header_font | default: 'body' -%}
+{%- if header_font_setting == 'heading' -%}
+  {%- assign header_font_family_css = 'var(--font-heading-family, var(--font-heading--family, var(--heading-font-family, inherit)))' -%}
+{%- else -%}
+  {%- assign header_font_family_css = 'var(--font-body-family, var(--font-body--family, var(--text-font-family, inherit)))' -%}
+{%- endif -%}
+
+{%- assign header_uppercase = true -%}
+{%- if table_block != nil and table_block.settings.header_uppercase == false -%}
+  {%- assign header_uppercase = false -%}
+{%- endif -%}
+{%- assign header_transform_css = 'none' -%}
+{%- if header_uppercase -%}{%- assign header_transform_css = 'uppercase' -%}{%- endif -%}
+
+{%- assign header_letter_spacing_setting = table_block.settings.header_letter_spacing | default: 'small' -%}
+{%- case header_letter_spacing_setting -%}
+  {%- when 'none' -%}{%- assign header_letter_spacing_css = '0' -%}
+  {%- when 'wide' -%}{%- assign header_letter_spacing_css = '0.14em' -%}
+  {%- else -%}{%- assign header_letter_spacing_css = '0.06em' -%}
+{%- endcase -%}
+
+{%- comment -%} Mobile first-column width; the two product columns split the rest equally. {%- endcomment -%}
+{%- assign mobile_col1_setting = table_block.settings.mobile_col1_width | default: 'narrow' -%}
+{%- case mobile_col1_setting -%}
+  {%- when 'narrow' -%}{%- assign mobile_col1_pct = 28 -%}
+  {%- when 'wide' -%}{%- assign mobile_col1_pct = 40 -%}
+  {%- else -%}{%- assign mobile_col1_pct = 34 -%}
+{%- endcase -%}
+
+{%- comment -%} aria-label: prefer the section heading, fall back to the two column labels, then a generic label. {%- endcomment -%}
+{%- assign heading_text = '' -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'heading' -%}
+    {%- assign heading_text = block.settings.heading | strip_html -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if heading_text != blank -%}
+  {%- assign table_aria_label = heading_text -%}
+{%- elsif col2_label != blank or col3_label != blank -%}
+  {%- assign table_aria_label = col2_label | append: ' vs ' | append: col3_label -%}
+{%- else -%}
+  {%- assign table_aria_label = 'Comparison table' -%}
+{%- endif -%}
+
+{%- capture cmp_check_svg -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>{%- endcapture -%}
+{%- capture cmp_cross_svg -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>{%- endcapture -%}
+{%- capture cmp_arrow_svg -%}<svg class="cmp-btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>{%- endcapture -%}
+
+{%- comment -%}
+  Build the whole table once. It is referenced either where the table block
+  sits in the block order, or at the end if rows exist with no table block.
+{%- endcomment -%}
+{%- assign stacked_cards_accum = '' -%}
+
+{%- capture cmp_table_markup -%}
+  <div
+    class="cmp-table-wrap cmp-table-wrap--{{ table_width }}"
+    data-mobile-layout="{{ mobile_layout }}"
+    data-icons-mobile="{{ show_icons_mobile }}"
+    {% if table_block %}{{ table_block.shopify_attributes }}{% endif %}
+  >
+    <div
+      class="cmp-table-grid{% unless float_images %} cmp-table-grid--no-float{% endunless %}"
+      role="table"
+      aria-label="{{ table_aria_label | escape }}"
+    >
+      <div class="cmp-header-cell cmp-header-cell--muted{% unless float_images %} cmp-header-cell--no-float{% endunless %}" role="columnheader"{% if col1_label == blank %} aria-label="Feature"{% endif %}>
+        <span>{{ col1_label }}</span>
+      </div>
+
+      <div class="cmp-header-cell cmp-header-cell--main{% unless float_images %} cmp-header-cell--no-float{% endunless %}" role="columnheader"{% if col2_label == blank %} aria-label="Your product"{% endif %}>
+        {%- if col2_image -%}
+          {{ col2_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '100, 200, 300, 400', sizes: '(min-width: 750px) 200px, 120px', alt: col2_alt, class: 'cmp-col-image' }}
+        {%- elsif request.design_mode -%}
+          {{ 'product-1' | placeholder_svg_tag: 'cmp-col-image placeholder-svg' }}
+        {%- endif -%}
+        <span>{{ col2_label }}</span>
+      </div>
+
+      <div class="cmp-header-cell cmp-header-cell--muted{% unless float_images %} cmp-header-cell--no-float{% endunless %}" role="columnheader"{% if col3_label == blank %} aria-label="Leading competitor"{% endif %}>
+        {%- if col3_image -%}
+          {{ col3_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '100, 200, 300, 400', sizes: '(min-width: 750px) 200px, 120px', alt: col3_alt, class: 'cmp-col-image' }}
+        {%- elsif request.design_mode -%}
+          {{ 'product-2' | placeholder_svg_tag: 'cmp-col-image placeholder-svg' }}
+        {%- endif -%}
+        <span>{{ col3_label }}</span>
+      </div>
+
+      {%- for row_block in section.blocks -%}
+        {%- if row_block.type == 'row' -%}
+          {%- assign row_badge = row_block.settings.our_badge -%}
+          {%- if row_block.settings.hide_badge or row_badge == 'none' -%}
+            {%- assign row_badge = blank -%}
+          {%- elsif row_badge == blank -%}
+            {%- assign row_badge = default_badge -%}
+          {%- endif -%}
+
+          <div class="cmp-cell cmp-cell--ingredient" role="rowheader" {{ row_block.shopify_attributes }}>
+            <span class="cmp-ingredient-name">{{ row_block.settings.ingredient_name }}</span>
+          </div>
+
+          <div class="cmp-cell cmp-cell--highlight" role="cell">
+            <div class="cmp-cell-grid">
+              <span class="cmp-cell-icon">
+                {%- if show_check_icons -%}
+                  {%- case row_block.settings.our_icon -%}
+                    {%- when 'check' -%}
+                      <span class="cmp-icon cmp-icon--check-accent">{{ cmp_check_svg }}</span><span class="cmp-visually-hidden">Included</span>
+                    {%- when 'cross' -%}
+                      <span class="cmp-icon cmp-icon--cross">{{ cmp_cross_svg }}</span><span class="cmp-visually-hidden">Not included</span>
+                  {%- endcase -%}
+                {%- endif -%}
+              </span>
+              <div class="cmp-cell-text">
+                <div class="cmp-value-badge">
+                  <span class="cmp-our-value">{{ row_block.settings.our_value }}</span>
+                  {%- if row_badge != blank -%}<span class="cmp-badge">{{ row_badge }}</span>{%- endif -%}
+                </div>
+                {%- if row_block.settings.our_detail != blank -%}<div class="cmp-detail">{{ row_block.settings.our_detail }}</div>{%- endif -%}
+              </div>
+            </div>
+          </div>
+
+          <div class="cmp-cell" role="cell">
+            <div class="cmp-cell-grid">
+              <span class="cmp-cell-icon">
+                {%- if show_check_icons -%}
+                  {%- case row_block.settings.competitor_icon -%}
+                    {%- when 'check' -%}
+                      <span class="cmp-icon cmp-icon--check-muted">{{ cmp_check_svg }}</span><span class="cmp-visually-hidden">Included</span>
+                    {%- when 'cross' -%}
+                      <span class="cmp-icon cmp-icon--cross">{{ cmp_cross_svg }}</span><span class="cmp-visually-hidden">Not included</span>
+                  {%- endcase -%}
+                {%- endif -%}
+              </span>
+              <div class="cmp-cell-text">
+                <span class="cmp-competitor-value">{{ row_block.settings.competitor_value }}</span>
+                {%- if row_block.settings.competitor_detail != blank -%}<div class="cmp-detail">{{ row_block.settings.competitor_detail }}</div>{%- endif -%}
+              </div>
+            </div>
+          </div>
+
+          {%- if mobile_layout == 'stacked' -%}
+            {%- capture row_stacked -%}
+              <div class="cmp-stacked-card" {{ row_block.shopify_attributes }}>
+                <div class="cmp-stacked-card-title cmp-cell--ingredient">{{ row_block.settings.ingredient_name }}</div>
+                <div class="cmp-stacked-halves">
+                  <div class="cmp-stacked-half cmp-stacked-half--highlight">
+                    <div class="cmp-stacked-caption">{{ col2_label }}</div>
+                    <div class="cmp-cell-grid">
+                      <span class="cmp-cell-icon">
+                        {%- if show_check_icons -%}
+                          {%- case row_block.settings.our_icon -%}
+                            {%- when 'check' -%}
+                              <span class="cmp-icon cmp-icon--check-accent">{{ cmp_check_svg }}</span><span class="cmp-visually-hidden">Included</span>
+                            {%- when 'cross' -%}
+                              <span class="cmp-icon cmp-icon--cross">{{ cmp_cross_svg }}</span><span class="cmp-visually-hidden">Not included</span>
+                          {%- endcase -%}
+                        {%- endif -%}
+                      </span>
+                      <div class="cmp-cell-text">
+                        <div class="cmp-value-badge">
+                          <span class="cmp-our-value">{{ row_block.settings.our_value }}</span>
+                          {%- if row_badge != blank -%}<span class="cmp-badge">{{ row_badge }}</span>{%- endif -%}
+                        </div>
+                        {%- if row_block.settings.our_detail != blank -%}<div class="cmp-detail">{{ row_block.settings.our_detail }}</div>{%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="cmp-stacked-half">
+                    <div class="cmp-stacked-caption">{{ col3_label }}</div>
+                    <div class="cmp-cell-grid">
+                      <span class="cmp-cell-icon">
+                        {%- if show_check_icons -%}
+                          {%- case row_block.settings.competitor_icon -%}
+                            {%- when 'check' -%}
+                              <span class="cmp-icon cmp-icon--check-muted">{{ cmp_check_svg }}</span><span class="cmp-visually-hidden">Included</span>
+                            {%- when 'cross' -%}
+                              <span class="cmp-icon cmp-icon--cross">{{ cmp_cross_svg }}</span><span class="cmp-visually-hidden">Not included</span>
+                          {%- endcase -%}
+                        {%- endif -%}
+                      </span>
+                      <div class="cmp-cell-text">
+                        <span class="cmp-competitor-value">{{ row_block.settings.competitor_value }}</span>
+                        {%- if row_block.settings.competitor_detail != blank -%}<div class="cmp-detail">{{ row_block.settings.competitor_detail }}</div>{%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {%- endcapture -%}
+            {%- assign stacked_cards_accum = stacked_cards_accum | append: row_stacked -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if mobile_layout == 'stacked' -%}
+      <div class="cmp-stacked-list">
+        {{ stacked_cards_accum }}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endcapture -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient cmp-section">
+  {%- style -%}
+    .cmp-root--{{ section.id }} {
+      --cmp-bg: {{ cmp_bg }};
+      --cmp-text: {{ cmp_text }};
+      --cmp-accent: {{ cmp_accent }};
+      --cmp-accent-contrast: {{ cmp_accent_contrast }};
+      --cmp-competitor-icon-override: {{ cmp_competitor_icon_override | default: 'initial' }};
+      --cmp-padding-top: {{ pad_top_d }}px;
+      --cmp-padding-bottom: {{ pad_bottom_d }}px;
+      --cmp-padding-top-mobile: {{ pad_top_m }}px;
+      --cmp-padding-bottom-mobile: {{ pad_bottom_m }}px;
+      --cmp-radius: {{ radius }}px;
+      --cmp-content-max-width: {{ content_max_width }}px;
+      --cmp-image-height: {{ image_height }}px;
+      --cmp-value-size: {{ value_text_size }}px;
+      --cmp-line-height: {{ table_line_height }};
+      --cmp-detail-size: {{ detail_text_size }}px;
+      --cmp-ingredient-size: {{ ingredient_text_size }}px;
+      --cmp-header-size: {{ header_text_size }}px;
+      --cmp-header-font-family: {{ header_font_family_css }};
+      --cmp-header-transform: {{ header_transform_css }};
+      --cmp-header-letter-spacing: {{ header_letter_spacing_css }};
+      --cmp-mobile-col1-width: {{ mobile_col1_pct }}%;
+    }
+    @media screen and (max-width: 749px) {
+      .cmp-root--{{ section.id }} {
+        --cmp-image-height: {{ image_height | times: 0.6 | round }}px;
+        --cmp-value-size: {{ value_text_size_mobile }}px;
+        --cmp-detail-size: {{ detail_text_size_mobile }}px;
+        --cmp-ingredient-size: {{ ingredient_text_size_mobile }}px;
+        --cmp-header-size: {{ header_text_size_mobile }}px;
+      }
+    }
+  {%- endstyle -%}
+
+  <div class="cmp-root cmp-root--{{ section.id }}">
+    <div class="cmp-inner">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'heading' -%}
+            {%- assign h_size = block.settings.heading_size -%}
+            {%- case h_size -%}
+              {%- when 'small' -%}{%- assign h_class = 'h2' -%}
+              {%- when 'large' -%}{%- assign h_class = 'h0' -%}
+              {%- else -%}{%- assign h_class = 'h1' -%}
+            {%- endcase -%}
+            <h2
+              class="cmp-heading {{ h_class }} cmp-heading--{{ h_size }} cmp-align-{{ block.settings.heading_align }}"
+              style="margin-bottom: {{ block.settings.space_below }}px;"
+              {{ block.shopify_attributes }}
+            >{{ block.settings.heading }}</h2>
+
+          {%- when 'text' -%}
+            <div
+              class="cmp-text cmp-text--{{ block.settings.text_size }} cmp-align-{{ block.settings.text_align }} rte"
+              style="margin-bottom: {{ block.settings.space_below }}px;"
+              {{ block.shopify_attributes }}
+            >{{ block.settings.text }}</div>
+
+          {%- when 'button' -%}
+            {%- liquid
+              assign btn_classes = 'cmp-align-' | append: block.settings.button_align
+              assign btn_style_setting = block.settings.button_style
+              assign btn_is_hlt = false
+              case btn_style_setting
+                when 'hlt'
+                  assign btn_is_hlt = true
+                  assign btn_theme_class = 'hlt-btn'
+                when 'hlt-splash'
+                  assign btn_is_hlt = true
+                  assign btn_theme_class = 'hlt-btn hlt-btn--splash'
+                when 'hlt-splash-white'
+                  assign btn_is_hlt = true
+                  assign btn_theme_class = 'hlt-btn hlt-btn--splash hlt-btn--white-text'
+                else
+                  if block.settings.use_theme_styles
+                    if btn_style_setting == 'secondary'
+                      assign btn_theme_class = 'button button--secondary'
+                    else
+                      assign btn_theme_class = 'button button--primary'
+                    endif
+                  else
+                    assign btn_theme_class = 'cmp-btn cmp-btn--' | append: btn_style_setting
+                  endif
+              endcase
+              if block.settings.full_width_mobile
+                assign btn_theme_class = btn_theme_class | append: ' cmp-btn-full-mobile'
+              endif
+
+              comment
+                HLT styles take their size and weight from the HLT button CSS,
+                exactly like the HLT Hero / Image with text CTA. The size and
+                bold settings below only apply to Primary and Secondary.
+              endcomment
+              assign btn_style = ''
+              unless btn_is_hlt
+                assign btn_style = 'font-size: ' | append: block.settings.text_size | append: 'px;'
+                if block.settings.bold_text
+                  assign btn_style = btn_style | append: ' font-weight: 700;'
+                endif
+              endunless
+
+              assign btn_scroll = false
+              assign btn_scroll_target = block.settings.scroll_target | default: '#hlt-buy-box'
+              if block.settings.scroll_to_target
+                assign btn_scroll = true
+                assign btn_href = btn_scroll_target
+              else
+                assign btn_href = block.settings.button_link
+              endif
+            -%}
+            <div
+              class="cmp-button-wrap {{ btn_classes }}"
+              style="margin-top: {{ block.settings.space_above }}px; margin-bottom: {{ block.settings.space_below }}px;"
+              {{ block.shopify_attributes }}
+            >
+              {%- if block.settings.button_label != blank -%}
+                {%- if btn_href != blank -%}
+                  <a
+                    class="{{ btn_theme_class }}"
+                    href="{{ btn_href }}"
+                    {% if btn_scroll %}data-hlt-scroll-to="{{ btn_scroll_target }}"{% endif %}
+                    {% if btn_style != blank %}style="{{ btn_style }}"{% endif %}
+                    {% if block.settings.open_in_new_tab and btn_scroll == false %}target="_blank" rel="noopener"{% endif %}
+                  >
+                    {%- if btn_is_hlt -%}
+                      {{- block.settings.button_label -}}
+                      {%- if block.settings.show_arrow %} {% render 'hlt-icon', name: 'arrow-right', size: 20 %}{% endif -%}
+                    {%- else -%}
+                      <span>{{ block.settings.button_label }}</span>{% if block.settings.show_arrow %}{{ cmp_arrow_svg }}{% endif %}
+                    {%- endif -%}
+                  </a>
+                {%- else -%}
+                  {%- comment -%}
+                    No link yet: in the theme editor this still needs to look
+                    like a normal button so the merchant can judge it while
+                    building the section. Only the live storefront, where a
+                    customer could actually click a dead link, falls back to
+                    the visibly-disabled look.
+                  {%- endcomment -%}
+                  <a
+                    role="link"
+                    aria-disabled="true"
+                    class="{{ btn_theme_class }}{% unless request.design_mode %} cmp-btn--disabled{% endunless %}"
+                    {% if btn_style != blank %}style="{{ btn_style }}"{% endif %}
+                  >
+                    {%- if btn_is_hlt -%}
+                      {{- block.settings.button_label -}}
+                      {%- if block.settings.show_arrow %} {% render 'hlt-icon', name: 'arrow-right', size: 20 %}{% endif -%}
+                    {%- else -%}
+                      <span>{{ block.settings.button_label }}</span>{% if block.settings.show_arrow %}{{ cmp_arrow_svg }}{% endif %}
+                    {%- endif -%}
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+
+          {%- when 'table' -%}
+            {{ cmp_table_markup }}
+
+          {%- when 'row' -%}
+            {%- comment -%} rows never render in the flow; they render inside the table block above {%- endcomment -%}
+
+        {%- endcase -%}
+      {%- endfor -%}
+
+      {%- if table_block == nil and has_rows -%}
+        {{ cmp_table_markup }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "tag": "section",
+  "class": "cmp-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Color overrides"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight color",
+      "info": "Leave blank to use the color scheme's button color"
+    },
+    {
+      "type": "color",
+      "id": "competitor_icon_color",
+      "label": "Competitor icon color",
+      "info": "Leave blank to use a muted tone of the text color"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Heading content max width",
+      "default": 680
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top, mobile",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom, mobile",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "The new gold standard"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading size",
+          "default": "medium",
+          "options": [
+            { "value": "small", "label": "Small" },
+            { "value": "medium", "label": "Medium" },
+            { "value": "large", "label": "Large" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "heading_align",
+          "label": "Alignment",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "space_below",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Space below",
+          "default": 16
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Subheading text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>See how we compare.</p>"
+        },
+        {
+          "type": "select",
+          "id": "text_size",
+          "label": "Text size",
+          "default": "medium",
+          "options": [
+            { "value": "small", "label": "Small" },
+            { "value": "medium", "label": "Medium" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Alignment",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "space_below",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Space below",
+          "default": 32
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Label",
+          "default": "Pack your first bundle"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "scroll_to_target",
+          "label": "Scroll to the buy box",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "scroll_target",
+          "label": "Scroll target",
+          "default": "#hlt-buy-box"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Style",
+          "default": "hlt",
+          "options": [
+            { "value": "hlt", "label": "HLT navy" },
+            { "value": "hlt-splash", "label": "HLT splash blue" },
+            { "value": "hlt-splash-white", "label": "HLT splash blue, white text" },
+            { "value": "primary", "label": "Theme primary" },
+            { "value": "secondary", "label": "Theme secondary" }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "show_arrow",
+          "label": "Show arrow",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "button_align",
+          "label": "Alignment",
+          "default": "center",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "use_theme_styles",
+          "label": "Use theme button styling",
+          "info": "Only applies to Theme primary and Theme secondary. HLT styles always use the HLT button.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "bold_text",
+          "label": "Bold text",
+          "info": "Only applies to Theme primary and Theme secondary. HLT styles are always bold.",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "min": 12,
+          "max": 22,
+          "step": 1,
+          "unit": "px",
+          "label": "Text size",
+          "info": "Only applies to Theme primary and Theme secondary.",
+          "default": 16
+        },
+        {
+          "type": "checkbox",
+          "id": "full_width_mobile",
+          "label": "Full width on mobile",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "space_above",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Space above",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "space_below",
+          "min": 0,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Space below",
+          "default": 0
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "name": "Table",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "col1_label",
+          "label": "Column 1 label",
+          "default": "Ingredient",
+          "info": "Leave blank to hide this label"
+        },
+        {
+          "type": "text",
+          "id": "col2_label",
+          "label": "Column 2 label",
+          "default": "Your product",
+          "info": "Leave blank to hide this label"
+        },
+        {
+          "type": "image_picker",
+          "id": "col2_image",
+          "label": "Column 2 image"
+        },
+        {
+          "type": "text",
+          "id": "col3_label",
+          "label": "Column 3 label",
+          "default": "Leading competitor",
+          "info": "Leave blank to hide this label"
+        },
+        {
+          "type": "image_picker",
+          "id": "col3_image",
+          "label": "Column 3 image"
+        },
+        {
+          "type": "range",
+          "id": "image_height",
+          "min": 60,
+          "max": 200,
+          "step": 10,
+          "unit": "px",
+          "label": "Image height, desktop",
+          "default": 110
+        },
+        {
+          "type": "checkbox",
+          "id": "float_images",
+          "label": "Float images above the table",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "default_badge",
+          "label": "Default badge word",
+          "info": "Leave blank for no badge unless a row sets its own"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_check_icons",
+          "label": "Show check icons",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_icons_mobile",
+          "label": "Show icons on mobile",
+          "info": "Icons take width from narrow columns. Leave off if values wrap.",
+          "default": false
+        },
+        {
+          "type": "select",
+          "id": "table_width",
+          "label": "Table max width",
+          "default": "medium",
+          "options": [
+            { "value": "narrow", "label": "Narrow" },
+            { "value": "medium", "label": "Medium" },
+            { "value": "wide", "label": "Wide" },
+            { "value": "full", "label": "Full width" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "mobile_layout",
+          "label": "Mobile layout",
+          "default": "compact",
+          "options": [
+            { "value": "compact", "label": "Compact, 3 columns" },
+            { "value": "stacked", "label": "Stacked cards" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "mobile_col1_width",
+          "label": "Mobile first column width",
+          "default": "narrow",
+          "options": [
+            { "value": "narrow", "label": "Narrow, 28%" },
+            { "value": "medium", "label": "Medium, 34%" },
+            { "value": "wide", "label": "Wide, 40%" }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Header row"
+        },
+        {
+          "type": "select",
+          "id": "header_font",
+          "label": "Header font",
+          "default": "body",
+          "options": [
+            { "value": "body", "label": "Theme body font" },
+            { "value": "heading", "label": "Theme heading font" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "header_text_size",
+          "min": 9,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Header text size",
+          "default": 11
+        },
+        {
+          "type": "range",
+          "id": "header_text_size_mobile",
+          "min": 8,
+          "max": 14,
+          "step": 1,
+          "unit": "px",
+          "label": "Header text size, mobile",
+          "default": 10
+        },
+        {
+          "type": "checkbox",
+          "id": "header_uppercase",
+          "label": "Uppercase headers",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "header_letter_spacing",
+          "label": "Header letter spacing",
+          "default": "small",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "small", "label": "Small" },
+            { "value": "wide", "label": "Wide" }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Type sizes"
+        },
+        {
+          "type": "range",
+          "id": "ingredient_text_size",
+          "min": 12,
+          "max": 22,
+          "step": 1,
+          "unit": "px",
+          "label": "Ingredient text size",
+          "default": 15
+        },
+        {
+          "type": "range",
+          "id": "ingredient_text_size_mobile",
+          "min": 11,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Ingredient text size, mobile",
+          "default": 13
+        },
+        {
+          "type": "range",
+          "id": "table_line_height",
+          "min": 100,
+          "max": 200,
+          "step": 5,
+          "unit": "%",
+          "label": "Table line height",
+          "info": "Space between lines of text inside the table. Lower makes rows shorter.",
+          "default": 125
+        },
+        {
+          "type": "range",
+          "id": "value_text_size",
+          "min": 12,
+          "max": 32,
+          "step": 1,
+          "unit": "px",
+          "label": "Value text size",
+          "default": 18
+        },
+        {
+          "type": "range",
+          "id": "value_text_size_mobile",
+          "min": 11,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Value text size, mobile",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "detail_text_size",
+          "min": 10,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Detail text size",
+          "default": 13
+        },
+        {
+          "type": "range",
+          "id": "detail_text_size_mobile",
+          "min": 10,
+          "max": 16,
+          "step": 1,
+          "unit": "px",
+          "label": "Detail text size, mobile",
+          "default": 11
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "ingredient_name",
+          "label": "Ingredient name",
+          "default": "Ingredient"
+        },
+        {
+          "type": "text",
+          "id": "our_value",
+          "label": "Your product value",
+          "default": "+11%"
+        },
+        {
+          "type": "text",
+          "id": "our_badge",
+          "label": "Your product badge",
+          "info": "Leave blank to use the table default badge. Type none to hide it"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_badge",
+          "label": "Hide badge",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "our_detail",
+          "label": "Your product detail line",
+          "default": "Clinical dose"
+        },
+        {
+          "type": "select",
+          "id": "our_icon",
+          "label": "Your product icon",
+          "default": "check",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "cross", "label": "Cross" },
+            { "value": "none", "label": "None" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "competitor_value",
+          "label": "Competitor value",
+          "default": "Standard"
+        },
+        {
+          "type": "text",
+          "id": "competitor_detail",
+          "label": "Competitor detail line"
+        },
+        {
+          "type": "select",
+          "id": "competitor_icon",
+          "label": "Competitor icon",
+          "default": "check",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "cross", "label": "Cross" },
+            { "value": "none", "label": "None" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison table",
+      "blocks": [
+        {
+          "type": "heading",
+          "settings": {
+            "heading": "The new gold standard"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "<p>See how we compare on clinical dosing, ingredient transparency, and overall formulation.</p>"
+          }
+        },
+        {
+          "type": "table",
+          "settings": {
+            "default_badge": "More"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Vitamin K2",
+            "our_value": "+11%",
+            "our_detail": "100mcg Clinical Dose",
+            "competitor_value": "90mcg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "CoQ10",
+            "our_value": "+67%",
+            "our_detail": "100mg Clinical Dose",
+            "competitor_value": "60mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Vitamin C",
+            "our_value": "+80%",
+            "our_detail": "900mg Clinical Dose",
+            "competitor_value": "500mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Prebiotic Fiber",
+            "our_value": "+50%",
+            "our_detail": "3g",
+            "competitor_value": "2g"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Riboflavin",
+            "our_value": "+110%",
+            "our_detail": "4.2mg Clinical Dose",
+            "competitor_value": "2mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Magnesium",
+            "our_value": "+233%",
+            "our_detail": "100mg",
+            "competitor_value": "30mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Selenium",
+            "our_value": "+218%",
+            "our_detail": "70mcg Clinical Dose",
+            "competitor_value": "22mcg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Chromium",
+            "our_value": "+300%",
+            "our_detail": "100mcg Clinical Dose",
+            "competitor_value": "25mcg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Copper",
+            "our_value": "+400%",
+            "our_detail": "1mg Clinical Dose",
+            "competitor_value": "0.2mg"
+          }
+        },
+        {
+          "type": "row",
+          "settings": {
+            "ingredient_name": "Texture made for their age",
+            "our_value": "Melts, bites or crunch, by age",
+            "our_detail": "",
+            "hide_badge": true,
+            "competitor_value": "Not always",
+            "competitor_icon": "cross"
+          }
+        },
+        {
+          "type": "button",
+          "settings": {
+            "button_label": "Pack your first bundle"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .cmp-section {
+    /* Fixed, explicit base: some themes (Dawn) set html{font-size:62.5%} so
+       1rem is 10px there and 16px almost everywhere else. Never use rem in
+       this file; every type size, padding and gap below is em (relative to
+       this base) or a plain px value instead. */
+    font-size: calc(var(--font-body-scale, 1) * 16px);
+    background: var(--cmp-bg);
+    color: var(--cmp-text);
+  }
+
+  .cmp-root {
+    padding-top: var(--cmp-padding-top-mobile);
+    padding-bottom: var(--cmp-padding-bottom-mobile);
+  }
+
+  @media screen and (min-width: 750px) {
+    .cmp-root {
+      padding-top: var(--cmp-padding-top);
+      padding-bottom: var(--cmp-padding-bottom);
+    }
+  }
+
+  .cmp-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .cmp-heading,
+  .cmp-text {
+    max-width: var(--cmp-content-max-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cmp-heading {
+    font-family: var(--font-heading-family, var(--font-heading--family, var(--heading-font-family, inherit)));
+    font-weight: var(--font-heading-weight, var(--font-heading--weight, var(--heading-font-weight, inherit)));
+    margin-top: 0;
+  }
+
+  /* Our own clamp()-based sizes on top of the theme's h0/h1/h2 classes, in
+     case a theme's heading classes are small, missing, or oddly scaled. */
+  .cmp-heading--small { font-size: clamp(22px, 3vw + 10px, 32px); }
+  .cmp-heading--medium { font-size: clamp(28px, 4vw + 12px, 48px); }
+  .cmp-heading--large { font-size: clamp(34px, 5vw + 14px, 64px); }
+
+  .cmp-text {
+    font-family: var(--font-body-family, var(--font-body--family, var(--text-font-family, inherit)));
+    margin-top: 0;
+  }
+
+  .cmp-text--small { font-size: 0.9em; }
+  .cmp-text--medium { font-size: 1.05em; }
+
+  .cmp-align-left { text-align: left; }
+  .cmp-align-center { text-align: center; margin-left: auto; margin-right: auto; }
+  .cmp-align-right { text-align: right; margin-left: auto; margin-right: 0; }
+
+  .cmp-button-wrap {
+    display: flex;
+  }
+  .cmp-button-wrap.cmp-align-left { justify-content: flex-start; }
+  .cmp-button-wrap.cmp-align-center { justify-content: center; }
+  .cmp-button-wrap.cmp-align-right { justify-content: flex-end; }
+
+  .cmp-btn {
+    display: inline-block;
+    padding: 0.85em 1.75em;
+    border-radius: var(--buttons-radius, var(--button-border-radius, 999px));
+    text-decoration: none;
+    font-family: var(--font-body-family, var(--font-body--family, var(--text-font-family, inherit)));
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .cmp-btn--primary {
+    background: var(--cmp-accent);
+    color: var(--cmp-accent-contrast);
+  }
+  .cmp-btn--secondary {
+    background: transparent;
+    color: var(--cmp-text);
+    border-color: color-mix(in srgb, var(--cmp-text) 30%, transparent);
+  }
+
+  /* HLT styles use the real .hlt-btn classes, so the global HLT stylesheet
+     styles this button exactly like the HLT Hero / Image with text CTA.
+     The rules below sit inside :where() (zero specificity) so they are only
+     a safety net: any real .hlt-btn rule from the HLT stylesheet wins. */
+  :where(.cmp-button-wrap .hlt-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-radius: 999px;
+    background: var(--hlt-navy, #1c2754);
+    color: #ffffff;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  :where(.cmp-button-wrap .hlt-btn svg) {
+    flex-shrink: 0;
+  }
+
+  .cmp-btn__arrow {
+    width: 1.05em;
+    height: 1.05em;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+  .cmp-button-wrap a:hover .cmp-btn__arrow {
+    transform: translateX(3px);
+  }
+  .cmp-button-wrap .button .cmp-btn__arrow {
+    margin-left: 0.5em;
+    vertical-align: -0.15em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmp-btn__arrow { transition: none; }
+    .cmp-button-wrap a:hover .cmp-btn__arrow { transform: none; }
+  }
+
+  .cmp-btn--disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .cmp-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .cmp-table-wrap {
+    margin: 0 auto;
+    width: 100%;
+  }
+  .cmp-table-wrap--narrow { max-width: 720px; }
+  .cmp-table-wrap--medium { max-width: 900px; }
+  .cmp-table-wrap--wide { max-width: 1100px; }
+  .cmp-table-wrap--full { max-width: 100%; }
+
+  .cmp-table-grid,
+  .cmp-stacked-list {
+    line-height: var(--cmp-line-height, 1.25);
+  }
+  .cmp-table-grid .cmp-cell *,
+  .cmp-stacked-list * {
+    line-height: inherit;
+  }
+
+  .cmp-table-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    background: color-mix(in srgb, var(--cmp-text) 3%, var(--cmp-bg));
+    border: 1px solid color-mix(in srgb, var(--cmp-text) 10%, var(--cmp-bg));
+    border-radius: var(--cmp-radius);
+    /* No overflow:hidden here on purpose: the floating product images are
+       absolutely positioned above this box and must stay fully visible,
+       overlapping the top edge. The corner cells (columns 1 and 3, header
+       and last row) never carry their own background, so the container's
+       own rounded corners still show through correctly without clipping. */
+    box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--cmp-text) 25%, transparent);
+    margin-top: calc(var(--cmp-image-height) / 2 + 16px);
+  }
+  .cmp-table-grid--no-float {
+    margin-top: 0;
+  }
+
+  .cmp-table-grid > * {
+    border-bottom: 1px solid color-mix(in srgb, var(--cmp-text) 10%, var(--cmp-bg));
+  }
+  .cmp-table-grid > *:nth-last-child(-n + 3) {
+    border-bottom: none;
+  }
+
+  .cmp-cell {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  /* The ingredient column specifically: hyphenate real words instead of
+     breaking anywhere, so "preservatives" wraps as "preserva-tives" rather
+     than at an arbitrary character. Relies on the page's own lang attribute. */
+  .cmp-cell--ingredient {
+    hyphens: auto;
+  }
+
+  .cmp-cell--highlight {
+    background: color-mix(in srgb, var(--cmp-accent) 6%, var(--cmp-bg));
+    box-shadow: inset 1px 0 0 color-mix(in srgb, var(--cmp-accent) 12%, transparent), inset -1px 0 0 color-mix(in srgb, var(--cmp-accent) 12%, transparent);
+  }
+
+  .cmp-header-cell {
+    padding: 14px 16px;
+    font-family: var(--cmp-header-font-family);
+    text-transform: var(--cmp-header-transform);
+    font-size: var(--cmp-header-size);
+    letter-spacing: var(--cmp-header-letter-spacing);
+    font-weight: 600;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    min-width: 0;
+    overflow-wrap: break-word;
+    min-height: calc(var(--cmp-image-height) / 2 + 34px);
+  }
+  /* Color always tracks the theme's own color scheme, unchanged. */
+  .cmp-header-cell--muted { color: color-mix(in srgb, var(--cmp-text) 65%, var(--cmp-bg)); }
+  .cmp-header-cell--main {
+    color: var(--cmp-text);
+    background: color-mix(in srgb, var(--cmp-accent) 6%, var(--cmp-bg));
+  }
+  .cmp-header-cell--no-float {
+    align-items: center;
+    min-height: 0;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 20px;
+  }
+
+  .cmp-col-image {
+    position: absolute;
+    top: calc(var(--cmp-image-height) / -2);
+    left: 50%;
+    transform: translateX(-50%);
+    height: var(--cmp-image-height);
+    width: auto;
+    max-width: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--cmp-text) 25%, transparent));
+  }
+  .cmp-header-cell--no-float .cmp-col-image {
+    position: static;
+    transform: none;
+    height: calc(var(--cmp-image-height) * 0.6);
+  }
+
+  .cmp-ingredient-name {
+    font-weight: 600;
+    font-size: var(--cmp-ingredient-size);
+  }
+
+  /* Icon (left, fixed track) + text stack (right, flexible track). The icon
+     stays aligned with the first line of text instead of sitting above it
+     or forcing the value onto its own line when the value text is long. */
+  .cmp-cell-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    align-items: start;
+  }
+  .cmp-cell-icon {
+    display: inline-flex;
+    margin-top: 0.2em;
+  }
+  .cmp-cell-text {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .cmp-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cmp-icon--check-accent {
+    background: var(--cmp-accent);
+    color: var(--cmp-accent-contrast);
+  }
+  .cmp-icon--check-muted {
+    background: var(--cmp-competitor-icon-override, color-mix(in srgb, var(--cmp-text) 55%, var(--cmp-bg)));
+    color: var(--cmp-bg);
+  }
+  .cmp-icon--cross {
+    background: transparent;
+    color: color-mix(in srgb, var(--cmp-text) 45%, var(--cmp-bg));
+    border: 1px solid color-mix(in srgb, var(--cmp-text) 25%, var(--cmp-bg));
+  }
+  .cmp-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Value and badge flow as inline text: the badge follows the value on the
+     same line whenever there is room and only drops below when there is not.
+     Values break at spaces, never mid-word (so "+110%" stays whole). */
+  .cmp-value-badge {
+    display: block;
+  }
+  .cmp-value-badge .cmp-badge {
+    display: inline-block;
+    margin-left: 0.3em;
+  }
+
+  .cmp-our-value,
+  .cmp-competitor-value {
+    font-size: var(--cmp-value-size);
+    /* .cmp-our-value is a flex item inside .cmp-value-badge; flex items
+       default to min-width:auto (shrink-to-fit their single widest
+       unbreakable word), which would otherwise cap long values at one word
+       wide instead of using the full available width. */
+    min-width: 0;
+  }
+  .cmp-our-value {
+    font-weight: 700;
+    color: var(--cmp-accent);
+  }
+  .cmp-competitor-value {
+    font-weight: 500;
+  }
+
+  .cmp-badge {
+    font-size: calc(var(--cmp-value-size) * 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--cmp-accent);
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    white-space: nowrap;
+  }
+
+  .cmp-detail {
+    font-size: var(--cmp-detail-size);
+    color: color-mix(in srgb, var(--cmp-text) 65%, var(--cmp-bg));
+    margin-top: 4px;
+  }
+
+  .cmp-stacked-list {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    /* Scale the floating product images (and everything derived from them:
+       the card's top compensation margin, the header cell's min-height) down
+       to about 60% of the desktop setting. The mobile value of
+       --cmp-image-height, and the mobile type sizes, are set per section in
+       the style block above (plain computed values, not self-referencing). */
+
+    .cmp-table-grid {
+      grid-template-columns: var(--cmp-mobile-col1-width) 1fr 1fr;
+    }
+
+    .cmp-cell {
+      padding: 10px 8px;
+    }
+
+    .cmp-header-cell {
+      padding: 12px 10px;
+      min-height: calc(var(--cmp-image-height) / 2 + 26px);
+    }
+
+    /* Icons never stack above the text on mobile (the auto/1fr grid already
+       prevents that); they just shrink, and a table can opt out of showing
+       them on mobile altogether via "Show icons on mobile". */
+    .cmp-icon {
+      width: 16px;
+      height: 16px;
+    }
+    .cmp-icon svg {
+      width: 9px;
+      height: 9px;
+    }
+    .cmp-table-wrap[data-icons-mobile='false'] .cmp-cell-icon {
+      display: none;
+    }
+
+    .cmp-table-wrap[data-mobile-layout='stacked'] .cmp-table-grid {
+      display: none;
+    }
+    .cmp-table-wrap[data-mobile-layout='stacked'] .cmp-stacked-list {
+      display: block;
+    }
+
+    .cmp-button-wrap .cmp-btn-full-mobile {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+
+  .cmp-stacked-card {
+    border: 1px solid color-mix(in srgb, var(--cmp-text) 10%, var(--cmp-bg));
+    border-radius: var(--cmp-radius);
+    background: color-mix(in srgb, var(--cmp-text) 3%, var(--cmp-bg));
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .cmp-stacked-card:last-child {
+    margin-bottom: 0;
+  }
+  .cmp-stacked-card-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .cmp-stacked-halves {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .cmp-stacked-half {
+    padding: 10px;
+    border-radius: calc(var(--cmp-radius) * 0.6);
+  }
+  .cmp-stacked-half--highlight {
+    background: color-mix(in srgb, var(--cmp-accent) 8%, var(--cmp-bg));
+  }
+  .cmp-stacked-caption {
+    font-size: 0.65em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--cmp-text) 65%, var(--cmp-bg));
+    margin-bottom: 6px;
+  }
+{% endstylesheet %}

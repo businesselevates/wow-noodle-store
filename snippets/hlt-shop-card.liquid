@@ -1,0 +1,45 @@
+{% comment %}
+  One card in the Shop menu panel.
+
+  Accepts:
+  - title: the raw label, escaped here
+  - url: where the card goes
+  - image: the fallback image, from whatever the link points at; may be blank
+  - blocks: the header's 'shop_image' blocks, so an uploaded image can override
+    the fallback for a card whose name matches the block's 'match' field
+
+  Usage:
+  {% render 'hlt-shop-card', title: link.title, url: link.url, image: img, blocks: image_blocks %}
+{% endcomment %}
+
+{%- liquid
+  assign card_image = image
+  if blocks != blank and title != blank
+    assign card_key = title | strip | downcase
+    for block in blocks
+      if block.settings.image == blank or block.settings.match == blank
+        continue
+      endif
+      assign block_key = block.settings.match | strip | downcase
+      if block_key == card_key
+        assign card_image = block.settings.image
+        break
+      endif
+    endfor
+  endif
+-%}
+
+<a class="hlt-shop-card" href="{{ url }}">
+  <span class="hlt-shop-card__media">
+    {%- if card_image != blank -%}
+      {{
+        card_image
+        | image_url: width: 480
+        | image_tag: loading: 'lazy', widths: '200, 320, 480', sizes: '(min-width: 1200px) 220px, 20vw', alt: ''
+      }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'hlt-shop-card__ph' }}
+    {%- endif -%}
+  </span>
+  <span class="hlt-shop-card__title">{{ title | escape }}</span>
+</a>

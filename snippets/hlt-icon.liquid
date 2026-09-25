@@ -1,0 +1,65 @@
+{%- comment -%}
+  Outline icons in the Tabler style required by the brand guidelines (stroke 1.75, round caps and joins).
+  Usage: {% render 'hlt-icon', name: 'leaf', size: 20 %}
+{%- endcomment -%}
+{%- liquid
+  assign s = size | default: 20
+  assign fill = 'none'
+  if name == 'star'
+    assign fill = 'currentColor'
+  endif
+
+  comment
+    Most icons are drawn on the 24 grid at 1.75 stroke. The three snack-story
+    icons carry more detail than that grid holds, so they are drawn on 48 at a
+    stroke that reads the same once scaled.
+  endcomment
+  assign box = '0 0 24 24'
+  assign stroke = '1.75'
+  assign wide_grid = 'snack-bag-question,snack-bag-soft,bin'
+  assign needle = ',' | append: name | append: ','
+  assign wide_grid = ',' | append: wide_grid | append: ','
+  if wide_grid contains needle
+    assign box = '0 0 48 48'
+    assign stroke = '2'
+  endif
+-%}
+<svg class="hlt-icon" width="{{ s }}" height="{{ s }}" viewBox="{{ box }}" fill="{{ fill }}" stroke="currentColor" stroke-width="{{ stroke }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  {%- case name -%}
+    {%- when 'leaf' -%}<path d="M5 21c.5-4.5 2.5-8 7-10"/><path d="M9 18c6.218 0 10.5-3.288 11-12v-2h-4.014c-9 0-11.986 4-12 9c0 1 0 3 2 5h3z"/>
+    {%- when 'certificate' -%}<path d="M12 15a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5"/><path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73"/><path d="M6 9h12"/><path d="M6 12h3"/><path d="M6 15h2"/>
+    {%- when 'flask-off' -%}<path d="M9 3h6"/><path d="M10 9v-6"/><path d="M14 3v6l1.5 3"/><path d="M8.5 9.5l-4.4 8.9a1 1 0 0 0 .9 1.6h14"/><path d="M3 3l18 18"/>
+    {%- when 'sugar-off' -%}<path d="M12 3l8 4.5v9l-.8 .45"/><path d="M16.7 18.9l-4.7 2.6l-8 -4.5v-9l2.3 -1.3"/><path d="M3 3l18 18"/>
+    {%- when 'truck' -%}<path d="M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"/>
+    {%- when 'package' -%}<path d="M12 3l8 4.5v9l-8 4.5l-8 -4.5v-9l8 -4.5"/><path d="M12 12l8 -4.5"/><path d="M12 12v9"/><path d="M12 12l-8 -4.5"/>
+    {%- when 'return' -%}<path d="M9 14l-4 -4l4 -4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/>
+    {%- when 'lock' -%}<path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/><path d="M8 11v-4a4 4 0 1 1 8 0v4"/>
+    {%- when 'stroller' -%}<path d="M6 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M16 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M2 5h2.5l1.632 4.897a6 6 0 0 0 5.693 4.103h2.675a5.5 5.5 0 0 0 0 -11h-.5v6"/><path d="M6 9h14"/><path d="M9 17l1 -3"/><path d="M16 14l1 3"/>
+    {%- when 'star' -%}<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>
+    {%- when 'arrow-left' -%}<path d="M5 12h14"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/>
+    {%- when 'arrow-right' -%}<path d="M5 12h14"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/>
+    {%- when 'check' -%}<path d="M5 12l5 5l10 -10"/>
+    {%- when 'heart' -%}<path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/>
+    {%- when 'smile' -%}<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/>
+    {%- when 'droplet' -%}<path d="M7.502 19.423c2.602 2.105 6.395 2.105 8.996 0c2.602 -2.105 3.262 -5.708 1.566 -8.546l-4.89 -7.26c-.42 -.625 -1.287 -.803 -1.936 -.397a1.376 1.376 0 0 0 -.41 .397l-4.893 7.26c-1.695 2.838 -1.035 6.441 1.567 8.546z"/>
+    {%- when 'gift' -%}<path d="M3 9a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5"/>
+    {%- when 'clock' -%}<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>
+    {%- when 'sparkle' -%}<path d="M12 3c.6 4.2 2.8 6.4 7 7c-4.2 .6 -6.4 2.8 -7 7c-.6 -4.2 -2.8 -6.4 -7 -7c4.2 -.6 6.4 -2.8 7 -7z"/>
+    {%- when 'plus' -%}<path d="M12 5v14"/><path d="M5 12h14"/>
+    {%- when 'fruit-apple' -%}<path d="M12 8.5c-1 -1.7 -2.4 -2.6 -4 -2.6c-2.5 0 -4 2.1 -4 5.3c0 4 2.7 7.8 5 7.8c1.1 0 1.8 -.6 3 -.6s1.9 .6 3 .6c2.3 0 5 -3.8 5 -7.8c0 -3.2 -1.5 -5.3 -4 -5.3c-1.6 0 -3 .9 -4 2.6z"/><path d="M12 8.4v-3.2"/><path d="M12 5.5c1 -2 3 -2.6 5 -2c0 2.2 -1.6 3.8 -3.8 3.8c-.6 0 -1 -.6 -1.2 -1.8z"/>
+    {%- when 'fruit-banana' -%}<path d="M6 5c-1 9 5 14 13 8.5c-4 2 -10 -1.5 -13 -8.5z"/><path d="M6 5l-.7 -1.8"/>
+    {%- when 'fruit-blueberry' -%}<path d="M6 14a6 6 0 1 0 12 0a6 6 0 1 0 -12 0"/><path d="M12 8.4v-2.9"/><path d="M12 8.4l-2.9 -2"/><path d="M12 8.4l2.9 -2"/>
+    {%- when 'fruit-mango' -%}<path d="M17.1 7.4c1.25 1.25 1 5.5 -1.8 8.3c-2.8 2.8 -6.1 4.1 -8.4 1.8c-2.3 -2.3 -1 -5.5 1.8 -8.3c2.8 -2.8 7.15 -3.05 8.4 -1.8z"/><path d="M17.1 7.4l.9 -2.6"/>
+    {%- when 'fruit-strawberry' -%}<path d="M12 20.8c-2.2 -2.8 -6 -4.8 -6 -7.8c0 -2.7 2.7 -4.6 6 -4.6s6 1.9 6 4.6c0 3 -3.8 5 -6 7.8z"/><path d="M12 8.4l-4.6 -1.8"/><path d="M12 8.4l-2 -3.4"/><path d="M12 8.4l2 -3.4"/><path d="M12 8.4l4.6 -1.8"/>
+    {%- when 'fruit-berries' -%}<path d="M5.1 9.8a3.6 3.6 0 1 0 7.2 0a3.6 3.6 0 1 0 -7.2 0"/><path d="M11.7 9.8a3.6 3.6 0 1 0 7.2 0a3.6 3.6 0 1 0 -7.2 0"/><path d="M8.4 15.4a3.6 3.6 0 1 0 7.2 0a3.6 3.6 0 1 0 -7.2 0"/><path d="M12 8.2v-3.4"/>
+    {%- when 'flavour-chocolate' -%}<path d="M4.5 7.5a1.5 1.5 0 0 1 1.5 -1.5h12a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1 -1.5 1.5h-12a1.5 1.5 0 0 1 -1.5 -1.5z"/><path d="M9.5 6v12"/><path d="M14.5 6v12"/><path d="M4.5 12h15"/>
+    {%- when 'flavour-oat' -%}<path d="M12 21v-13"/><path d="M12 9.4c-2.4 -.3 -3.5 -1.9 -3.3 -4.3c2.4 .3 3.5 1.9 3.3 4.3z"/><path d="M12 9.4c2.4 -.3 3.5 -1.9 3.3 -4.3c-2.4 .3 -3.5 1.9 -3.3 4.3z"/><path d="M12 13.6c-2.4 -.3 -3.5 -1.9 -3.3 -4.3c2.4 .3 3.5 1.9 3.3 4.3z"/><path d="M12 13.6c2.4 -.3 3.5 -1.9 3.3 -4.3c-2.4 .3 -3.5 1.9 -3.3 4.3z"/><path d="M12 17.8c-2.4 -.3 -3.5 -1.9 -3.3 -4.3c2.4 .3 3.5 1.9 3.3 4.3z"/><path d="M12 17.8c2.4 -.3 3.5 -1.9 3.3 -4.3c-2.4 .3 -3.5 1.9 -3.3 4.3z"/>
+    {%- when 'flavour-cheese' -%}<path d="M2.8 16.4l17.4 -7.6v9.8z"/><path d="M10.95 15a1.45 1.45 0 1 0 2.9 0a1.45 1.45 0 1 0 -2.9 0"/><path d="M16.35 13.4a1.15 1.15 0 1 0 2.3 0a1.15 1.15 0 1 0 -2.3 0"/>
+    {%- when 'flavour-coconut' -%}<path d="M4.5 11.5a7.5 2.6 0 1 0 15 0a7.5 2.6 0 1 0 -15 0"/><path d="M4.5 11.5a7.5 7.5 0 0 0 15 0"/>
+    {%- when 'flavour-plain' -%}<path d="M3.8 12a8.2 8.2 0 1 0 16.4 0a8.2 8.2 0 1 0 -16.4 0"/><path d="M9.4 12a2.6 2.6 0 1 0 5.2 0a2.6 2.6 0 1 0 -5.2 0"/>
+    {%- when 'snack-bag-question' -%}<path d="M12 9 L14 7 L16 9 L18 7 L20 9 L22 7 L24 9 L26 7 L28 9 L30 7 L32 9 L34 7 L36 9"/><path d="M12 39 L14 41 L16 39 L18 41 L20 39 L22 41 L24 39 L26 41 L28 39 L30 41 L32 39 L34 41 L36 39"/><path d="M12 9 C10 16 10 32 12 39 M36 9 C38 16 38 32 36 39"/><path d="M12 12 H36 M12 36 H36"/><path d="M20.5 20.5 C20.5 17.5 27.5 17.5 27.5 20.5 C27.5 23 24 23.5 24 26.5"/><circle cx="24" cy="30.5" r="0.6" fill="currentColor"/>
+    {%- when 'snack-bag-soft' -%}<path d="M9 16 L12 13 L14 16 L17 12 L19 15 L22 12 L24 15 L27 12 L29 15 L31 13"/><path d="M9 16 C8 22 9 29 12 34 L27 38 C30 33 32 25 31 13"/><path d="M12 34 L11 37 M27 38 L27 41 M11 37 L27 41"/><path d="M14 22 C16 24 17 21 19 23 M17 28 C19 30 20 27 22 29"/><circle cx="35" cy="34" r="1.1"/><circle cx="39" cy="38" r="0.9"/><circle cx="34" cy="40" r="0.8"/><circle cx="40" cy="32" r="0.7"/>
+    {%- when 'bin' -%}<path d="M10 14 H38"/><path d="M20 14 V10 H28 V14"/><path d="M13 14 L15 40 H33 L35 14"/><path d="M20 20 L20.6 34 M24 20 V34 M28 20 L27.4 34"/>
+    {%- else -%}<path d="M5 12l5 5l10 -10"/>
+  {%- endcase -%}
+</svg>

@@ -1,0 +1,238 @@
+{% doc %}
+  @prompt
+    Subheading, heading, text, 2 inline buttons (each with own colors/border),
+    subtext. Adjustable section background, content container width + position,
+    text alignment, and independent padding on all four sides.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-content-block-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    {% if block.settings.background_color != blank %}background-color: {{ block.settings.background_color }};{% endif %}
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    padding-left: {{ block.settings.padding_left }}px;
+    padding-right: {{ block.settings.padding_right }}px;
+  }
+
+  .ai-content-block__inner-{{ ai_gen_id }} {
+    {% if block.settings.container_max_width > 0 %}max-width: {{ block.settings.container_max_width }}px;{% else %}max-width: 100%;{% endif %}
+    {% case block.settings.container_position %}
+      {% when 'left' %}margin-left: 0; margin-right: auto;
+      {% when 'right' %}margin-left: auto; margin-right: 0;
+      {% else %}margin-left: auto; margin-right: auto;
+    {% endcase %}
+    text-align: {{ block.settings.content_alignment }};
+  }
+
+  .ai-content-block__subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 {{ block.settings.subheading_spacing }}px 0;
+  }
+
+  .ai-content-block__heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px 0;
+  }
+
+  .ai-content-block__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 {{ block.settings.text_spacing }}px 0;
+  }
+
+  .ai-content-block__buttons-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.button_gap }}px;
+    margin-bottom: {{ block.settings.buttons_spacing }}px;
+    {% if block.settings.content_alignment == 'left' %}
+      justify-content: flex-start;
+    {% elsif block.settings.content_alignment == 'center' %}
+      justify-content: center;
+    {% elsif block.settings.content_alignment == 'right' %}
+      justify-content: flex-end;
+    {% endif %}
+    flex-wrap: wrap;
+  }
+
+  .ai-content-block__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .ai-content-block__button-1-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_1_bg_color }};
+    color: {{ block.settings.button_1_text_color }};
+    border: {{ block.settings.button_1_border_width }}px solid {{ block.settings.button_1_border_color }};
+    border-radius: {{ block.settings.button_1_border_radius }}px;
+  }
+
+  .ai-content-block__button-1-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_1_hover_bg_color }};
+    color: {{ block.settings.button_1_hover_text_color }};
+    border-color: {{ block.settings.button_1_hover_border_color }};
+  }
+
+  .ai-content-block__button-2-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_2_bg_color }};
+    color: {{ block.settings.button_2_text_color }};
+    border: {{ block.settings.button_2_border_width }}px solid {{ block.settings.button_2_border_color }};
+    border-radius: {{ block.settings.button_2_border_radius }}px;
+  }
+
+  .ai-content-block__button-2-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_2_hover_bg_color }};
+    color: {{ block.settings.button_2_hover_text_color }};
+    border-color: {{ block.settings.button_2_hover_border_color }};
+  }
+
+  .ai-content-block__subtext-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtext_size }}px;
+    color: {{ block.settings.subtext_color }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-content-block__buttons-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .ai-content-block__button-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-content-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-content-block__inner-{{ ai_gen_id }}">
+    {% if block.settings.subheading != blank %}
+      <div class="ai-content-block__subheading-{{ ai_gen_id }}">
+        {{ block.settings.subheading }}
+      </div>
+    {% endif %}
+
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-content-block__heading-{{ ai_gen_id }}">
+        {{ block.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if block.settings.text != blank %}
+      <div class="ai-content-block__text-{{ ai_gen_id }}">
+        {{ block.settings.text }}
+      </div>
+    {% endif %}
+
+    <div class="ai-content-block__buttons-{{ ai_gen_id }}">
+      {% if block.settings.button_1_text != blank %}
+        <a
+          href="{{ block.settings.button_1_link }}"
+          class="ai-content-block__button-{{ ai_gen_id }} ai-content-block__button-1-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_1_text }}
+        </a>
+      {% endif %}
+
+      {% if block.settings.button_2_text != blank %}
+        <a
+          href="{{ block.settings.button_2_link }}"
+          class="ai-content-block__button-{{ ai_gen_id }} ai-content-block__button-2-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_2_text }}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if block.settings.subtext != blank %}
+      <div class="ai-content-block__subtext-{{ ai_gen_id }}">
+        {{ block.settings.subtext }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Content block",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "color", "id": "background_color", "label": "Section background (blank = transparent)" },
+    { "type": "select", "id": "content_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "select", "id": "container_position", "label": "Content container position", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "container_max_width", "label": "Content container width (0 = full width)", "min": 0, "max": 1600, "step": 20, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_left", "label": "Padding left", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 20 },
+    { "type": "range", "id": "padding_right", "label": "Padding right", "min": 0, "max": 150, "step": 5, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Subheading" },
+    { "type": "inline_richtext", "id": "subheading", "label": "Subheading text", "default": "Welcome to our store" },
+    { "type": "range", "id": "subheading_size", "label": "Font size", "min": 10, "max": 30, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "subheading_color", "label": "Color", "default": "#1b2e5c" },
+    { "type": "range", "id": "subheading_spacing", "label": "Bottom spacing", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 8 },
+
+    { "type": "header", "content": "Heading" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading text", "default": "Discover our collection" },
+    { "type": "range", "id": "heading_size", "label": "Font size", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 32 },
+    { "type": "color", "id": "heading_color", "label": "Color", "default": "#1b2e5c" },
+    { "type": "range", "id": "heading_spacing", "label": "Bottom spacing", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 },
+
+    { "type": "header", "content": "Text" },
+    { "type": "richtext", "id": "text", "label": "Text content", "default": "<p>Browse our carefully curated selection of premium products designed to enhance your lifestyle.</p>" },
+    { "type": "range", "id": "text_size", "label": "Font size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "text_color", "label": "Color", "default": "#1b2e5c" },
+    { "type": "range", "id": "text_spacing", "label": "Bottom spacing", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 20 },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "range", "id": "button_gap", "label": "Gap between buttons", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "buttons_spacing", "label": "Bottom spacing", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 16 },
+    { "type": "range", "id": "button_text_size", "label": "Text size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "button_padding_vertical", "label": "Vertical padding", "min": 4, "max": 30, "step": 2, "unit": "px", "default": 12 },
+    { "type": "range", "id": "button_padding_horizontal", "label": "Horizontal padding", "min": 10, "max": 50, "step": 2, "unit": "px", "default": 24 },
+
+    { "type": "header", "content": "Button 1" },
+    { "type": "text", "id": "button_1_text", "label": "Text", "default": "Shop now" },
+    { "type": "url", "id": "button_1_link", "label": "Link" },
+    { "type": "color", "id": "button_1_bg_color", "label": "Background", "default": "#192e59" },
+    { "type": "color", "id": "button_1_text_color", "label": "Text", "default": "#f2efdd" },
+    { "type": "range", "id": "button_1_border_width", "label": "Border width", "min": 0, "max": 5, "step": 1, "unit": "px", "default": 1 },
+    { "type": "color", "id": "button_1_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "range", "id": "button_1_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 },
+    { "type": "color", "id": "button_1_hover_bg_color", "label": "Hover background", "default": "#0d1a33" },
+    { "type": "color", "id": "button_1_hover_text_color", "label": "Hover text", "default": "#f2efdd" },
+    { "type": "color", "id": "button_1_hover_border_color", "label": "Hover border", "default": "#0d1a33" },
+
+    { "type": "header", "content": "Button 2" },
+    { "type": "text", "id": "button_2_text", "label": "Text", "default": "Learn more" },
+    { "type": "url", "id": "button_2_link", "label": "Link" },
+    { "type": "color", "id": "button_2_bg_color", "label": "Background", "default": "#fffbf1" },
+    { "type": "color", "id": "button_2_text_color", "label": "Text", "default": "#192e59" },
+    { "type": "range", "id": "button_2_border_width", "label": "Border width", "min": 0, "max": 5, "step": 1, "unit": "px", "default": 1 },
+    { "type": "color", "id": "button_2_border_color", "label": "Border color", "default": "#192e59" },
+    { "type": "range", "id": "button_2_border_radius", "label": "Border radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 40 },
+    { "type": "color", "id": "button_2_hover_bg_color", "label": "Hover background", "default": "#192e59" },
+    { "type": "color", "id": "button_2_hover_text_color", "label": "Hover text", "default": "#f2efdd" },
+    { "type": "color", "id": "button_2_hover_border_color", "label": "Hover border", "default": "#192e59" },
+
+    { "type": "header", "content": "Subtext" },
+    { "type": "richtext", "id": "subtext", "label": "Subtext content", "default": "<p>Free shipping on orders over $50</p>" },
+    { "type": "range", "id": "subtext_size", "label": "Font size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 12 },
+    { "type": "color", "id": "subtext_color", "label": "Color", "default": "#1b2e5c" }
+  ],
+  "presets": [
+    { "name": "Content block" }
+  ]
+}
+{% endschema %}

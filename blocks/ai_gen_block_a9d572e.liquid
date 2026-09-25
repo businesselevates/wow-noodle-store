@@ -1,0 +1,532 @@
+{% doc %}
+  @prompt
+    Create a 3-column certification/trust badges section with card-style layout. Each card should have a white rounded card background with subtle shadow. Inside each card: top row has a small icon/emoji image on the left (in a light gray rounded square container) and a short badge label on the top-right (e.g., "MUIS", "SG", "97%") in a colored pill or bold text. Below that, a bold title (e.g., "Halal Certification"), a regular subtitle line (e.g., "Majlis Ugama Islam Singapura"), and at the bottom, 2 lines of smaller monospace/light gray text (e.g., "No. MC-24-SG-00871" and "Valid until Dec 2025"). The overall section background should be a light beige/off-white. All 3 columns should be customizable with their own icon, badge text, badge color, title, subtitle, and two detail text lines., use the same icon and color as the image. Font of subtitle like "made in singapore" is Inter
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-trust-badges-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.section_background }};
+    padding: {{ block.settings.section_padding }}px 20px;
+  }
+
+  .ai-trust-badges-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-trust-badges-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.card_gap }}px;
+  }
+
+  .ai-trust-badge-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-trust-badge-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .ai-trust-badge-icon-wrapper-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .ai-trust-badge-icon-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-trust-badge-icon-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .ai-trust-badge-label-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-trust-badge-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ai-trust-badge-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .ai-trust-badge-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .ai-trust-badge-details-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+  }
+
+  .ai-trust-badge-detail-{{ ai_gen_id }} {
+    font-size: {{ block.settings.detail_size }}px;
+    font-family: 'Courier New', Courier, monospace;
+    color: {{ block.settings.detail_color }};
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-trust-badges-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-trust-badges-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-trust-badge-card-{{ ai_gen_id }} {
+      padding: {{ block.settings.card_padding | times: 0.8 }}px;
+    }
+  }
+{% endstyle %}
+
+<trust-badges-{{ ai_gen_id }} class="ai-trust-badges-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-trust-badges-container-{{ ai_gen_id }}">
+    <div class="ai-trust-badges-grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign badge_enabled_key = 'badge_' | append: i | append: '_enabled'
+          assign icon_key = 'badge_' | append: i | append: '_icon'
+          assign label_key = 'badge_' | append: i | append: '_label'
+          assign label_color_key = 'badge_' | append: i | append: '_label_color'
+          assign label_bg_key = 'badge_' | append: i | append: '_label_bg'
+          assign title_key = 'badge_' | append: i | append: '_title'
+          assign subtitle_key = 'badge_' | append: i | append: '_subtitle'
+          assign detail1_key = 'badge_' | append: i | append: '_detail1'
+          assign detail2_key = 'badge_' | append: i | append: '_detail2'
+
+          assign badge_enabled = block.settings[badge_enabled_key]
+          assign icon = block.settings[icon_key]
+          assign label = block.settings[label_key]
+          assign label_color = block.settings[label_color_key]
+          assign label_bg = block.settings[label_bg_key]
+          assign title = block.settings[title_key]
+          assign subtitle = block.settings[subtitle_key]
+          assign detail1 = block.settings[detail1_key]
+          assign detail2 = block.settings[detail2_key]
+        %}
+
+        {% if badge_enabled %}
+          <div class="ai-trust-badge-card-{{ ai_gen_id }}">
+            <div class="ai-trust-badge-header-{{ ai_gen_id }}">
+              <div class="ai-trust-badge-icon-wrapper-{{ ai_gen_id }}">
+                {% if icon %}
+                  <img
+                    src="{{ icon | image_url: width: 100 }}"
+                    alt="{{ title | escape }}"
+                    class="ai-trust-badge-icon-{{ ai_gen_id }}"
+                    loading="lazy"
+                    width="100"
+                    height="100"
+                  >
+                {% else %}
+                  <div class="ai-trust-badge-icon-placeholder-{{ ai_gen_id }}">
+                    ✓
+                  </div>
+                {% endif %}
+              </div>
+
+              {% if label != blank %}
+                <div
+                  class="ai-trust-badge-label-{{ ai_gen_id }}"
+                  style="background-color: {{ label_bg }}; color: {{ label_color }};"
+                >
+                  {{ label }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="ai-trust-badge-content-{{ ai_gen_id }}">
+              {% if title != blank %}
+                <h3 class="ai-trust-badge-title-{{ ai_gen_id }}">{{ title }}</h3>
+              {% endif %}
+
+              {% if subtitle != blank %}
+                <p class="ai-trust-badge-subtitle-{{ ai_gen_id }}">{{ subtitle }}</p>
+              {% endif %}
+
+              {% if detail1 != blank or detail2 != blank %}
+                <div class="ai-trust-badge-details-{{ ai_gen_id }}">
+                  {% if detail1 != blank %}
+                    <p class="ai-trust-badge-detail-{{ ai_gen_id }}">{{ detail1 }}</p>
+                  {% endif %}
+                  {% if detail2 != blank %}
+                    <p class="ai-trust-badge-detail-{{ ai_gen_id }}">{{ detail2 }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</trust-badges-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TrustBadges{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('trust-badges-{{ ai_gen_id }}', TrustBadges{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Trust badges",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Background",
+      "default": "#f9f7f1"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Padding",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "label": "Gap between cards",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Size",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Text style"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "label": "Subtitle size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "detail_color",
+      "label": "Detail text color",
+      "default": "#999999"
+    },
+    {
+      "type": "range",
+      "id": "detail_size",
+      "label": "Detail text size",
+      "min": 10,
+      "max": 14,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Badge 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_1_enabled",
+      "label": "Enable badge 1",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_1_icon",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_label",
+      "label": "Badge label",
+      "default": "MUIS"
+    },
+    {
+      "type": "color",
+      "id": "badge_1_label_color",
+      "label": "Label text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_1_label_bg",
+      "label": "Label background",
+      "default": "#3f4e1f"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_title",
+      "label": "Title",
+      "default": "Halal Certification"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_subtitle",
+      "label": "Subtitle",
+      "default": "Majlis Ugama Islam Singapura"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_detail1",
+      "label": "Detail line 1",
+      "default": "No. MC-24-SG-00871"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_detail2",
+      "label": "Detail line 2",
+      "default": "Valid until Dec 2025"
+    },
+    {
+      "type": "header",
+      "content": "Badge 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_2_enabled",
+      "label": "Enable badge 2",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_2_icon",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_label",
+      "label": "Badge label",
+      "default": "SG"
+    },
+    {
+      "type": "color",
+      "id": "badge_2_label_color",
+      "label": "Label text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "badge_2_label_bg",
+      "label": "Label background",
+      "default": "#910f3f"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_title",
+      "label": "Title",
+      "default": "Made in Singapore"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_subtitle",
+      "label": "Subtitle",
+      "default": "Locally sourced ingredients"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_detail1",
+      "label": "Detail line 1",
+      "default": "Reg. No. SG-2024-1234"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_detail2",
+      "label": "Detail line 2",
+      "default": "Certified since 2020"
+    },
+    {
+      "type": "header",
+      "content": "Badge 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_3_enabled",
+      "label": "Enable badge 3",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "badge_3_icon",
+      "label": "Icon image"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_label",
+      "label": "Badge label",
+      "default": "97%"
+    },
+    {
+      "type": "color",
+      "id": "badge_3_label_color",
+      "label": "Label text color",
+      "default": "#3d081b"
+    },
+    {
+      "type": "color",
+      "id": "badge_3_label_bg",
+      "label": "Label background",
+      "default": "#f9e547"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_title",
+      "label": "Title",
+      "default": "Customer Satisfaction"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_subtitle",
+      "label": "Subtitle",
+      "default": "Based on 1,200+ reviews"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_detail1",
+      "label": "Detail line 1",
+      "default": "Rating: 4.8/5.0"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_detail2",
+      "label": "Detail line 2",
+      "default": "Updated May 2026"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust badges"
+    }
+  ]
+}
+{% endschema %}

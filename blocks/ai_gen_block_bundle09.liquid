@@ -1,0 +1,404 @@
+{% comment %}
+  Age Bundle: "What is in your bundle" (Block 09).
+  Three panels, one per age. The panel that matches the age selected in the
+  buy box (variant picker) is shown. Tabs above the panels also drive the
+  variant picker so a parent can switch age from here on mobile.
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ab09-{{ ai_gen_id }} {
+    display: block;
+    background-color: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    padding: {{ block.settings.padding_vertical }}px 20px;
+  }
+  .ab09-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+  }
+  .ab09-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    text-align: center;
+    color: {{ block.settings.heading_color }};
+  }
+  .ab09-intro-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto 28px;
+  }
+  .ab09-intro-{{ ai_gen_id }} p { margin: 0 0 8px; }
+  .ab09-tabs-{{ ai_gen_id }} {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0 0 28px;
+  }
+  .ab09-tab-{{ ai_gen_id }} {
+    appearance: none;
+    cursor: pointer;
+    border: 2px solid {{ block.settings.accent_color }};
+    background: transparent;
+    color: {{ block.settings.accent_color }};
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.2;
+    text-align: center;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .ab09-tab-{{ ai_gen_id }} small {
+    display: block;
+    font-size: 0.8em;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+  .ab09-tab-{{ ai_gen_id }}[aria-selected="true"] {
+    background: {{ block.settings.accent_color }};
+    color: {{ block.settings.accent_text_color }};
+  }
+  .ab09-panel-{{ ai_gen_id }} {
+    display: none;
+    gap: 32px;
+    align-items: center;
+    background: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+  }
+  .ab09-panel-{{ ai_gen_id }}.is-active { display: grid; grid-template-columns: 1fr 1fr; }
+  .ab09-media-{{ ai_gen_id }} img,
+  .ab09-media-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: auto;
+    border-radius: {{ block.settings.image_radius }}px;
+    display: block;
+  }
+  .ab09-media-{{ ai_gen_id }} svg { background: #f1ede6; }
+  .ab09-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    color: {{ block.settings.panel_title_color }};
+  }
+  .ab09-size-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.55;
+    margin: 0 0 10px;
+    padding-left: 14px;
+    border-left: 3px solid {{ block.settings.panel_accent_color }};
+  }
+  .ab09-size-{{ ai_gen_id }} strong { display: block; }
+  .ab09-details-{{ ai_gen_id }} {
+    margin-top: 18px;
+    font-size: {{ block.settings.text_size | minus: 1 }}px;
+  }
+  .ab09-details-{{ ai_gen_id }} summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: {{ block.settings.panel_accent_color }};
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ab09-details-{{ ai_gen_id }} summary::-webkit-details-marker { display: none; }
+  .ab09-details-{{ ai_gen_id }} summary::after {
+    content: '';
+    width: 8px; height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform .15s ease;
+  }
+  .ab09-details-{{ ai_gen_id }}[open] summary::after { transform: rotate(-135deg); }
+  .ab09-details-{{ ai_gen_id }} > div { margin-top: 12px; line-height: 1.6; }
+  .ab09-details-{{ ai_gen_id }} ul { padding-left: 18px; margin: 0 0 10px; }
+  .ab09-footer-{{ ai_gen_id }} {
+    text-align: center;
+    margin: 28px 0 0;
+    font-size: {{ block.settings.text_size }}px;
+    opacity: 0.85;
+  }
+  @media screen and (max-width: 749px) {
+    .ab09-{{ ai_gen_id }} { padding: {{ block.settings.padding_vertical | times: 0.6 | round }}px 16px; }
+    .ab09-heading-{{ ai_gen_id }} { font-size: {{ block.settings.heading_size | times: 0.7 | round }}px; }
+    .ab09-panel-{{ ai_gen_id }}.is-active { grid-template-columns: 1fr; gap: 20px; }
+    .ab09-panel-{{ ai_gen_id }} { padding: {{ block.settings.card_padding | times: 0.6 | round }}px; }
+    .ab09-tab-{{ ai_gen_id }} { flex: 1 1 30%; padding: 10px 8px; font-size: {{ block.settings.text_size | minus: 2 }}px; }
+  }
+{% endstyle %}
+
+<age-bundle-contents-{{ ai_gen_id }}
+  class="ab09-{{ ai_gen_id }}"
+  id="what-is-in-your-bundle"
+  data-sync="{{ block.settings.sync_with_picker }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ab09-inner-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ab09-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+    {% if block.settings.intro != blank %}
+      <div class="ab09-intro-{{ ai_gen_id }}">{{ block.settings.intro }}</div>
+    {% endif %}
+
+    <div class="ab09-tabs-{{ ai_gen_id }}" role="tablist">
+      {% for i in (1..3) %}
+        {% liquid
+          assign key_match = 'age_' | append: i | append: '_match'
+          assign key_label = 'age_' | append: i | append: '_tab_label'
+          assign key_sub = 'age_' | append: i | append: '_tab_sub'
+          assign a_match = block.settings[key_match]
+          assign a_label = block.settings[key_label]
+          assign a_sub = block.settings[key_sub]
+        %}
+        {% if a_label != blank %}
+          <button
+            type="button"
+            class="ab09-tab-{{ ai_gen_id }}"
+            role="tab"
+            data-age="{{ a_match | escape }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-controls="ab09-panel-{{ ai_gen_id }}-{{ i }}"
+          >
+            {{ a_label }}
+            {% if a_sub != blank %}<small>{{ a_sub }}</small>{% endif %}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% for i in (1..3) %}
+      {% liquid
+        assign key_match = 'age_' | append: i | append: '_match'
+        assign key_title = 'age_' | append: i | append: '_title'
+        assign key_std = 'age_' | append: i | append: '_standard'
+        assign key_val = 'age_' | append: i | append: '_value'
+        assign key_img = 'age_' | append: i | append: '_image'
+        assign key_contents = 'age_' | append: i | append: '_contents'
+        assign a_match = block.settings[key_match]
+        assign a_title = block.settings[key_title]
+        assign a_std = block.settings[key_std]
+        assign a_val = block.settings[key_val]
+        assign a_img = block.settings[key_img]
+        assign a_contents = block.settings[key_contents]
+      %}
+      {% if a_title != blank %}
+        <div
+          class="ab09-panel-{{ ai_gen_id }}{% if forloop.first %} is-active{% endif %}"
+          id="ab09-panel-{{ ai_gen_id }}-{{ i }}"
+          role="tabpanel"
+          data-age="{{ a_match | escape }}"
+        >
+          <div class="ab09-media-{{ ai_gen_id }}">
+            {% if a_img %}
+              <img
+                src="{{ a_img | image_url: width: 900 }}"
+                srcset="{{ a_img | image_url: width: 600 }} 600w, {{ a_img | image_url: width: 900 }} 900w, {{ a_img | image_url: width: 1200 }} 1200w"
+                sizes="(max-width: 749px) 100vw, 50vw"
+                alt="{{ a_img.alt | default: a_title | escape }}"
+                loading="lazy"
+                width="{{ a_img.width }}"
+                height="{{ a_img.height }}"
+              >
+            {% else %}
+              {{ 'product-1' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+          <div class="ab09-copy-{{ ai_gen_id }}">
+            <h3 class="ab09-title-{{ ai_gen_id }}">{{ a_title }}</h3>
+            {% if a_std != blank %}
+              <p class="ab09-size-{{ ai_gen_id }}"><strong>{{ block.settings.standard_label }}</strong>{{ a_std }}</p>
+            {% endif %}
+            {% if a_val != blank %}
+              <p class="ab09-size-{{ ai_gen_id }}"><strong>{{ block.settings.value_label }}</strong>{{ a_val }}</p>
+            {% endif %}
+            {% if a_contents != blank and block.settings.accordion_label != blank %}
+              <details class="ab09-details-{{ ai_gen_id }}">
+                <summary>{{ block.settings.accordion_label }}</summary>
+                <div>{{ a_contents }}</div>
+              </details>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {% if block.settings.footer != blank %}
+      <p class="ab09-footer-{{ ai_gen_id }}">{{ block.settings.footer }}</p>
+    {% endif %}
+  </div>
+</age-bundle-contents-{{ ai_gen_id }}>
+
+<script>
+  (function () {
+    var TAG = 'age-bundle-contents-{{ ai_gen_id }}';
+    if (customElements.get(TAG)) return;
+
+    function ageFromValue(value) {
+      if (!value) return null;
+      var m = String(value).trim().match(/^(\d{1,2})\s*m/i);
+      return m ? m[1] : null;
+    }
+
+    class AgeBundleContents extends HTMLElement {
+      connectedCallback() {
+        this.tabs = Array.prototype.slice.call(this.querySelectorAll('[role="tab"]'));
+        this.panels = Array.prototype.slice.call(this.querySelectorAll('[role="tabpanel"]'));
+        this.sync = this.getAttribute('data-sync') === 'true';
+
+        var self = this;
+        this.tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var age = tab.getAttribute('data-age');
+            self.show(age);
+            if (self.sync) self.pushToPicker(age);
+          });
+        });
+
+        this.onChange = function (event) {
+          var input = event.target;
+          if (!input || !input.closest || !input.closest('variant-selects')) return;
+          var age = ageFromValue(input.value);
+          if (age) self.show(age);
+        };
+        document.addEventListener('change', this.onChange);
+
+        var current = this.readPicker();
+        if (current) this.show(current);
+      }
+
+      disconnectedCallback() {
+        document.removeEventListener('change', this.onChange);
+      }
+
+      readPicker() {
+        var checked = document.querySelectorAll('variant-selects input[type="radio"]:checked');
+        for (var i = 0; i < checked.length; i++) {
+          var age = ageFromValue(checked[i].value);
+          if (age) return age;
+        }
+        var selects = document.querySelectorAll('variant-selects select');
+        for (var j = 0; j < selects.length; j++) {
+          var age2 = ageFromValue(selects[j].value);
+          if (age2) return age2;
+        }
+        return null;
+      }
+
+      pushToPicker(age) {
+        var radios = document.querySelectorAll('variant-selects input[type="radio"]');
+        for (var i = 0; i < radios.length; i++) {
+          if (ageFromValue(radios[i].value) === age) {
+            if (!radios[i].checked) radios[i].click();
+            return;
+          }
+        }
+        var selects = document.querySelectorAll('variant-selects select');
+        for (var j = 0; j < selects.length; j++) {
+          var opts = selects[j].options;
+          for (var k = 0; k < opts.length; k++) {
+            if (ageFromValue(opts[k].value) === age) {
+              if (selects[j].value !== opts[k].value) {
+                selects[j].value = opts[k].value;
+                selects[j].dispatchEvent(new Event('change', { bubbles: true }));
+              }
+              return;
+            }
+          }
+        }
+      }
+
+      show(age) {
+        var found = false;
+        this.panels.forEach(function (panel) {
+          var on = panel.getAttribute('data-age') === age;
+          panel.classList.toggle('is-active', on);
+          if (on) found = true;
+        });
+        if (!found) return;
+        this.tabs.forEach(function (tab) {
+          tab.setAttribute('aria-selected', tab.getAttribute('data-age') === age ? 'true' : 'false');
+        });
+      }
+    }
+
+    customElements.define(TAG, AgeBundleContents);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Age bundle contents",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "container_width", "min": 800, "max": 1400, "step": 20, "unit": "px", "label": "Container width", "default": 1100 },
+    { "type": "range", "id": "padding_vertical", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Vertical padding", "default": 64 },
+    { "type": "range", "id": "card_padding", "min": 0, "max": 60, "step": 2, "unit": "px", "label": "Panel padding", "default": 32 },
+    { "type": "range", "id": "card_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Panel corner radius", "default": 20 },
+    { "type": "range", "id": "image_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Image corner radius", "default": 16 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Section background", "default": "#ffffff" },
+    { "type": "color", "id": "card_background", "label": "Panel background", "default": "#f7f4ee" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#192e59" },
+    { "type": "color", "id": "heading_color", "label": "Headings", "default": "#192e59" },
+    { "type": "color", "id": "accent_color", "label": "Accent (tabs, accordion)", "default": "#192e59" },
+    { "type": "color", "id": "accent_text_color", "label": "Text on accent", "default": "#ffffff" },
+    { "type": "color", "id": "panel_title_color", "label": "Panel title", "default": "#1b2e5c" },
+    { "type": "color", "id": "panel_accent_color", "label": "Panel lines and accordion", "default": "#1b2e5c" },
+
+    { "type": "header", "content": "Typography" },
+    { "type": "range", "id": "heading_size", "min": 20, "max": 64, "step": 1, "unit": "px", "label": "Heading size", "default": 40 },
+    { "type": "range", "id": "title_size", "min": 16, "max": 40, "step": 1, "unit": "px", "label": "Panel title size", "default": 26 },
+    { "type": "range", "id": "text_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "Text size", "default": 16 },
+
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What is in your bundle" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "text", "id": "standard_label", "label": "Standard size label", "default": "Standard" },
+    { "type": "text", "id": "value_label", "label": "Value pack label", "default": "Value pack" },
+    { "type": "text", "id": "accordion_label", "label": "Accordion label", "default": "See every flavour in this bundle" },
+    { "type": "text", "id": "footer", "label": "Closing line" },
+    { "type": "checkbox", "id": "sync_with_picker", "label": "Sync tabs with the buy box age selector", "default": true },
+
+    { "type": "header", "content": "Age 1" },
+    { "type": "text", "id": "age_1_match", "label": "Matches option value starting with (months)", "default": "8", "info": "The number of months at the start of the variant option value, e.g. 8 for \"8 months +\"." },
+    { "type": "text", "id": "age_1_tab_label", "label": "Tab label", "default": "8 months+" },
+    { "type": "text", "id": "age_1_tab_sub", "label": "Tab sub-name", "default": "First Melts" },
+    { "type": "text", "id": "age_1_title", "label": "Panel title", "default": "First Melts, 8 months+" },
+    { "type": "text", "id": "age_1_standard", "label": "Standard line" },
+    { "type": "text", "id": "age_1_value", "label": "Value pack line" },
+    { "type": "image_picker", "id": "age_1_image", "label": "Flat lay photo (Standard bundle)" },
+    { "type": "richtext", "id": "age_1_contents", "label": "Accordion contents (every flavour)" },
+
+    { "type": "header", "content": "Age 2" },
+    { "type": "text", "id": "age_2_match", "label": "Matches option value starting with (months)", "default": "10" },
+    { "type": "text", "id": "age_2_tab_label", "label": "Tab label", "default": "10 months+" },
+    { "type": "text", "id": "age_2_tab_sub", "label": "Tab sub-name", "default": "First Bites" },
+    { "type": "text", "id": "age_2_title", "label": "Panel title", "default": "First Bites, 10 months+" },
+    { "type": "text", "id": "age_2_standard", "label": "Standard line" },
+    { "type": "text", "id": "age_2_value", "label": "Value pack line" },
+    { "type": "image_picker", "id": "age_2_image", "label": "Flat lay photo (Standard bundle)" },
+    { "type": "richtext", "id": "age_2_contents", "label": "Accordion contents (every flavour)" },
+
+    { "type": "header", "content": "Age 3" },
+    { "type": "text", "id": "age_3_match", "label": "Matches option value starting with (months)", "default": "12" },
+    { "type": "text", "id": "age_3_tab_label", "label": "Tab label", "default": "12 months+" },
+    { "type": "text", "id": "age_3_tab_sub", "label": "Tab sub-name", "default": "Big Crunch" },
+    { "type": "text", "id": "age_3_title", "label": "Panel title", "default": "Big Crunch, 12 months+" },
+    { "type": "text", "id": "age_3_standard", "label": "Standard line" },
+    { "type": "text", "id": "age_3_value", "label": "Value pack line" },
+    { "type": "image_picker", "id": "age_3_image", "label": "Flat lay photo (Standard bundle)" },
+    { "type": "richtext", "id": "age_3_contents", "label": "Accordion contents (every flavour)" }
+  ],
+  "presets": [ { "name": "Age bundle contents" } ]
+}
+{% endschema %}

@@ -1,0 +1,1020 @@
+{% doc %}
+  @prompt
+    Create a two-column hero section that is fully mobile responsive. Left column contains: a small uppercase eyebrow label text above the heading, a large bold heading where part of the text is in an italic cursive script style and a different color (olive/dark green) and the rest is in a dark bold serif font, a body paragraph of descriptive text, a 2x2 grid of icon + label feature highlights with small supporting text under each, and a text link with an arrow at the bottom. Right column contains: a photo collage with one large image top-left, one tall image top-right, one wide image bottom-right, and a floating testimonial card overlaid on the bottom-left with star rating, short quote, and attribution. Background is warm off-white/cream. On mobile, stack vertically with text on top and collage below, fully responsive., This looks good. To be honest however, I will say that the left and right paddings are not enough so the content looks like it's full. We just need more padding on the left and right., For the features I would like to be able to choose the icons or upload my own icons. Also for the colors can we make it the same system as a theme where I'm selecting color scheme one, color scheme two? , The image layout on the right for desktop and also for mobile isn't really the same as what I showed in the example. There should be:
+    - one image in the top left-hand corner which is slightly longer than the others
+    - two images on the right which are one-to-one aspect ratio
+    - on the bottom left-hand corner of the third image, which is the second image on the right, there should be a review section, Fix the image collage layout in the right column of the two-column hero section. The collage has 3 images: one tall image on the LEFT spanning full height, and two stacked images on the RIGHT (top and bottom). Fix 1: The LEFT image must stretch to 100% of the total collage height, flush with top of top-right image and bottom of bottom-right image, using CSS grid with align-self: stretch and height: 100%. Fix 2: The testimonial card must be absolutely positioned overlapping the bottom-left corner of the bottom-right image, using position: relative on the image container and position: absolute; bottom: 12px; left: 12px on the card. Testimonial card has 5 gold stars, quote text, and attribution name, white background, rounded corners, padding, subtle shadow. Fully mobile responsive - stack vertically on mobile., Okay I think let's just make this simple. Let's make all three images have an aspect ratio of 1:1 and for the review I don't want it to overlap any of the images. Let's just have the review at the bottom, right below the first image. On the left there should be one image and one small review below it and on the right there should be two images. 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-hero-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.section_padding_top }}px {{ block.settings.section_padding_horizontal }}px {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-hero-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.column_gap }}px;
+    align-items: center;
+  }
+
+  .ai-hero-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.content_spacing }}px;
+  }
+
+  .ai-hero-eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.eyebrow_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+
+  .ai-hero-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: 1.1;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .ai-hero-heading-accent-{{ ai_gen_id }} {
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-hero-body-{{ ai_gen_id }} {
+    font-size: {{ block.settings.body_size }}px;
+    line-height: 1.6;
+  }
+
+  .ai-hero-features-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.features_gap }}px;
+    margin-top: 8px;
+  }
+
+  .ai-hero-feature-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-hero-feature-header-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ai-hero-feature-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-hero-feature-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-hero-feature-icon-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-hero-feature-label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.feature_label_size }}px;
+    font-weight: 600;
+  }
+
+  .ai-hero-feature-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.feature_text_size }}px;
+    line-height: 1.4;
+    margin-left: {{ block.settings.icon_size | plus: 10 }}px;
+  }
+
+  .ai-hero-link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ block.settings.link_size }}px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .ai-hero-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.accent_color }};
+  }
+
+  .ai-hero-link-arrow-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-hero-link-{{ ai_gen_id }}:hover .ai-hero-link-arrow-{{ ai_gen_id }} {
+    transform: translateX(4px);
+  }
+
+  .ai-hero-collage-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ block.settings.collage_gap }}px;
+  }
+
+  .ai-hero-collage-left-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.collage_gap }}px;
+  }
+
+  .ai-hero-collage-right-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: {{ block.settings.collage_gap }}px;
+  }
+
+  .ai-hero-collage-item-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+  }
+
+  .ai-hero-collage-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: {{ block.settings.image_radius }}px;
+  }
+
+  .ai-hero-collage-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    border-radius: {{ block.settings.image_radius }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-hero-collage-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  .ai-hero-testimonial-{{ ai_gen_id }} {
+    background-color: {{ block.settings.testimonial_bg }};
+    padding: 20px;
+    border-radius: {{ block.settings.testimonial_radius }}px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-hero-testimonial-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .ai-hero-testimonial-star-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    color: {{ block.settings.star_color }};
+  }
+
+  .ai-hero-testimonial-quote-{{ ai_gen_id }} {
+    font-size: {{ block.settings.testimonial_quote_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.testimonial_text_color }};
+    margin-bottom: 12px;
+  }
+
+  .ai-hero-testimonial-author-{{ ai_gen_id }} {
+    font-size: {{ block.settings.testimonial_author_size }}px;
+    color: {{ block.settings.testimonial_text_color }};
+    opacity: 0.8;
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-hero-container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .ai-hero-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.7);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-section-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.6 }}px {{ block.settings.section_padding_horizontal | times: 0.5 }}px {{ block.settings.section_padding_bottom | times: 0.6 }}px;
+    }
+
+    .ai-hero-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.5);
+    }
+
+    .ai-hero-features-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-hero-collage-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-hero-testimonial-quote-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.testimonial_quote_size }}px * 0.9);
+    }
+
+    .ai-hero-testimonial-author-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.testimonial_author_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<hero-section-{{ ai_gen_id }} class="ai-hero-section-{{ ai_gen_id }} color-{{ block.settings.color_scheme }} gradient" {{ block.shopify_attributes }}>
+  <div class="ai-hero-container-{{ ai_gen_id }}">
+    <div class="ai-hero-content-{{ ai_gen_id }}">
+      {% if block.settings.eyebrow != blank %}
+        <div class="ai-hero-eyebrow-{{ ai_gen_id }}">{{ block.settings.eyebrow }}</div>
+      {% endif %}
+
+      {% if block.settings.heading != blank %}
+        <h1 class="ai-hero-heading-{{ ai_gen_id }}">
+          {{ block.settings.heading_part_1 }}
+          {% if block.settings.heading_accent != blank %}
+            <span class="ai-hero-heading-accent-{{ ai_gen_id }}">{{ block.settings.heading_accent }}</span>
+          {% endif %}
+          {{ block.settings.heading_part_2 }}
+        </h1>
+      {% endif %}
+
+      {% if block.settings.body_text != blank %}
+        <div class="ai-hero-body-{{ ai_gen_id }}">{{ block.settings.body_text }}</div>
+      {% endif %}
+
+      <div class="ai-hero-features-{{ ai_gen_id }}">
+        {% for i in (1..4) %}
+          {% liquid
+            assign feature_label_key = 'feature_' | append: i | append: '_label'
+            assign feature_text_key = 'feature_' | append: i | append: '_text'
+            assign feature_icon_key = 'feature_' | append: i | append: '_icon'
+            assign feature_custom_icon_key = 'feature_' | append: i | append: '_custom_icon'
+            assign feature_label = block.settings[feature_label_key]
+            assign feature_text = block.settings[feature_text_key]
+            assign feature_icon = block.settings[feature_icon_key]
+            assign feature_custom_icon = block.settings[feature_custom_icon_key]
+          %}
+          {% if feature_label != blank %}
+            <div class="ai-hero-feature-{{ ai_gen_id }}">
+              <div class="ai-hero-feature-header-{{ ai_gen_id }}">
+                <div class="ai-hero-feature-icon-{{ ai_gen_id }}">
+                  {% if feature_custom_icon %}
+                    <img src="{{ feature_custom_icon | image_url: width: 100 }}" alt="" loading="lazy" width="100" height="100">
+                  {% else %}
+                    {% case feature_icon %}
+                      {% when 'checkmark' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      {% when 'star' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                      {% when 'heart' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                      {% when 'truck' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="1" y="3" width="15" height="13"></rect>
+                          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                        </svg>
+                      {% when 'shield' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                      {% when 'leaf' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                          <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                        </svg>
+                      {% when 'gift' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                          <rect x="2" y="7" width="20" height="5"></rect>
+                          <line x1="12" y1="22" x2="12" y2="7"></line>
+                          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+                        </svg>
+                      {% when 'refresh' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="23 4 23 10 17 10"></polyline>
+                          <polyline points="1 20 1 14 7 14"></polyline>
+                          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                      {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    {% endcase %}
+                  {% endif %}
+                </div>
+                <div class="ai-hero-feature-label-{{ ai_gen_id }}">{{ feature_label }}</div>
+              </div>
+              {% if feature_text != blank %}
+                <div class="ai-hero-feature-text-{{ ai_gen_id }}">{{ feature_text }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if block.settings.link_text != blank %}
+        <a href="{{ block.settings.link_url }}" class="ai-hero-link-{{ ai_gen_id }}">
+          {{ block.settings.link_text }}
+          <svg class="ai-hero-link-arrow-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="ai-hero-collage-{{ ai_gen_id }}">
+      <div class="ai-hero-collage-left-{{ ai_gen_id }}">
+        <div class="ai-hero-collage-item-{{ ai_gen_id }}">
+          {% if block.settings.image_1 %}
+            <img
+              src="{{ block.settings.image_1 | image_url: width: 600 }}"
+              alt="{{ block.settings.image_1.alt | escape }}"
+              class="ai-hero-collage-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="600"
+              height="600"
+            >
+          {% else %}
+            <div class="ai-hero-collage-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        {% if block.settings.show_testimonial %}
+          <div class="ai-hero-testimonial-{{ ai_gen_id }}">
+            <div class="ai-hero-testimonial-stars-{{ ai_gen_id }}">
+              {% for i in (1..5) %}
+                <svg class="ai-hero-testimonial-star-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              {% endfor %}
+            </div>
+            {% if block.settings.testimonial_quote != blank %}
+              <div class="ai-hero-testimonial-quote-{{ ai_gen_id }}">{{ block.settings.testimonial_quote }}</div>
+            {% endif %}
+            {% if block.settings.testimonial_author != blank %}
+              <div class="ai-hero-testimonial-author-{{ ai_gen_id }}">{{ block.settings.testimonial_author }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-hero-collage-right-{{ ai_gen_id }}">
+        <div class="ai-hero-collage-item-{{ ai_gen_id }}">
+          {% if block.settings.image_2 %}
+            <img
+              src="{{ block.settings.image_2 | image_url: width: 600 }}"
+              alt="{{ block.settings.image_2.alt | escape }}"
+              class="ai-hero-collage-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="600"
+              height="600"
+            >
+          {% else %}
+            <div class="ai-hero-collage-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="ai-hero-collage-item-{{ ai_gen_id }}">
+          {% if block.settings.image_3 %}
+            <img
+              src="{{ block.settings.image_3 | image_url: width: 600 }}"
+              alt="{{ block.settings.image_3.alt | escape }}"
+              class="ai-hero-collage-image-{{ ai_gen_id }}"
+              loading="lazy"
+              width="600"
+              height="600"
+            >
+          {% else %}
+            <div class="ai-hero-collage-placeholder-{{ ai_gen_id }}">
+              {{ 'image' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</hero-section-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Two-column hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Column gap",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "label": "Content spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#556b2f"
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Text",
+      "default": "New Collection"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "label": "Size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_part_1",
+      "label": "Text before accent",
+      "default": "Discover"
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Accent text",
+      "default": "Timeless Elegance"
+    },
+    {
+      "type": "text",
+      "id": "heading_part_2",
+      "label": "Text after accent",
+      "default": "in Every Detail"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Size",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "header",
+      "content": "Body text"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Text",
+      "default": "Experience the perfect blend of craftsmanship and modern design. Each piece is thoughtfully created to bring beauty and functionality to your everyday life."
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "label": "Size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Features"
+    },
+    {
+      "type": "range",
+      "id": "features_gap",
+      "label": "Gap",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "feature_label_size",
+      "label": "Label size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "feature_text_size",
+      "label": "Text size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_label",
+      "label": "Label",
+      "default": "Premium Quality"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_text",
+      "label": "Text",
+      "default": "Handcrafted with care"
+    },
+    {
+      "type": "select",
+      "id": "feature_1_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "checkmark",
+          "label": "Checkmark"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        },
+        {
+          "value": "heart",
+          "label": "Heart"
+        },
+        {
+          "value": "truck",
+          "label": "Truck"
+        },
+        {
+          "value": "shield",
+          "label": "Shield"
+        },
+        {
+          "value": "leaf",
+          "label": "Leaf"
+        },
+        {
+          "value": "gift",
+          "label": "Gift"
+        },
+        {
+          "value": "refresh",
+          "label": "Refresh"
+        }
+      ],
+      "default": "checkmark"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_1_custom_icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_label",
+      "label": "Label",
+      "default": "Sustainable"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_text",
+      "label": "Text",
+      "default": "Eco-friendly materials"
+    },
+    {
+      "type": "select",
+      "id": "feature_2_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "checkmark",
+          "label": "Checkmark"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        },
+        {
+          "value": "heart",
+          "label": "Heart"
+        },
+        {
+          "value": "truck",
+          "label": "Truck"
+        },
+        {
+          "value": "shield",
+          "label": "Shield"
+        },
+        {
+          "value": "leaf",
+          "label": "Leaf"
+        },
+        {
+          "value": "gift",
+          "label": "Gift"
+        },
+        {
+          "value": "refresh",
+          "label": "Refresh"
+        }
+      ],
+      "default": "leaf"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_2_custom_icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_label",
+      "label": "Label",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_text",
+      "label": "Text",
+      "default": "On orders over $100"
+    },
+    {
+      "type": "select",
+      "id": "feature_3_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "checkmark",
+          "label": "Checkmark"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        },
+        {
+          "value": "heart",
+          "label": "Heart"
+        },
+        {
+          "value": "truck",
+          "label": "Truck"
+        },
+        {
+          "value": "shield",
+          "label": "Shield"
+        },
+        {
+          "value": "leaf",
+          "label": "Leaf"
+        },
+        {
+          "value": "gift",
+          "label": "Gift"
+        },
+        {
+          "value": "refresh",
+          "label": "Refresh"
+        }
+      ],
+      "default": "truck"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_3_custom_icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_label",
+      "label": "Label",
+      "default": "Easy Returns"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_text",
+      "label": "Text",
+      "default": "30-day guarantee"
+    },
+    {
+      "type": "select",
+      "id": "feature_4_icon",
+      "label": "Icon",
+      "options": [
+        {
+          "value": "checkmark",
+          "label": "Checkmark"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        },
+        {
+          "value": "heart",
+          "label": "Heart"
+        },
+        {
+          "value": "truck",
+          "label": "Truck"
+        },
+        {
+          "value": "shield",
+          "label": "Shield"
+        },
+        {
+          "value": "leaf",
+          "label": "Leaf"
+        },
+        {
+          "value": "gift",
+          "label": "Gift"
+        },
+        {
+          "value": "refresh",
+          "label": "Refresh"
+        }
+      ],
+      "default": "refresh"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_4_custom_icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "header",
+      "content": "Link"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Text",
+      "default": "Shop the collection"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "URL"
+    },
+    {
+      "type": "range",
+      "id": "link_size",
+      "label": "Size",
+      "min": 14,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Image collage"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1 (left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (top-right)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3 (bottom-right)"
+    },
+    {
+      "type": "range",
+      "id": "collage_gap",
+      "label": "Gap",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Testimonial"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_testimonial",
+      "label": "Show testimonial",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_quote",
+      "label": "Quote",
+      "default": "Absolutely love the quality and attention to detail. Best purchase I've made!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_author",
+      "label": "Author",
+      "default": "Sarah M."
+    },
+    {
+      "type": "color",
+      "id": "testimonial_bg",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "testimonial_text_color",
+      "label": "Text color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#fbbf24"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "testimonial_quote_size",
+      "label": "Quote size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "testimonial_author_size",
+      "label": "Author size",
+      "min": 11,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two-column hero"
+    }
+  ]
+}
+{% endschema %}

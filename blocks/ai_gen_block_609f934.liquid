@@ -1,0 +1,747 @@
+{% comment %}
+  Hero with card — HLT One.
+
+  ── ALIGNMENT ────────────────────────────────────────────────────────────────
+  The card used to be positioned by padding on the outer wrapper, which measures
+  from the viewport edge. The header logo measures from the theme's page
+  container, which has a max-width and its own gutter. Those two only coincide
+  at one screen width; everywhere else the card drifts, and the wider the screen
+  the worse it gets.
+
+  The card now sits inside an inner wrapper that mirrors the page container, so
+  its left edge tracks the logo and the trust row at every width.
+
+  "Match theme" reads --page-width and --page-margin straight off the theme, so
+  it follows automatically if those ever change. If the theme doesn't define
+  them, or defines them differently from the header, switch to Custom and dial
+  the two numbers in from DevTools.
+{% endcomment %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign card_bg_rgb = block.settings.card_background | color_to_rgb | remove: 'rgb(' | remove: ')'
+  if card_bg_rgb == blank
+    assign card_bg_rgb = '255, 255, 255'
+  endif
+  assign opacity_decimal = block.settings.card_background_opacity | divided_by: 100.0
+
+  assign scrim_rgb = block.settings.overlay_color | color_to_rgb | remove: 'rgb(' | remove: ')'
+  if scrim_rgb == blank
+    assign scrim_rgb = '0, 0, 0'
+  endif
+  assign scrim_alpha = block.settings.overlay_opacity | divided_by: 100.0
+%}
+
+{% style %}
+  .ai-hero-card-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    min-height: {{ block.settings.section_height }}px;
+    display: flex;
+    align-items: {{ block.settings.vertical_alignment }};
+    /* vertical only: the horizontal inset now comes from the inner container,
+       which is the whole point of the alignment fix */
+    padding-block: {{ block.settings.section_padding }}px;
+    overflow: hidden;
+  }
+
+  .ai-hero-card__background-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .ai-hero-card__background-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ block.settings.image_position }};
+    display: block;
+  }
+
+  .ai-hero-card__background-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-hero-card__background-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Desktop: show desktop image, hide mobile image */
+  .ai-hero-card__bg-desktop-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-hero-card__bg-mobile-{{ ai_gen_id }} {
+    display: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Readability scrim. Sits above the photo, below the card. */
+  .ai-hero-card__scrim-{{ ai_gen_id }} {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    {%- case block.settings.overlay_style -%}
+      {%- when 'left' -%}
+    background: linear-gradient(to right,
+      rgba({{ scrim_rgb }}, {{ scrim_alpha }}) 0%,
+      rgba({{ scrim_rgb }}, {{ scrim_alpha }}) 28%,
+      rgba({{ scrim_rgb }}, 0) 62%);
+      {%- when 'right' -%}
+    background: linear-gradient(to left,
+      rgba({{ scrim_rgb }}, {{ scrim_alpha }}) 0%,
+      rgba({{ scrim_rgb }}, {{ scrim_alpha }}) 28%,
+      rgba({{ scrim_rgb }}, 0) 62%);
+      {%- when 'bottom' -%}
+    background: linear-gradient(to top,
+      rgba({{ scrim_rgb }}, {{ scrim_alpha }}) 0%,
+      rgba({{ scrim_rgb }}, 0) 65%);
+      {%- when 'full' -%}
+    background: rgba({{ scrim_rgb }}, {{ scrim_alpha }});
+      {%- else -%}
+    display: none;
+    {%- endcase %}
+  }
+
+  /* ---- The alignment fix ----
+     Mirrors the theme page container so the card's edge tracks the header
+     logo and the trust row instead of the viewport edge. */
+  .ai-hero-card__inner-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    justify-content: {{ block.settings.horizontal_alignment }};
+    {%- if block.settings.container_mode == 'theme' %}
+    max-width: var(--page-width, {{ block.settings.content_max_width }}px);
+    padding-inline: var(--page-margin, {{ block.settings.content_padding }}px);
+    {%- else %}
+    max-width: {{ block.settings.content_max_width }}px;
+    padding-inline: {{ block.settings.content_padding }}px;
+    {%- endif %}
+    margin-inline: auto;
+  }
+
+  .ai-hero-card__content-{{ ai_gen_id }} {
+    max-width: {{ block.settings.card_max_width }}px;
+    width: 100%;
+    padding: {{ block.settings.card_padding }}px;
+    border-radius: {{ block.settings.card_border_radius }}px;
+    text-align: {{ block.settings.text_alignment }};
+    background-color: rgba({{ card_bg_rgb }}, {{ opacity_decimal }});
+    {%- if block.settings.card_blur > 0 %}
+    /* frosts whatever sits behind the card, so a translucent card stays
+       readable over a busy photo instead of only over flat areas */
+    -webkit-backdrop-filter: blur({{ block.settings.card_blur }}px);
+            backdrop-filter: blur({{ block.settings.card_blur }}px);
+    {%- endif %}
+  }
+
+  .ai-hero-card__heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px 0;
+    font-weight: {{ block.settings.heading_weight }};
+  }
+
+  .ai-hero-card__text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0 0 {{ block.settings.text_spacing }}px 0;
+    line-height: 1.6;
+  }
+
+  .ai-hero-card__button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: {{ block.settings.button_background }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    transition: background-color 0.3s ease;
+  }
+
+  .ai-hero-card__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-hero-card-{{ ai_gen_id }} {
+      min-height: {{ block.settings.mobile_section_height }}px;
+      padding-block: {{ block.settings.mobile_section_padding }}px;
+      align-items: {{ block.settings.mobile_vertical_alignment }};
+    }
+
+    .ai-hero-card__inner-{{ ai_gen_id }} {
+      justify-content: {{ block.settings.mobile_horizontal_alignment }};
+      padding-inline: {{ block.settings.mobile_section_padding }}px;
+    }
+
+    /* Swap background images at mobile breakpoint */
+    .ai-hero-card__bg-desktop-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-hero-card__bg-mobile-{{ ai_gen_id }} {
+      display: block;
+    }
+
+    .ai-hero-card__content-{{ ai_gen_id }} {
+      max-width: 100%;
+      padding: {{ block.settings.card_padding | times: 0.75 | round }}px;
+    }
+
+    .ai-hero-card__heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.65 | round }}px;
+    }
+
+    .ai-hero-card__text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.text_size | times: 0.9 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-hero-card-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-hero-card__background-{{ ai_gen_id }}">
+
+    {%- comment -%} Desktop background image {%- endcomment -%}
+    <div class="ai-hero-card__bg-desktop-{{ ai_gen_id }}">
+      {% if block.settings.background_image %}
+        <img
+          src="{{ block.settings.background_image | image_url: width: 2000 }}"
+          srcset="{{ block.settings.background_image | image_url: width: 1000 }} 1000w,
+                  {{ block.settings.background_image | image_url: width: 1500 }} 1500w,
+                  {{ block.settings.background_image | image_url: width: 2000 }} 2000w,
+                  {{ block.settings.background_image | image_url: width: 2600 }} 2600w"
+          sizes="100vw"
+          alt="{{ block.settings.background_image.alt | escape }}"
+          width="{{ block.settings.background_image.width }}"
+          height="{{ block.settings.background_image.height }}"
+          {%- comment -%}
+            This is the largest thing above the fold, so it is the LCP element.
+            Lazy-loading it makes the browser wait for layout before it even asks
+            for the file, which is exactly the wrong order for a hero.
+          {%- endcomment -%}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
+      {% else %}
+        <div class="ai-hero-card__background-placeholder-{{ ai_gen_id }}">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Mobile background image — falls back to desktop image if not set {%- endcomment -%}
+    <div class="ai-hero-card__bg-mobile-{{ ai_gen_id }}">
+      {% if block.settings.background_image_mobile %}
+        <img
+          src="{{ block.settings.background_image_mobile | image_url: width: 900 }}"
+          srcset="{{ block.settings.background_image_mobile | image_url: width: 500 }} 500w,
+                  {{ block.settings.background_image_mobile | image_url: width: 900 }} 900w,
+                  {{ block.settings.background_image_mobile | image_url: width: 1300 }} 1300w"
+          sizes="100vw"
+          alt="{{ block.settings.background_image_mobile.alt | escape }}"
+          width="{{ block.settings.background_image_mobile.width }}"
+          height="{{ block.settings.background_image_mobile.height }}"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
+      {% elsif block.settings.background_image %}
+        <img
+          src="{{ block.settings.background_image | image_url: width: 900 }}"
+          srcset="{{ block.settings.background_image | image_url: width: 500 }} 500w,
+                  {{ block.settings.background_image | image_url: width: 900 }} 900w,
+                  {{ block.settings.background_image | image_url: width: 1300 }} 1300w"
+          sizes="100vw"
+          alt="{{ block.settings.background_image.alt | escape }}"
+          width="{{ block.settings.background_image.width }}"
+          height="{{ block.settings.background_image.height }}"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        >
+      {% else %}
+        <div class="ai-hero-card__background-placeholder-{{ ai_gen_id }}">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+
+  {% if block.settings.overlay_style != 'none' %}
+    <span class="ai-hero-card__scrim-{{ ai_gen_id }}" aria-hidden="true"></span>
+  {% endif %}
+
+  <div class="ai-hero-card__inner-{{ ai_gen_id }}">
+    <div class="ai-hero-card__content-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-hero-card__heading-{{ ai_gen_id }}">
+          {{ block.settings.heading }}
+        </h2>
+      {% endif %}
+
+      {% if block.settings.text != blank %}
+        <div class="ai-hero-card__text-{{ ai_gen_id }}">
+          {{ block.settings.text }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.button_text != blank and block.settings.button_link != blank %}
+        <a
+          href="{{ block.settings.button_link }}"
+          class="ai-hero-card__button-{{ ai_gen_id }}"
+        >
+          {{ block.settings.button_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero with card",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Alignment"
+    },
+    {
+      "type": "select",
+      "id": "container_mode",
+      "label": "Container width",
+      "info": "Match theme reads the theme's own page width so the card lines up with the header logo. Switch to Custom only if it still drifts, then set the two values below from DevTools.",
+      "options": [
+        { "value": "theme", "label": "Match theme" },
+        { "value": "custom", "label": "Custom" }
+      ],
+      "default": "theme"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Container side padding",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image focal point",
+      "options": [
+        { "value": "center", "label": "Centre" },
+        { "value": "left center", "label": "Left" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center top", "label": "Top" },
+        { "value": "center bottom", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f9f7f1"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Section height (desktop)",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Section padding, top and bottom (desktop)",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical alignment (desktop)",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "Horizontal alignment (desktop)",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Readability overlay",
+      "info": "Darkens the photo behind the card so the copy stays legible on a busy image."
+    },
+    {
+      "type": "select",
+      "id": "overlay_style",
+      "label": "Overlay",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "left", "label": "Fade from left" },
+        { "value": "right", "label": "Fade from right" },
+        { "value": "bottom", "label": "Fade from bottom" },
+        { "value": "full", "label": "Even tint" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#0f2c4a"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image_mobile",
+      "label": "Mobile image"
+    },
+    {
+      "type": "paragraph",
+      "content": "Upload a portrait or square image for mobile screens. If left empty, the desktop image will be used."
+    },
+    {
+      "type": "range",
+      "id": "mobile_section_height",
+      "min": 300,
+      "max": 700,
+      "step": 50,
+      "unit": "px",
+      "label": "Section height (mobile)",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "mobile_section_padding",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Section padding (mobile)",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "mobile_vertical_alignment",
+      "label": "Vertical alignment (mobile)",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "select",
+      "id": "mobile_horizontal_alignment",
+      "label": "Horizontal alignment (mobile)",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Card max width",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 20,
+      "max": 80,
+      "step": 10,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_background_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Card background opacity",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "card_blur",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card background blur",
+      "info": "Frosts the photo behind a translucent card. Leave at 0 for a solid card.",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome to our store"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#192e59"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Heading spacing",
+      "default": 16
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Discover our latest collection"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#192e59"
+    },
+    {
+      "type": "range",
+      "id": "text_spacing",
+      "min": 0,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "label": "Text spacing",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#192e59"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Button hover background",
+      "default": "#3f4e1f"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button vertical padding",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Button horizontal padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero with card"
+    }
+  ]
+}
+{% endschema %}

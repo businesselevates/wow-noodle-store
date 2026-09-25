@@ -1,0 +1,757 @@
+{% doc %}
+  @prompt
+    3 structured cards: image, eyebrow, title, price, quote, contains label,
+    feature checklist, best-for line, button. Per-card background/text colors,
+    global element sizes. Section carries id="buy-section" anchor target.
+    Buttons that link to /cart/add?id=VARIANT add via one AJAX request
+    (no lag, no double-add) then go to the cart page.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-cards-section-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    scroll-margin-top: {{ block.settings.scroll_offset }}px;
+    background-color: {{ block.settings.section_background }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-cards-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.container_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-cards-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-cards-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px;
+    font-weight: 700;
+  }
+
+  .ai-cards-subtext-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ai-cards-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: {{ block.settings.card_gap }}px;
+    align-items: stretch;
+  }
+
+  .ai-card-cell-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .ai-card-{{ ai_gen_id }} {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+  }
+
+  .ai-card-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: {{ block.settings.image_height }}px;
+    overflow: hidden;
+  }
+
+  .ai-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-card-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-card-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background-color: {{ block.settings.badge_background }};
+    color: {{ block.settings.badge_text_color }};
+    font-size: {{ block.settings.badge_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    border-radius: 40px;
+  }
+
+  .ai-card-content-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: {{ block.settings.card_padding }}px;
+  }
+
+  .ai-card-eyebrow-{{ ai_gen_id }} {
+    font-size: {{ block.settings.eyebrow_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+  }
+
+  .ai-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    font-weight: 700;
+  }
+
+  .ai-card-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    line-height: 1.1;
+    margin: 0 0 14px;
+    font-weight: 700;
+  }
+
+  .ai-card-quote-{{ ai_gen_id }} {
+    font-size: {{ block.settings.quote_size }}px;
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0 0 18px;
+  }
+
+  .ai-card-contains-{{ ai_gen_id }} {
+    font-size: {{ block.settings.contains_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-card-features-{{ ai_gen_id }} {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ai-card-feature-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: {{ block.settings.feature_size }}px;
+    line-height: 1.4;
+  }
+
+  .ai-card-feature-{{ ai_gen_id }} svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+  }
+
+  .ai-card-bestfor-{{ ai_gen_id }} {
+    margin-top: auto;
+    font-size: {{ block.settings.best_for_size }}px;
+    line-height: 1.4;
+    padding-top: 14px;
+  }
+
+  .ai-card-button-wrapper-{{ ai_gen_id }} {
+    display: block;
+    padding-top: {{ block.settings.button_wrapper_padding }}px;
+  }
+
+  .ai-card-button-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    background-color: var(--ai-btn-bg, {{ block.settings.button_background }});
+    color: var(--ai-btn-text, {{ block.settings.button_text_color }});
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: {{ block.settings.button_border_width }}px solid {{ block.settings.button_border_color }};
+  }
+
+  .ai-card-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background }};
+    color: {{ block.settings.button_hover_text_color }};
+  }
+
+  .ai-card-button-text-{{ ai_gen_id }} {
+    flex: 1;
+    text-align: center;
+  }
+
+  .ai-card-button-arrow-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.button_arrow_size }}px;
+    height: {{ block.settings.button_arrow_size }}px;
+    border-radius: 50%;
+    background-color: var(--ai-btn-arrow-bg, {{ block.settings.button_arrow_background }});
+    color: var(--ai-btn-arrow-color, {{ block.settings.button_arrow_color }});
+    flex-shrink: 0;
+  }
+
+  .ai-card-button-arrow-{{ ai_gen_id }} svg {
+    width: 55%;
+    height: 55%;
+  }
+
+  .ai-card-feature-{{ ai_gen_id }}.is-toggle-{{ ai_gen_id }} {
+    display: block;
+  }
+
+  .ai-card-feature-toggle-{{ ai_gen_id }} {
+    margin: 0;
+  }
+
+  .ai-card-feature-toggle-{{ ai_gen_id }} > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: {{ block.settings.feature_size }}px;
+    line-height: 1.4;
+  }
+
+  .ai-card-feature-toggle-{{ ai_gen_id }} > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ai-card-feature-label-{{ ai_gen_id }} {
+    flex: 1;
+  }
+
+  .ai-card-feature-chevron-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    transition: transform 0.2s ease;
+  }
+
+  .ai-card-feature-toggle-{{ ai_gen_id }}[open] .ai-card-feature-chevron-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-card-feature-detail-body-{{ ai_gen_id }} {
+    margin: 8px 0 2px 28px;
+    font-size: {{ block.settings.feature_detail_size }}px;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+
+  .ai-card-feature-detail-body-{{ ai_gen_id }} ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .ai-card-feature-detail-body-{{ ai_gen_id }} li {
+    margin: 0 0 4px;
+  }
+
+  .ai-card-feature-detail-body-{{ ai_gen_id }} p {
+    margin: 0 0 6px;
+  }
+
+  .ai-card-contains-hint-{{ ai_gen_id }} {
+    font-size: {{ block.settings.contains_hint_size }}px;
+    font-style: italic;
+    margin: -4px 0 14px;
+    line-height: 1.45;
+    opacity: 0.75;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-cards-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-cards-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.8 | round }}px;
+    }
+  }
+{% endstyle %}
+
+<div id="buy-section" class="ai-cards-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-cards-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank or block.settings.text != blank %}
+      <div class="ai-cards-header-{{ ai_gen_id }}">
+        {% if block.settings.heading != blank %}
+          <h2 class="ai-cards-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+        {% endif %}
+        {% if block.settings.text != blank %}
+          <div class="ai-cards-subtext-{{ ai_gen_id }}">{{ block.settings.text }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-cards-grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign image_key = 'card_' | append: i | append: '_image'
+          assign badge_key = 'card_' | append: i | append: '_badge'
+          assign eyebrow_key = 'card_' | append: i | append: '_eyebrow'
+          assign title_key = 'card_' | append: i | append: '_title'
+          assign price_key = 'card_' | append: i | append: '_price'
+          assign quote_key = 'card_' | append: i | append: '_quote'
+          assign contains_key = 'card_' | append: i | append: '_contains'
+          assign bestfor_key = 'card_' | append: i | append: '_bestfor'
+          assign button_text_key = 'card_' | append: i | append: '_button_text'
+          assign button_link_key = 'card_' | append: i | append: '_button_link'
+
+          assign card_bg_key = 'card_' | append: i | append: '_background'
+          assign eyebrow_color_key = 'card_' | append: i | append: '_eyebrow_color'
+          assign title_color_key = 'card_' | append: i | append: '_title_color'
+          assign price_color_key = 'card_' | append: i | append: '_price_color'
+          assign body_color_key = 'card_' | append: i | append: '_body_color'
+
+          assign card_image = block.settings[image_key]
+          assign badge_text = block.settings[badge_key]
+          assign eyebrow = block.settings[eyebrow_key]
+          assign title = block.settings[title_key]
+          assign price = block.settings[price_key]
+          assign quote = block.settings[quote_key]
+          assign contains_label = block.settings[contains_key]
+          assign best_for = block.settings[bestfor_key]
+          assign button_text = block.settings[button_text_key]
+          assign button_link = block.settings[button_link_key]
+
+          assign card_bg = block.settings[card_bg_key]
+          assign eyebrow_color = block.settings[eyebrow_color_key]
+          assign title_color = block.settings[title_color_key]
+          assign price_color = block.settings[price_color_key]
+          assign body_color = block.settings[body_color_key]
+
+          assign btn_bg_key = 'card_' | append: i | append: '_button_bg_override'
+          assign btn_text_key = 'card_' | append: i | append: '_button_text_override'
+          assign btn_arrow_bg_key = 'card_' | append: i | append: '_button_arrow_bg_override'
+          assign btn_arrow_color_key = 'card_' | append: i | append: '_button_arrow_color_override'
+
+          assign btn_bg = block.settings[btn_bg_key] | default: block.settings.button_background
+          assign btn_text = block.settings[btn_text_key] | default: block.settings.button_text_color
+          assign btn_arrow_bg = block.settings[btn_arrow_bg_key] | default: block.settings.button_arrow_background
+          assign btn_arrow_color = block.settings[btn_arrow_color_key] | default: block.settings.button_arrow_color
+        %}
+
+        <div class="ai-card-cell-{{ ai_gen_id }}">
+          <div class="ai-card-{{ ai_gen_id }}" style="background-color: {{ card_bg }};">
+            <div class="ai-card-image-wrapper-{{ ai_gen_id }}">
+              {% if card_image %}
+                <img
+                  src="{{ card_image | image_url: width: 848 }}"
+                  alt="{{ card_image.alt | escape }}"
+                  loading="lazy"
+                  width="424"
+                  height="{{ block.settings.image_height }}"
+                  class="ai-card-image-{{ ai_gen_id }}"
+                >
+              {% else %}
+                <div class="ai-card-placeholder-{{ ai_gen_id }}">
+                  {{ 'image' | placeholder_svg_tag }}
+                </div>
+              {% endif %}
+
+              {% if badge_text != blank %}
+                <span class="ai-card-badge-{{ ai_gen_id }}">{{ badge_text }}</span>
+              {% endif %}
+            </div>
+
+            <div class="ai-card-content-{{ ai_gen_id }}">
+              {% if eyebrow != blank %}
+                <div class="ai-card-eyebrow-{{ ai_gen_id }}" style="color: {{ eyebrow_color }};">{{ eyebrow }}</div>
+              {% endif %}
+
+              {% if title != blank %}
+                <h3 class="ai-card-title-{{ ai_gen_id }}" style="color: {{ title_color }};">{{ title }}</h3>
+              {% endif %}
+
+              {% if price != blank %}
+                <div class="ai-card-price-{{ ai_gen_id }}" style="color: {{ price_color }};">{{ price }}</div>
+              {% endif %}
+
+              {% if quote != blank %}
+                <div class="ai-card-quote-{{ ai_gen_id }}" style="color: {{ body_color }};">{{ quote }}</div>
+              {% endif %}
+
+              {% if contains_label != blank %}
+                <div class="ai-card-contains-{{ ai_gen_id }}" style="color: {{ body_color }};">{{ contains_label }}</div>
+              {% endif %}
+
+              {% if block.settings.contains_hint != blank %}
+                <div class="ai-card-contains-hint-{{ ai_gen_id }}" style="color: {{ body_color }};">{{ block.settings.contains_hint }}</div>
+              {% endif %}
+
+              {% assign has_features = false %}
+              {% for f in (1..6) %}
+                {% assign feature_key = 'card_' | append: i | append: '_feature_' | append: f %}
+                {% if block.settings[feature_key] != blank %}
+                  {% assign has_features = true %}
+                {% endif %}
+              {% endfor %}
+
+              {% if has_features %}
+                <ul class="ai-card-features-{{ ai_gen_id }}">
+                  {% for f in (1..6) %}
+                    {% liquid
+                      assign feature_key = 'card_' | append: i | append: '_feature_' | append: f
+                      assign detail_key = 'card_' | append: i | append: '_feature_' | append: f | append: '_details'
+                      assign feature_text = block.settings[feature_key]
+                      assign feature_details = block.settings[detail_key]
+                    %}
+                    {% if feature_text != blank %}
+                      {%- assign show_check = true -%}
+                      {%- if feature_text contains '🎁' -%}{%- assign show_check = false -%}{%- endif -%}
+                      {% if feature_details != blank %}
+                        <li class="ai-card-feature-{{ ai_gen_id }} is-toggle-{{ ai_gen_id }}" style="color: {{ body_color }};">
+                          <details class="ai-card-feature-toggle-{{ ai_gen_id }}">
+                            <summary>
+                              {% if show_check %}
+                                <svg viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.check_color }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                  <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                              {% endif %}
+                              <span class="ai-card-feature-label-{{ ai_gen_id }}">{{ feature_text }}</span>
+                              <svg class="ai-card-feature-chevron-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                              </svg>
+                            </summary>
+                            <div class="ai-card-feature-detail-body-{{ ai_gen_id }}">{{ feature_details }}</div>
+                          </details>
+                        </li>
+                      {% else %}
+                        <li class="ai-card-feature-{{ ai_gen_id }}" style="color: {{ body_color }};">
+                          {% if show_check %}
+                            <svg viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.check_color }}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          {% endif %}
+                          <span>{{ feature_text }}</span>
+                        </li>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endif %}
+
+              {% if best_for != blank %}
+                <div class="ai-card-bestfor-{{ ai_gen_id }}" style="color: {{ body_color }};">{{ best_for }}</div>
+              {% endif %}
+
+              {% if button_text != blank %}
+                <div class="ai-card-button-wrapper-{{ ai_gen_id }}">
+                  <a href="{{ button_link }}" class="ai-card-button-{{ ai_gen_id }}" style="--ai-btn-bg: {{ btn_bg }}; --ai-btn-text: {{ btn_text }}; --ai-btn-arrow-bg: {{ btn_arrow_bg }}; --ai-btn-arrow-color: {{ btn_arrow_color }};">
+                    <span class="ai-card-button-text-{{ ai_gen_id }}">{{ button_text }}</span>
+                    {% if block.settings.show_button_arrow %}
+                      <span class="ai-card-button-arrow-{{ ai_gen_id }}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </span>
+                    {% endif %}
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var section = document.querySelector('#buy-section.ai-cards-section-{{ ai_gen_id }}');
+    if (!section || section.__cartAddBound) return;
+    section.__cartAddBound = true;
+
+    {% if block.settings.add_behavior == 'stay' %}
+      var REDIRECT = '';
+    {% else %}
+      var REDIRECT = '/cart';
+    {% endif %}
+
+    var locked = false;
+
+    function parseAdd(href) {
+      try {
+        var url = new URL(href, window.location.origin);
+        if (url.pathname.indexOf('/cart/add') === -1) return null;
+        var id = url.searchParams.get('id');
+        var qty = parseInt(url.searchParams.get('quantity') || '1', 10);
+        if (!qty || qty < 1) qty = 1;
+        return id ? { id: id, quantity: qty } : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    section.addEventListener('click', function (e) {
+      var a = e.target.closest('a.ai-card-button-{{ ai_gen_id }}');
+      if (!a || !section.contains(a)) return;
+
+      var data = parseAdd(a.getAttribute('href'));
+      if (!data) return; // not a /cart/add link, let it behave normally
+
+      e.preventDefault();
+
+      // hard guard: ignore extra clicks while a request is in flight
+      if (locked) return;
+      locked = true;
+      a.setAttribute('aria-busy', 'true');
+      a.style.opacity = '0.65';
+      a.style.pointerEvents = 'none';
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ id: data.id, quantity: data.quantity })
+      })
+        .then(function (r) {
+          return r.json().then(function (j) { return { ok: r.ok, body: j }; });
+        })
+        .then(function (res) {
+          if (!res.ok) throw res.body;
+          if (REDIRECT) {
+            window.location.href = REDIRECT;
+            return; // keep locked, navigating away
+          }
+          locked = false;
+          a.removeAttribute('aria-busy');
+          a.style.opacity = '';
+          a.style.pointerEvents = '';
+          document.dispatchEvent(new CustomEvent('cart:added', { detail: res.body }));
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+        })
+        .catch(function (err) {
+          console.error('Cart add error:', err);
+          // fallback: use the original link so the user still gets the item
+          window.location.href = a.getAttribute('href');
+        });
+    }, true);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Image cards section",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Section" },
+    { "type": "color", "id": "section_background", "label": "Background", "default": "#f9f7f1" },
+    { "type": "range", "id": "section_padding_top", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding top", "default": 64 },
+    { "type": "range", "id": "section_padding_bottom", "min": 0, "max": 120, "step": 4, "unit": "px", "label": "Padding bottom", "default": 64 },
+    { "type": "range", "id": "container_width", "min": 800, "max": 1600, "step": 100, "unit": "px", "label": "Container width", "default": 1200 },
+    { "type": "range", "id": "scroll_offset", "min": 0, "max": 200, "step": 5, "unit": "px", "label": "Anchor scroll offset (sticky header)", "default": 100 },
+
+    { "type": "header", "content": "Add to cart behaviour" },
+    { "type": "paragraph", "content": "Set each card's Button link to /cart/add?id=VARIANT_ID. The button then adds the item with one request (no lag, no double-add) and follows the option below. A normal link still works as a normal link." },
+    { "type": "select", "id": "add_behavior", "label": "After adding to cart", "options": [ { "value": "cart", "label": "Go to cart page" }, { "value": "stay", "label": "Stay on page (cart drawer)" } ], "default": "cart" },
+
+    { "type": "header", "content": "Heading and text" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Built Around Real Snack Moments. Introducing The Yummybara Pantry Collection." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Most snacks are bought one pack at a time. But little snack moments rarely happen that way. That's why we created Yummybara Pantries, thoughtfully bundled around how families actually snack.</p>" },
+    { "type": "select", "id": "text_alignment", "label": "Text alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" }, { "value": "right", "label": "Right" } ], "default": "center" },
+    { "type": "range", "id": "heading_size", "min": 16, "max": 60, "step": 2, "unit": "px", "label": "Heading size", "default": 34 },
+    { "type": "color", "id": "heading_color", "label": "Heading color", "default": "#3f4e1f" },
+    { "type": "range", "id": "heading_margin_bottom", "min": 0, "max": 40, "step": 4, "unit": "px", "label": "Heading margin bottom", "default": 16 },
+    { "type": "range", "id": "text_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "Text size", "default": 16 },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#5c5c50" },
+    { "type": "range", "id": "header_spacing", "min": 20, "max": 100, "step": 4, "unit": "px", "label": "Header spacing", "default": 48 },
+    { "type": "richtext", "id": "contains_hint", "label": "Contains hint text (shown under \"Contains: total X boxes\")", "default": "<p>Click each kit to see what is inside</p>" },
+
+    { "type": "header", "content": "Card layout" },
+    { "type": "range", "id": "image_height", "min": 200, "max": 600, "step": 10, "unit": "px", "label": "Card image height", "default": 300 },
+    { "type": "range", "id": "card_padding", "min": 12, "max": 60, "step": 2, "unit": "px", "label": "Card content padding", "default": 28 },
+    { "type": "range", "id": "card_gap", "min": 8, "max": 48, "step": 4, "unit": "px", "label": "Gap between cards", "default": 24 },
+    { "type": "range", "id": "card_border_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Card border radius", "default": 16 },
+    { "type": "range", "id": "card_border_width", "min": 0, "max": 10, "step": 1, "unit": "px", "label": "Card border width", "default": 0 },
+    { "type": "color", "id": "card_border_color", "label": "Card border color", "default": "#e3e0d4" },
+    { "type": "color", "id": "divider_color", "label": "Divider line color", "default": "#e0ddd0" },
+    { "type": "color", "id": "check_color", "label": "Checklist tick color", "default": "#7c8a4f" },
+
+    { "type": "header", "content": "Element sizes" },
+    { "type": "range", "id": "eyebrow_size", "min": 9, "max": 20, "step": 1, "unit": "px", "label": "Eyebrow size", "default": 12 },
+    { "type": "range", "id": "title_size", "min": 16, "max": 44, "step": 1, "unit": "px", "label": "Title size", "default": 26 },
+    { "type": "range", "id": "price_size", "min": 18, "max": 56, "step": 1, "unit": "px", "label": "Price size", "default": 30 },
+    { "type": "range", "id": "quote_size", "min": 11, "max": 22, "step": 1, "unit": "px", "label": "Quote size", "default": 15 },
+    { "type": "range", "id": "contains_size", "min": 9, "max": 18, "step": 1, "unit": "px", "label": "Contains label size", "default": 12 },
+    { "type": "range", "id": "contains_hint_size", "min": 10, "max": 18, "step": 1, "unit": "px", "label": "Contains hint size", "default": 13 },
+    { "type": "range", "id": "feature_size", "min": 11, "max": 22, "step": 1, "unit": "px", "label": "Feature text size", "default": 15 },
+    { "type": "range", "id": "best_for_size", "min": 9, "max": 18, "step": 1, "unit": "px", "label": "Best-for line size", "default": 12 },
+    { "type": "range", "id": "feature_detail_size", "min": 10, "max": 18, "step": 1, "unit": "px", "label": "Kit dropdown detail size", "default": 13 },
+
+    { "type": "header", "content": "Badge" },
+    { "type": "color", "id": "badge_background", "label": "Badge background", "default": "#3f4e1f" },
+    { "type": "color", "id": "badge_text_color", "label": "Badge text color", "default": "#ffffff" },
+    { "type": "range", "id": "badge_size", "min": 9, "max": 16, "step": 1, "unit": "px", "label": "Badge text size", "default": 11 },
+
+    { "type": "header", "content": "Buttons" },
+    { "type": "range", "id": "button_wrapper_padding", "min": 8, "max": 40, "step": 2, "unit": "px", "label": "Space above button", "default": 18 },
+    { "type": "range", "id": "button_padding_vertical", "min": 8, "max": 30, "step": 2, "unit": "px", "label": "Button vertical padding", "default": 14 },
+    { "type": "range", "id": "button_padding_horizontal", "min": 16, "max": 60, "step": 4, "unit": "px", "label": "Button horizontal padding", "default": 32 },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#7c8a4f" },
+    { "type": "color", "id": "button_text_color", "label": "Button text color", "default": "#f9f7f1" },
+    { "type": "color", "id": "button_hover_background", "label": "Button hover background", "default": "#3f4e1f" },
+    { "type": "color", "id": "button_hover_text_color", "label": "Button hover text color", "default": "#f9f7f1" },
+    { "type": "range", "id": "button_font_size", "min": 12, "max": 24, "step": 1, "unit": "px", "label": "Button font size", "default": 16 },
+    { "type": "range", "id": "button_border_radius", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Button border radius", "default": 40 },
+    { "type": "range", "id": "button_border_width", "min": 0, "max": 6, "step": 1, "unit": "px", "label": "Button border width", "default": 0 },
+    { "type": "color", "id": "button_border_color", "label": "Button border color", "default": "#7c8a4f" },
+    { "type": "checkbox", "id": "show_button_arrow", "label": "Show arrow circle", "default": true },
+    { "type": "range", "id": "button_arrow_size", "min": 20, "max": 60, "step": 2, "unit": "px", "label": "Arrow circle size", "default": 36 },
+    { "type": "color", "id": "button_arrow_background", "label": "Arrow circle background", "default": "#ffffff" },
+    { "type": "color", "id": "button_arrow_color", "label": "Arrow icon color", "default": "#1b2e5c" },
+
+    { "type": "header", "content": "Card 1" },
+    { "type": "image_picker", "id": "card_1_image", "label": "Image (photo only)" },
+    { "type": "text", "id": "card_1_badge", "label": "Badge text (blank = hidden)" },
+    { "type": "text", "id": "card_1_eyebrow", "label": "Eyebrow", "default": "Perfect for first-time buyers" },
+    { "type": "text", "id": "card_1_title", "label": "Title", "default": "Snack Discovery Pantry" },
+    { "type": "text", "id": "card_1_price", "label": "Price", "default": "$47" },
+    { "type": "text", "id": "card_1_quote", "label": "Quote", "default": "Start with enough variety to discover what your little one loves." },
+    { "type": "text", "id": "card_1_contains", "label": "Contains label", "default": "Contains: total 7 boxes" },
+    { "type": "text", "id": "card_1_feature_1", "label": "Feature 1", "default": "1x Gentle Tummy Kit" },
+    { "type": "richtext", "id": "card_1_feature_1_details", "label": "Feature 1 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_feature_2", "label": "Feature 2", "default": "1x Little Treats Kit" },
+    { "type": "richtext", "id": "card_1_feature_2_details", "label": "Feature 2 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_feature_3", "label": "Feature 3" },
+    { "type": "richtext", "id": "card_1_feature_3_details", "label": "Feature 3 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_feature_4", "label": "Feature 4" },
+    { "type": "richtext", "id": "card_1_feature_4_details", "label": "Feature 4 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_feature_5", "label": "Feature 5" },
+    { "type": "richtext", "id": "card_1_feature_5_details", "label": "Feature 5 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_feature_6", "label": "Feature 6" },
+    { "type": "richtext", "id": "card_1_feature_6_details", "label": "Feature 6 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_1_bestfor", "label": "Best-for line", "default": "Best for: Entry, first-time buyers, testing variety" },
+    { "type": "color", "id": "card_1_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_1_eyebrow_color", "label": "Eyebrow color", "default": "#8a9466" },
+    { "type": "color", "id": "card_1_title_color", "label": "Title color", "default": "#3f4e1f" },
+    { "type": "color", "id": "card_1_price_color", "label": "Price color", "default": "#3f4e1f" },
+    { "type": "color", "id": "card_1_body_color", "label": "Body text color", "default": "#55554a" },
+    { "type": "color", "id": "card_1_button_bg_override", "label": "Button background (blank = use global)" },
+    { "type": "color", "id": "card_1_button_text_override", "label": "Button text color (blank = use global)" },
+    { "type": "color", "id": "card_1_button_arrow_bg_override", "label": "Arrow circle background (blank = use global)" },
+    { "type": "color", "id": "card_1_button_arrow_color_override", "label": "Arrow icon color (blank = use global)" },
+    { "type": "text", "id": "card_1_button_text", "label": "Button text", "default": "Get Snack Discovery Pantry" },
+    { "type": "url", "id": "card_1_button_link", "label": "Button link" },
+
+    { "type": "header", "content": "Card 2" },
+    { "type": "image_picker", "id": "card_2_image", "label": "Image (photo only)" },
+    { "type": "text", "id": "card_2_badge", "label": "Badge text (blank = hidden)", "default": "Most Popular" },
+    { "type": "text", "id": "card_2_eyebrow", "label": "Eyebrow", "default": "Most popular" },
+    { "type": "text", "id": "card_2_title", "label": "Title", "default": "Weekly Snack Pantry" },
+    { "type": "text", "id": "card_2_price", "label": "Price", "default": "$76" },
+    { "type": "text", "id": "card_2_quote", "label": "Quote", "default": "Because little snacks disappear faster than expected." },
+    { "type": "text", "id": "card_2_contains", "label": "Contains label", "default": "Contains: total 13 boxes" },
+    { "type": "text", "id": "card_2_feature_1", "label": "Feature 1", "default": "1x Gentle Tummy Kit" },
+    { "type": "richtext", "id": "card_2_feature_1_details", "label": "Feature 1 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_feature_2", "label": "Feature 2", "default": "1x Snack Explorer Kit" },
+    { "type": "richtext", "id": "card_2_feature_2_details", "label": "Feature 2 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_feature_3", "label": "Feature 3", "default": "1x On-The-Go Snack Kit" },
+    { "type": "richtext", "id": "card_2_feature_3_details", "label": "Feature 3 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_feature_4", "label": "Feature 4" },
+    { "type": "richtext", "id": "card_2_feature_4_details", "label": "Feature 4 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_feature_5", "label": "Feature 5" },
+    { "type": "richtext", "id": "card_2_feature_5_details", "label": "Feature 5 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_feature_6", "label": "Feature 6" },
+    { "type": "richtext", "id": "card_2_feature_6_details", "label": "Feature 6 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_2_bestfor", "label": "Best-for line", "default": "Best for: Most families, weekly snacking, balanced variety" },
+    { "type": "color", "id": "card_2_background", "label": "Card background", "default": "#ffffff" },
+    { "type": "color", "id": "card_2_eyebrow_color", "label": "Eyebrow color", "default": "#8a9466" },
+    { "type": "color", "id": "card_2_title_color", "label": "Title color", "default": "#3f4e1f" },
+    { "type": "color", "id": "card_2_price_color", "label": "Price color", "default": "#3f4e1f" },
+    { "type": "color", "id": "card_2_body_color", "label": "Body text color", "default": "#55554a" },
+    { "type": "color", "id": "card_2_button_bg_override", "label": "Button background (blank = use global)" },
+    { "type": "color", "id": "card_2_button_text_override", "label": "Button text color (blank = use global)" },
+    { "type": "color", "id": "card_2_button_arrow_bg_override", "label": "Arrow circle background (blank = use global)" },
+    { "type": "color", "id": "card_2_button_arrow_color_override", "label": "Arrow icon color (blank = use global)" },
+    { "type": "text", "id": "card_2_button_text", "label": "Button text", "default": "Get Weekly Snack Pantry" },
+    { "type": "url", "id": "card_2_button_link", "label": "Button link" },
+
+    { "type": "header", "content": "Card 3" },
+    { "type": "image_picker", "id": "card_3_image", "label": "Image (photo only)" },
+    { "type": "text", "id": "card_3_badge", "label": "Badge text (blank = hidden)" },
+    { "type": "text", "id": "card_3_eyebrow", "label": "Eyebrow", "default": "Complete snack shelf" },
+    { "type": "text", "id": "card_3_title", "label": "Title", "default": "Family Snack Pantry" },
+    { "type": "text", "id": "card_3_price", "label": "Price", "default": "$95" },
+    { "type": "text", "id": "card_3_quote", "label": "Quote", "default": "A complete snack shelf for growing little appetites." },
+    { "type": "text", "id": "card_3_contains", "label": "Contains label", "default": "Contains: total 16 boxes" },
+    { "type": "text", "id": "card_3_feature_1", "label": "Feature 1", "default": "1x Gentle Tummy Kit" },
+    { "type": "richtext", "id": "card_3_feature_1_details", "label": "Feature 1 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_feature_2", "label": "Feature 2", "default": "1x Snack Explorer Kit" },
+    { "type": "richtext", "id": "card_3_feature_2_details", "label": "Feature 2 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_feature_3", "label": "Feature 3", "default": "1x On-The-Go Snack Kit" },
+    { "type": "richtext", "id": "card_3_feature_3_details", "label": "Feature 3 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_feature_4", "label": "Feature 4", "default": "1x Little Treats Kit" },
+    { "type": "richtext", "id": "card_3_feature_4_details", "label": "Feature 4 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_feature_5", "label": "Feature 5" },
+    { "type": "richtext", "id": "card_3_feature_5_details", "label": "Feature 5 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_feature_6", "label": "Feature 6" },
+    { "type": "richtext", "id": "card_3_feature_6_details", "label": "Feature 6 details (fill to make this a dropdown)" },
+    { "type": "text", "id": "card_3_bestfor", "label": "Best-for line", "default": "Best for: Multiple kids, stocking up, maximum value" },
+    { "type": "color", "id": "card_3_background", "label": "Card background", "default": "#3f4e1f" },
+    { "type": "color", "id": "card_3_eyebrow_color", "label": "Eyebrow color", "default": "#c9d1a8" },
+    { "type": "color", "id": "card_3_title_color", "label": "Title color", "default": "#ffffff" },
+    { "type": "color", "id": "card_3_price_color", "label": "Price color", "default": "#ffffff" },
+    { "type": "color", "id": "card_3_body_color", "label": "Body text color", "default": "#e8e8df" },
+    { "type": "color", "id": "card_3_button_bg_override", "label": "Button background (blank = use global)" },
+    { "type": "color", "id": "card_3_button_text_override", "label": "Button text color (blank = use global)" },
+    { "type": "color", "id": "card_3_button_arrow_bg_override", "label": "Arrow circle background (blank = use global)" },
+    { "type": "color", "id": "card_3_button_arrow_color_override", "label": "Arrow icon color (blank = use global)" },
+    { "type": "text", "id": "card_3_button_text", "label": "Button text", "default": "Get Family Snack Pantry" },
+    { "type": "url", "id": "card_3_button_link", "label": "Button link" }
+  ],
+  "presets": [
+    { "name": "Image cards section" }
+  ]
+}
+{% endschema %}

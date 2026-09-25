@@ -1,0 +1,202 @@
+/* Bloom-style Shop menu: one trigger in the header bar, a full-width panel
+   under it with a category rail on the left and a preview grid beside it.
+   Desktop only — below 990px Dawn hides .header__inline-menu and the drawer
+   takes over. */
+
+/* The panel spans the viewport, so it anchors to the header wrapper rather
+   than to the nav cell it lives in. */
+.header-wrapper {
+  position: relative;
+}
+
+.hlt-nav {
+  position: static;
+}
+
+.hlt-nav__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.2rem 0;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-family: inherit;
+  /* The bar carries one link, so it has to hold its own against the logo. */
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+}
+
+/* Shop sits beside the menu's flat links (About, Events), so the row needs a
+   gap of its own -- the trigger carries no horizontal padding. */
+.hlt-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 2.8rem;
+  flex-wrap: wrap;
+}
+
+/* Matches .hlt-nav__trigger so the links read as peers of Shop, not as
+   something smaller hung off it. */
+.hlt-nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 1.2rem 0;
+  color: rgb(var(--color-foreground));
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.hlt-nav__link:hover,
+.hlt-nav__link--current {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+.hlt-nav__trigger svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.hlt-nav.is-open .hlt-nav__trigger svg {
+  transform: rotate(180deg);
+}
+
+.hlt-shop-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 6;
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.08);
+  box-shadow: 0 2.4rem 4rem -2.8rem rgba(var(--color-shadow), 0.45);
+}
+
+.hlt-shop-panel[hidden] {
+  display: none;
+}
+
+.hlt-shop-panel__inner {
+  display: grid;
+  grid-template-columns: minmax(24rem, 30rem) minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 34rem;
+}
+
+/* Category rail, bleeding to the left edge the way Bloom's does. */
+.hlt-shop-panel__side {
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem 0 2.4rem;
+  background: rgba(var(--color-foreground), 0.035);
+}
+
+.hlt-shop-cat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 1.3rem 2.4rem;
+  color: rgb(var(--color-foreground));
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.hlt-shop-cat svg {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.45;
+  transform: rotate(-90deg);
+}
+
+.hlt-shop-cat:hover,
+.hlt-shop-cat:focus-visible,
+.hlt-shop-cat.is-active {
+  background: rgba(var(--color-foreground), 0.06);
+}
+
+.hlt-shop-panel__all {
+  margin: 1.8rem 2.4rem 0;
+  min-height: 4.4rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+}
+
+.hlt-shop-panel__main {
+  padding: 3.2rem clamp(2.4rem, 4vw, 6.4rem) 4rem;
+}
+
+.hlt-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 2.8rem 2.4rem;
+  max-width: 110rem;
+  margin: 0 auto;
+}
+
+.hlt-shop-grid[hidden] {
+  display: none;
+}
+
+/* An item with nothing to preview still highlights in the rail; the empty
+   pane just keeps the panel's height steady. */
+.hlt-shop-grid:empty {
+  min-height: 1px;
+}
+
+.hlt-shop-card {
+  display: block;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+}
+
+.hlt-shop-card__media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border-radius: 1.8rem;
+  background: rgba(var(--color-foreground), 0.04);
+}
+
+.hlt-shop-card__media img,
+.hlt-shop-card__media svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hlt-shop-card:hover .hlt-shop-card__media img {
+  transform: scale(1.04);
+}
+
+.hlt-shop-card__title {
+  display: block;
+  margin-top: 1.2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.hlt-shop-card:hover .hlt-shop-card__title {
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hlt-nav__trigger svg,
+  .hlt-shop-card__media img {
+    transition: none;
+  }
+}

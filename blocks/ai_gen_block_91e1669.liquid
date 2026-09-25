@@ -1,0 +1,578 @@
+{% doc %}
+  @prompt
+    generate a section with sub heading on top, heading, 4 card below. First 3 card have icon on the left. the last card have a button to link. in each card has sub title, title, text.  - Leave large empty whitespace on both left and right sides
+    - Do NOT make the accordion full width, adjust 4 card in vertical like this, add a shopping icon in the button in the last card. and remove the card title, change the icon on first 3 card to different tree icon like this. and add a check verified bagde on the right in the first card similar this image, change icon in first 3 card to plant icon
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-info-cards-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+
+  .ai-info-cards-container-{{ ai_gen_id }} {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .ai-info-cards-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .ai-info-cards-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .ai-info-cards-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_size }}px;
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .ai-info-cards-grid-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .ai-info-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, {{ block.settings.card_shadow_opacity | divided_by: 100.0 }});
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+  }
+
+  .ai-info-card-icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.icon_background }};
+    border-radius: 50%;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-info-card-icon-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.icon_size }}px * 0.5);
+    height: calc({{ block.settings.icon_size }}px * 0.5);
+  }
+
+  .ai-info-card-content-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-info-card-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: {{ block.settings.badge_size }}px;
+    height: {{ block.settings.badge_size }}px;
+    background-color: {{ block.settings.badge_background }};
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: {{ block.settings.badge_color }};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-info-card-badge-{{ ai_gen_id }} svg {
+    width: calc({{ block.settings.badge_size }}px * 0.6);
+    height: calc({{ block.settings.badge_size }}px * 0.6);
+  }
+
+  .ai-info-card-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  .ai-info-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_title_size }}px;
+    color: {{ block.settings.card_title_color }};
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+
+  .ai-info-card-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.card_text_size }}px;
+    color: {{ block.settings.card_text_color }};
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .ai-info-card-button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    background-color: {{ block.settings.button_background }};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-weight: 600;
+    font-size: {{ block.settings.button_text_size }}px;
+    transition: background-color 0.3s ease;
+    margin-top: 8px;
+  }
+
+  .ai-info-card-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_background }};
+  }
+
+  .ai-info-card-button-icon-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-info-cards-container-{{ ai_gen_id }} {
+      padding: 0 20px;
+    }
+
+    .ai-info-card-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ai-info-card-badge-{{ ai_gen_id }} {
+      top: 16px;
+      right: 16px;
+    }
+  }
+{% endstyle %}
+
+<info-cards-{{ ai_gen_id }} class="ai-info-cards-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-info-cards-container-{{ ai_gen_id }}">
+    <div class="ai-info-cards-header-{{ ai_gen_id }}">
+      {% if block.settings.subheading != blank %}
+        <div class="ai-info-cards-subheading-{{ ai_gen_id }}">{{ block.settings.subheading }}</div>
+      {% endif %}
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-info-cards-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    <div class="ai-info-cards-grid-{{ ai_gen_id }}">
+      <div class="ai-info-card-{{ ai_gen_id }}">
+        <div class="ai-info-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+            <path d="M12 8v8"></path>
+            <path d="M8 12h8"></path>
+            <path d="M12 2v4"></path>
+            <path d="M12 18v4"></path>
+            <path d="M4.93 4.93l2.83 2.83"></path>
+            <path d="M16.24 16.24l2.83 2.83"></path>
+            <path d="M2 12h4"></path>
+            <path d="M18 12h4"></path>
+            <path d="M4.93 19.07l2.83-2.83"></path>
+            <path d="M16.24 7.76l2.83-2.83"></path>
+          </svg>
+        </div>
+        <div class="ai-info-card-content-{{ ai_gen_id }}">
+          {% if block.settings.card_1_subtitle != blank %}
+            <div class="ai-info-card-subtitle-{{ ai_gen_id }}">{{ block.settings.card_1_subtitle }}</div>
+          {% endif %}
+          {% if block.settings.card_1_title != blank %}
+            <h3 class="ai-info-card-title-{{ ai_gen_id }}">{{ block.settings.card_1_title }}</h3>
+          {% endif %}
+          {% if block.settings.card_1_text != blank %}
+            <div class="ai-info-card-text-{{ ai_gen_id }}">{{ block.settings.card_1_text }}</div>
+          {% endif %}
+        </div>
+        {% if block.settings.show_card_1_badge %}
+          <div class="ai-info-card-badge-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ai-info-card-{{ ai_gen_id }}">
+        <div class="ai-info-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20"></path>
+            <path d="M8 6c-2.5 0-4 2-4 4.5S8 16 12 22c4-6 8-7.5 8-11.5S14.5 6 12 6"></path>
+          </svg>
+        </div>
+        <div class="ai-info-card-content-{{ ai_gen_id }}">
+          {% if block.settings.card_2_subtitle != blank %}
+            <div class="ai-info-card-subtitle-{{ ai_gen_id }}">{{ block.settings.card_2_subtitle }}</div>
+          {% endif %}
+          {% if block.settings.card_2_title != blank %}
+            <h3 class="ai-info-card-title-{{ ai_gen_id }}">{{ block.settings.card_2_title }}</h3>
+          {% endif %}
+          {% if block.settings.card_2_text != blank %}
+            <div class="ai-info-card-text-{{ ai_gen_id }}">{{ block.settings.card_2_text }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ai-info-card-{{ ai_gen_id }}">
+        <div class="ai-info-card-icon-{{ ai_gen_id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L8 8H4l4 6-4 6h4l4 6 4-6h4l-4-6 4-6h-4l-4-6z"></path>
+            <circle cx="12" cy="14" r="2"></circle>
+          </svg>
+        </div>
+        <div class="ai-info-card-content-{{ ai_gen_id }}">
+          {% if block.settings.card_3_subtitle != blank %}
+            <div class="ai-info-card-subtitle-{{ ai_gen_id }}">{{ block.settings.card_3_subtitle }}</div>
+          {% endif %}
+          {% if block.settings.card_3_title != blank %}
+            <h3 class="ai-info-card-title-{{ ai_gen_id }}">{{ block.settings.card_3_title }}</h3>
+          {% endif %}
+          {% if block.settings.card_3_text != blank %}
+            <div class="ai-info-card-text-{{ ai_gen_id }}">{{ block.settings.card_3_text }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+  </div>
+</info-cards-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class InfoCards{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+      }
+    }
+
+    customElements.define('info-cards-{{ ai_gen_id }}', InfoCards{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Info cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Why choose us"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our key features"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#192e59"
+    },
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "text",
+      "id": "card_1_subtitle",
+      "label": "Subtitle",
+      "default": "Quality"
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "label": "Title",
+      "default": "Premium materials"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_text",
+      "label": "Text",
+      "default": "We use only the finest materials to ensure lasting quality and durability."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_1_badge",
+      "label": "Show verified badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "text",
+      "id": "card_2_subtitle",
+      "label": "Subtitle",
+      "default": "Security"
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "label": "Title",
+      "default": "Safe & secure"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_text",
+      "label": "Text",
+      "default": "Your data and transactions are protected with industry-leading security."
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "text",
+      "id": "card_3_subtitle",
+      "label": "Subtitle",
+      "default": "Delivery"
+    },
+    {
+      "type": "text",
+      "id": "card_3_title",
+      "label": "Title",
+      "default": "Fast shipping"
+    },
+    {
+      "type": "textarea",
+      "id": "card_3_text",
+      "label": "Text",
+      "default": "Get your order delivered quickly with our express shipping options."
+    },
+
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_shadow_opacity",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "%",
+      "label": "Shadow opacity",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "card_title_color",
+      "label": "Title color",
+      "default": "#192e59"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 40,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 56
+    },
+    {
+      "type": "color",
+      "id": "icon_background",
+      "label": "Icon background",
+      "default": "#f9f7f1"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#192e59"
+    },
+    {
+      "type": "header",
+      "content": "Badge style"
+    },
+    {
+      "type": "range",
+      "id": "badge_size",
+      "min": 24,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Badge size",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "badge_background",
+      "label": "Badge background",
+      "default": "#4CAF50"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Badge icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Background",
+      "default": "#192e59"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Hover background",
+      "default": "#0d1a33"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info cards"
+    }
+  ],
+  "tag": null
+}
+{% endschema %}
