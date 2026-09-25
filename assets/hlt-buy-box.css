@@ -21,9 +21,9 @@
     --hlt-bb-card-pad: 22px;
     margin: 0 16px; padding: 22px 18px 24px;
     background: #fff;
-    border: 1.5px solid rgba(27, 46, 92, 0.1);
+    border: 1.5px solid rgba(31, 77, 58, 0.1);
     border-radius: 24px;
-    box-shadow: 0 20px 40px -26px rgba(27, 46, 92, 0.28), 0 2px 6px rgba(27, 46, 92, 0.04);
+    box-shadow: 0 20px 40px -26px rgba(31, 77, 58, 0.28), 0 2px 6px rgba(31, 77, 58, 0.04);
   }
 }
 @media (min-width: 990px) {
@@ -43,9 +43,9 @@
     --hlt-bb-card-pad: 28px;
     padding: 28px 28px 24px;
     background: #fff;
-    border: 1.5px solid rgba(27, 46, 92, 0.1);
+    border: 1.5px solid rgba(31, 77, 58, 0.1);
     border-radius: 28px;
-    box-shadow: 0 24px 48px -28px rgba(27, 46, 92, 0.28), 0 2px 6px rgba(27, 46, 92, 0.04);
+    box-shadow: 0 24px 48px -28px rgba(31, 77, 58, 0.28), 0 2px 6px rgba(31, 77, 58, 0.04);
   }
   .hlt-bb__head, .hlt-bb__panel, .hlt-bb__pair { grid-area: auto; }
   .hlt-bb__head { margin-bottom: 24px; }
@@ -66,12 +66,12 @@
 .hlt-bb__pill {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 12px; border-radius: var(--hlt-r-pill);
-  border: 1.5px solid rgba(27, 46, 92, 0.14); background: #fff;
+  border: 1.5px solid rgba(31, 77, 58, 0.14); background: #fff;
   color: var(--hlt-navy); font-size: 13px; font-weight: 700; line-height: 1.2;
 }
 .hlt-bb__pill-stars { display: inline-flex; gap: 2px; color: var(--hlt-sun); }
 .hlt-bb__pill-stars svg { width: 15px; height: 15px; display: block; fill: currentColor; stroke: currentColor; stroke-width: 1; }
-.hlt-bb__pill-stars .is-empty { color: rgba(27, 46, 92, 0.16); display: inline-flex; }
+.hlt-bb__pill-stars .is-empty { color: rgba(31, 77, 58, 0.16); display: inline-flex; }
 .hlt-bb__title { font-size: var(--hlt-title-size, 36px) !important; line-height: 1.1; }
 .hlt-bb__head .hlt-body { font-size: 16px; }
 .hlt-bb__head .hlt-tags { margin-top: 6px; }
@@ -97,7 +97,7 @@
   background: rgba(255, 255, 255, 0.94);
   color: var(--hlt-navy);
   font-family: var(--hlt-font-display); font-weight: 700; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.25;
-  box-shadow: 0 8px 20px -12px rgba(27, 46, 92, 0.35);
+  box-shadow: 0 8px 20px -12px rgba(31, 77, 58, 0.35);
 }
 .hlt-bb__quote { background: var(--hlt-splash); }
 .hlt-bb__quote-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 12%; text-align: center; }
@@ -135,6 +135,10 @@
   .hlt-bb__gallery.is-expanded .hlt-bb__slide--extra:not([hidden]) { display: block; }
   .hlt-bb__thumbs { display: none; }
   .hlt-bb__view-all { display: table; }
+  /* Text on the smaller tiles, when turned on, scales down with the tile. */
+  .hlt-bb__track > .hlt-bb__slide:not(:first-child):not([data-hlt-age-only]) .hlt-bb__caption {
+    left: 10px; right: 10px; bottom: 10px; padding: 9px 12px; font-size: 14px;
+  }
 }
 .hlt-bb__thumb {
   position: relative; flex: 0 0 auto; width: calc((100% - 32px) / 5); min-width: 54px; max-width: 86px;
@@ -156,7 +160,7 @@
 .hlt-bb__chip {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   min-height: 72px; padding: 10px 8px;
-  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-btn);
+  border: 2px solid rgba(31, 77, 58, 0.15); border-radius: var(--hlt-r-btn);
   background: var(--hlt-paper); color: var(--hlt-navy);
   font-family: var(--hlt-font-body); text-align: center; line-height: 1.2; cursor: pointer;
   transition: border-color 0.25s, background-color 0.25s, transform 0.3s var(--hlt-ease);
@@ -171,20 +175,20 @@
 .hlt-bb__card {
   position: relative;
   padding: 18px 18px 16px 54px;
-  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-card);
+  border: 2px solid rgba(31, 77, 58, 0.15); border-radius: var(--hlt-r-card);
   background: var(--hlt-paper); cursor: pointer;
   transition: border-color 0.25s, background-color 0.25s, box-shadow 0.35s var(--hlt-ease);
 }
 .hlt-bb__card:hover { border-color: var(--hlt-splash-deep); }
 .hlt-bb__card.is-selected { border-color: var(--hlt-navy); background: var(--hlt-splash-pale); box-shadow: var(--hlt-shadow); }
-.hlt-bb__radio { position: absolute; left: 18px; top: 21px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(27, 46, 92, 0.35); background: var(--hlt-paper); transition: border-color 0.25s; }
+.hlt-bb__radio { position: absolute; left: 18px; top: 21px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(31, 77, 58, 0.35); background: var(--hlt-paper); transition: border-color 0.25s; }
 .hlt-bb__radio::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--hlt-navy); transform: scale(0); transition: transform 0.3s var(--hlt-ease); }
 .hlt-bb__card.is-selected .hlt-bb__radio { border-color: var(--hlt-navy); }
 .hlt-bb__card.is-selected .hlt-bb__radio::after { transform: scale(1); }
 .hlt-bb__card-tag {
   position: absolute; top: -12px; right: 18px;
   padding: 4px 12px; border-radius: var(--hlt-r-pill);
-  background: var(--hlt-sun); color: var(--hlt-navy);
+  background: var(--hlt-sun); color: var(--hlt-sun-text, var(--hlt-navy));
   font-family: var(--hlt-font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
 }
 .hlt-bb__card-save {
@@ -194,9 +198,22 @@
   font-family: var(--hlt-font-mono); font-size: 12px; font-weight: 500;
   letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap;
 }
-.hlt-bb__card[data-hlt-size='value'] .hlt-bb__card-save {
-  border-color: var(--hlt-sun); background: var(--hlt-sun); font-weight: 700;
+.hlt-bb__card[data-hlt-size='value'] .hlt-bb__card-save,
+.hlt-bb__card--featured .hlt-bb__card-save {
+  border-color: var(--hlt-sun); background: var(--hlt-sun); color: var(--hlt-sun-text, var(--hlt-navy)); font-weight: 700;
 }
+/* Pack mode: four or more cards in one list, so they sit a little closer. */
+.hlt-bb__cards--packs { gap: 18px; }
+/* The pack name and its line take the room; the price keeps its own column,
+   so a long line wraps under the name instead of pushing the price down. */
+@media (min-width: 990px) {
+  .hlt-bb__card--pack .hlt-bb__card-head { flex-wrap: nowrap; align-items: center; }
+  .hlt-bb__card--pack .hlt-bb__card-head > div:first-child { flex: 1 1 auto; min-width: 0; }
+  .hlt-bb__card--pack .hlt-bb__card-price { flex: 0 0 auto; }
+}
+.hlt-bb__card--pack .hlt-bb__was { margin-top: 2px; }
+.hlt-bb__group[tabindex='-1']:focus { outline: none; }
+.hlt-bb__note { font-size: 13px; line-height: 1.5; color: var(--hlt-text); }
 .hlt-bb__card-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; }
 .hlt-bb__card-line { font-size: 15px; font-weight: 600; color: var(--hlt-ocean); }
 .hlt-bb__card-price { text-align: right; }
@@ -216,7 +233,7 @@
   border: 2px solid var(--hlt-navy); border-radius: var(--hlt-r-card);
   background: var(--hlt-splash-pale); box-shadow: var(--hlt-shadow);
 }
-.hlt-bb__solo-save { border-color: var(--hlt-sun); background: var(--hlt-sun); font-weight: 700; }
+.hlt-bb__solo-save { border-color: var(--hlt-sun); background: var(--hlt-sun); color: var(--hlt-sun-text, var(--hlt-navy)); font-weight: 700; }
 .hlt-bb__solo-save[hidden] { display: none; }
 /* With no title the price carries the panel on its own, so it leads from the
    left at the size the page title would. */
@@ -231,7 +248,7 @@
 .hlt-bb__desc ul { margin: 6px 0 6px 18px; padding: 0; }
 .hlt-bb__desc ul ul { margin-top: 4px; margin-bottom: 8px; }
 .hlt-bb__desc li { margin-bottom: 4px; }
-.hlt-bb__bullets { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1.5px dashed rgba(27, 46, 92, 0.14); display: grid; gap: 6px; font-size: 14px; color: var(--hlt-navy); }
+.hlt-bb__bullets { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1.5px dashed rgba(31, 77, 58, 0.14); display: grid; gap: 6px; font-size: 14px; color: var(--hlt-navy); }
 .hlt-bb__bullets li { position: relative; padding-left: 22px; }
 .hlt-bb__bullets li::before { content: ''; position: absolute; left: 2px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--hlt-splash); }
 .hlt-bb__bullets li.hlt-bb__gift { display: flex; gap: 8px; padding-left: 0; font-weight: 700; }
@@ -254,7 +271,7 @@
   .hlt-bb__cards > .hlt-bb__card.is-selected { background: var(--hlt-splash-pale); }
   .hlt-bb__cards > .hlt-bb__card + .hlt-bb__card::before {
     content: ''; position: absolute; left: 0; right: 0; top: -10px;
-    border-top: 1.5px solid rgba(27, 46, 92, 0.16);
+    border-top: 1.5px solid rgba(31, 77, 58, 0.16);
   }
   .hlt-bb__radio { left: 10px; top: 15px; }
   .hlt-bb__card-tag { top: 12px; right: 12px; padding: 3px 10px; font-size: 11px; letter-spacing: 0.08em; }
@@ -274,13 +291,13 @@
 .hlt-bb__error { padding: 10px 14px; border-radius: var(--hlt-r-chip); background: #fdecee; color: var(--hlt-navy); font-size: 14px; }
 .hlt-bb__badges {
   display: grid; grid-template-columns: repeat(var(--hlt-badge-cols, 5), minmax(0, 1fr)); gap: 12px 8px;
-  padding-top: 18px; margin-top: 4px; border-top: 1.5px dashed rgba(27, 46, 92, 0.14);
+  padding-top: 18px; margin-top: 4px; border-top: 1.5px dashed rgba(31, 77, 58, 0.14);
 }
 .hlt-bb__badges .hlt-badge { flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 12px; line-height: 1.25; }
 .hlt-bb__badge-ring {
   display: inline-flex; align-items: center; justify-content: center; flex: none;
   width: 54px; height: 54px; border-radius: 50%;
-  border: 1.5px solid rgba(94, 194, 231, 0.7); background: var(--hlt-paper); color: var(--hlt-splash-deep);
+  border: 1.5px solid rgba(163, 207, 181, 0.7); background: var(--hlt-paper); color: var(--hlt-splash-deep);
 }
 .hlt-bb__badge-ring svg { width: 24px; height: 24px; }
 .hlt-bb__badge-logo { width: 30px; height: 30px; object-fit: contain; }
@@ -293,7 +310,7 @@
 .hlt-sticky {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
   background: var(--hlt-paper);
-  box-shadow: 0 -10px 30px -12px rgba(27, 46, 92, 0.25);
+  box-shadow: 0 -10px 30px -12px rgba(31, 77, 58, 0.25);
   transform: translateY(110%); transition: transform 0.5s var(--hlt-ease);
   overflow: visible;
 }
@@ -304,8 +321,8 @@ body.hlt-sticky-on { padding-bottom: 84px; }
 .hlt-sticky__field { flex: 1 1 0; min-width: 0; }
 .hlt-sticky__field select {
   width: 100%; min-height: 48px; padding: 0 34px 0 14px;
-  border: 2px solid rgba(27, 46, 92, 0.15); border-radius: var(--hlt-r-pill);
-  background: var(--hlt-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b2e5c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6-6'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
+  border: 2px solid rgba(31, 77, 58, 0.15); border-radius: var(--hlt-r-pill);
+  background: var(--hlt-paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f4d3a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6-6'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
   color: var(--hlt-navy); font-family: var(--hlt-font-body); font-weight: 700; font-size: 14px;
   appearance: none; -webkit-appearance: none; text-overflow: ellipsis;
 }
@@ -324,7 +341,7 @@ body.hlt-sticky-on { padding-bottom: 84px; }
 .hlt-bb__pair-tab {
   position: relative; z-index: 1;
   padding: 10px 20px 12px; margin-bottom: -1.5px;
-  border: 1.5px solid rgba(27, 46, 92, 0.1); border-bottom: 0;
+  border: 1.5px solid rgba(31, 77, 58, 0.1); border-bottom: 0;
   border-radius: 16px 16px 0 0;
   background: #fff; color: var(--hlt-ocean);
   font-family: var(--hlt-font-display); font-weight: 700; font-size: 15px; line-height: 1.2;
@@ -339,7 +356,7 @@ body.hlt-sticky-on { padding-bottom: 84px; }
 .hlt-bb__pair-pane[hidden] { display: none; }
 .hlt-bb__pair-card {
   position: relative; overflow: hidden;
-  border: 1.5px solid rgba(27, 46, 92, 0.1); border-radius: 0 22px 22px 22px;
+  border: 1.5px solid rgba(31, 77, 58, 0.1); border-radius: 0 22px 22px 22px;
   background: var(--hlt-cream);
 }
 .hlt-bb__pair-track {

@@ -1,0 +1,151 @@
+{%- comment -%}
+  HLT Logos: a quiet row of logos (where it is served, who stocks it) or a grid
+  of awards, each with an optional line saying what it was for. A logo with no
+  image shows its name instead, so the section still reads before the artwork
+  arrives. Blocks can be switched off without losing their text, for entries
+  still waiting on confirmation.
+{%- endcomment -%}
+{%- liquid
+  assign items = section.blocks | where: 'type', 'logo'
+  assign layout = section.settings.layout
+  assign shown = 0
+  for block in items
+    if block.settings.show
+      assign shown = shown | plus: 1
+    endif
+  endfor
+-%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-logos hlt-logos--{{ layout }}{% if section.settings.grayscale %} hlt-logos--mono{% endif %}"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-logo-h: {{ section.settings.logo_height }}px; --hlt-logo-cols: {{ section.settings.columns }};"
+>
+  <div class="hlt__inner">
+    {%- if section.settings.overline != blank or section.settings.heading != blank or section.settings.text != blank -%}
+      <div class="hlt-stack hlt-logos__head{% if section.settings.align == 'center' %} hlt-center{% endif %}" data-hlt-stagger>
+        {%- if section.settings.overline != blank -%}<p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="hlt-body hlt-maxw hlt-rte" data-hlt-reveal>{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if shown > 0 -%}
+      <ul class="hlt-logos__list" role="list" data-hlt-stagger>
+        {%- for block in items -%}
+          {%- unless block.settings.show -%}{%- continue -%}{%- endunless -%}
+          <li class="hlt-logos__item{% if block.settings.style == 'note' %} hlt-logos__item--note{% endif %}" data-hlt-reveal {{ block.shopify_attributes }}>
+            {%- if block.settings.style == 'note' -%}
+              <p class="hlt-logos__note">{{ block.settings.name }}{% if block.settings.caption != blank %} {{ block.settings.caption }}{% endif %}</p>
+            {%- else -%}
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: width: 480 | image_tag: class: 'hlt-logos__img', loading: 'lazy', widths: '160, 240, 360, 480', sizes: '240px', alt: block.settings.name }}
+              {%- elsif layout == 'grid' -%}
+                <span class="hlt-logos__icon" aria-hidden="true">{% render 'hlt-icon', name: 'award', size: 28 %}</span>
+              {%- endif -%}
+              {%- if block.settings.image == blank or layout == 'grid' -%}
+                <p class="hlt-logos__name{% if block.settings.image != blank %} visually-hidden{% endif %}">{{ block.settings.name }}</p>
+              {%- endif -%}
+              {%- if block.settings.caption != blank -%}<p class="hlt-logos__caption">{{ block.settings.caption }}</p>{%- endif -%}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if section.settings.small_print != blank -%}
+      <div class="hlt-small hlt-logos__small{% if section.settings.align == 'center' %} hlt-center{% endif %} hlt-rte" data-hlt-reveal>{{ section.settings.small_print }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-logos__head { max-width: 820px; margin-bottom: 28px; }
+  .hlt-logos__head.hlt-center { margin-left: auto; margin-right: auto; }
+  .hlt-logos__list { list-style: none; margin: 0; padding: 0; }
+  .hlt-logos__name { font-family: var(--hlt-font-display); font-weight: 700; font-size: 16px; line-height: 1.3; color: var(--hlt-heading); }
+  .hlt-logos__caption { font-size: 13px; line-height: 1.45; color: var(--hlt-text); }
+  .hlt-logos--mono .hlt-logos__img { filter: grayscale(1); opacity: 0.75; transition: filter 0.3s, opacity 0.3s; }
+  .hlt-logos--mono .hlt-logos__item:hover .hlt-logos__img { filter: none; opacity: 1; }
+
+  /* Strip: one row, centred, sliding sideways on phones rather than wrapping. */
+  .hlt-logos--strip .hlt-logos__list {
+    display: flex; align-items: center; justify-content: center; gap: clamp(24px, 4vw, 56px);
+    overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; padding: 4px 2px;
+  }
+  .hlt-logos--strip .hlt-logos__list::-webkit-scrollbar { display: none; }
+  .hlt-logos--strip .hlt-logos__item { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .hlt-logos--strip .hlt-logos__img { height: var(--hlt-logo-h, 72px); width: auto; max-width: 220px; object-fit: contain; }
+  .hlt-logos--strip .hlt-logos__name {
+    display: inline-flex; align-items: center; min-height: calc(var(--hlt-logo-h, 72px) * 0.62);
+    padding: 10px 22px; border-radius: var(--hlt-r-pill);
+    background: var(--hlt-paper); box-shadow: inset 0 0 0 1.5px rgba(31, 77, 58, 0.12);
+    white-space: nowrap;
+  }
+  @media (max-width: 749px) {
+    .hlt-logos--strip .hlt-logos__list { justify-content: flex-start; }
+    .hlt-logos--strip .hlt-logos__list > :first-child { margin-left: auto; }
+    .hlt-logos--strip .hlt-logos__list > :last-child { margin-right: auto; }
+  }
+
+  /* Grid: one tile per award, with what it was for underneath. */
+  .hlt-logos--grid .hlt-logos__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  @media (min-width: 990px) { .hlt-logos--grid .hlt-logos__list { grid-template-columns: repeat(var(--hlt-logo-cols, 4), minmax(0, 1fr)); gap: 16px; } }
+  .hlt-logos--grid .hlt-logos__item {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    padding: 22px 14px; text-align: center;
+    border-radius: var(--hlt-r-card); background: var(--hlt-paper);
+    box-shadow: inset 0 0 0 1.5px rgba(31, 77, 58, 0.1);
+  }
+  .hlt--paper.hlt-logos--grid .hlt-logos__item { background: var(--hlt-cream); box-shadow: none; }
+  .hlt-logos--grid .hlt-logos__img { height: var(--hlt-logo-h, 56px); width: auto; max-width: 100%; object-fit: contain; }
+  .hlt-logos__icon { color: var(--hlt-splash-deep); }
+  .hlt-logos__icon .hlt-icon { width: 28px; height: 28px; }
+  .hlt-logos--grid .hlt-logos__name { font-size: 15px; }
+  .hlt-logos--grid .hlt-logos__item--note { background: transparent !important; box-shadow: inset 0 0 0 1.5px rgba(31, 77, 58, 0.1) !important; }
+  .hlt-logos__note { font-size: 13px; line-height: 1.5; color: var(--hlt-text); }
+  .hlt-logos__small { margin-top: 20px !important; max-width: 820px; }
+  .hlt-logos__small.hlt-center { margin-left: auto; margin-right: auto; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Logos",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 24,
+  "settings": [
+    { "type": "select", "id": "layout", "label": "Layout", "default": "strip", "options": [
+      { "value": "strip", "label": "One row of logos" }, { "value": "grid", "label": "Grid of tiles (awards)" }
+    ] },
+    { "type": "select", "id": "align", "label": "Heading alignment", "default": "center", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Centred" } ] },
+    { "type": "text", "id": "overline", "label": "Overline" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "richtext", "id": "small_print", "label": "Small print under the logos" },
+    { "type": "checkbox", "id": "grayscale", "label": "Show logos in grey", "info": "They take their own colour on hover.", "default": true },
+    { "type": "range", "id": "logo_height", "label": "Logo height", "min": 32, "max": 120, "step": 4, "unit": "px", "default": 72 },
+    { "type": "range", "id": "columns", "label": "Tiles per row on desktop (grid)", "info": "Phones show two across.", "min": 3, "max": 6, "step": 1, "default": 5 },
+    { "type": "header", "content": "Colours and spacing" },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 40 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 40 }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "checkbox", "id": "show", "label": "Show", "info": "Turn off for an entry still waiting on confirmation. Its text stays for later.", "default": true },
+        { "type": "select", "id": "style", "label": "Style", "default": "logo", "options": [
+          { "value": "logo", "label": "Logo or name" }, { "value": "note", "label": "Plain note (grid)" }
+        ] },
+        { "type": "image_picker", "id": "image", "label": "Logo" },
+        { "type": "text", "id": "name", "label": "Name", "info": "Shown when there is no logo, and read out by screen readers.", "default": "Name" },
+        { "type": "text", "id": "caption", "label": "Line underneath", "info": "For example what the award was for." }
+      ]
+    }
+  ],
+  "presets": [ { "name": "HLT Logos", "blocks": [ { "type": "logo" }, { "type": "logo" }, { "type": "logo" } ] } ]
+}
+{% endschema %}

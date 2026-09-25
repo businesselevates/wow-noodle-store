@@ -43,19 +43,30 @@
         </div>
       {%- endif -%}
     </div>
+
+    {%- if section.settings.button_label != blank -%}
+      {%- assign rv_target = section.settings.scroll_target | default: '#hlt-buy-box' -%}
+      <div class="hlt-btn-row hlt-rv__cta" data-hlt-reveal>
+        <a class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'white' %} hlt-btn--white{% endif %}" href="{{ rv_target }}" data-hlt-scroll-to="{{ rv_target }}">
+          {{- section.settings.button_label -}}
+          {% render 'hlt-icon', name: 'arrow-right', size: 20 %}
+        </a>
+      </div>
+    {%- endif -%}
   </div>
 </section>
 
 {% stylesheet %}
   .hlt-rv__head { margin-bottom: 36px; }
-  .hlt-rv__card { position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%; margin: 0; padding: 30px 26px 26px; }
+  .hlt-rv__card { position: relative; display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 52px 26px 26px; }
   .hlt-rv__mark { position: absolute; top: 6px; right: 20px; font-family: var(--hlt-font-display); font-weight: 800; font-size: 88px; line-height: 1; color: var(--hlt-splash); opacity: .35; }
   .hlt-rv__stars { display: inline-flex; gap: 2px; color: var(--hlt-sun); }
-  .hlt-rv__quote { margin: 0; font-family: var(--hlt-font-display); font-weight: 600; font-size: 20px; line-height: 1.4; color: var(--hlt-navy); flex: 1; }
+  .hlt-rv__quote { margin: 0; font-family: var(--hlt-font-display); font-weight: 500; font-size: 18px; line-height: 1.5; color: var(--hlt-navy); flex: 1; }
   .hlt-rv__who { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--hlt-ocean); }
   .hlt-rv__who strong { display: block; color: var(--hlt-navy); }
   .hlt-rv__photo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
   .hlt-rv__tag { font-family: var(--hlt-font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .hlt-rv__cta { justify-content: center; margin-top: 28px; }
 {% endstylesheet %}
 
 {% schema %}
@@ -75,6 +86,12 @@
     { "type": "checkbox", "id": "wave_top", "label": "Wavy top edge", "default": true },
     { "type": "select", "id": "wave_top_color", "label": "Top wave colour (match the section above)", "default": "cream", "options": [
       { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }, { "value": "splash", "label": "Splash blue" }, { "value": "navy", "label": "Navy" }
+    ] },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "button_label", "label": "Label", "info": "Scrolls to the buy box. Leave empty to hide it." },
+    { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
+    { "type": "select", "id": "button_style", "label": "Style", "default": "navy", "options": [
+      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "white", "label": "White" }
     ] },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 104 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }

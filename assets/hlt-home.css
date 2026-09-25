@@ -1,25 +1,30 @@
-/* HLT One homepage system. Brand Guidelines v2.0: Baloo 2 (display), Nunito (body/UI), DM Mono (data).
-   Layout and motion modelled on bloomnu.com. All classes are prefixed .hlt- so nothing leaks into the rest of the theme. */
+/* HLT One page system, carried over to W0W. Layout and motion are HLT One's (modelled on bloomnu.com);
+   the palette and type are W0W's: forest green, cream and pale green from the ProTEGO page wireframe,
+   with one orange accent. The token names are HLT One's, so 'navy' is W0W green and 'splash' is sage.
+   Inter (display and body), DM Mono (data). All classes are prefixed .hlt- so nothing leaks into the rest of the theme. */
 
 :root {
-  --hlt-splash: #5ec2e7;
-  --hlt-splash-deep: #389bc9;
-  --hlt-ocean: #2b7b99;
-  --hlt-sky: #a8dbec;
-  --hlt-splash-pale: #eaf6fb;
-  --hlt-navy: #1b2e5c;
-  --hlt-navy-900: #111d3d;
-  --hlt-navy-100: #d6dcea;
+  --hlt-splash: #a3cfb5;
+  --hlt-splash-deep: #2f7a56;
+  --hlt-ocean: #3f5b4d;
+  --hlt-sky: #cfe0d7;
+  --hlt-splash-pale: #eaf2ed;
+  --hlt-navy: #1f4d3a;
+  --hlt-navy-900: #14261f;
+  --hlt-navy-100: #d3e3d9;
   --hlt-paper: #ffffff;
-  --hlt-cream: #fffbf1;
-  --hlt-sun: #eac35b;
+  --hlt-cream: #f6f3ec;
+  --hlt-sun: #c8641e;
+  --hlt-sun-text: #ffffff;
   --hlt-coral: #efa0a6;
   --hlt-mint: #7bc6a0;
   --hlt-peach: #f4b97c;
-  --hlt-grey: #6e6a64;
+  --hlt-grey: #4d5b54;
+  /* The shade laid over hero photographs, as r, g, b. */
+  --hlt-overlay-rgb: 20, 38, 31;
 
-  --hlt-font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
-  --hlt-font-body: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hlt-font-display: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hlt-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --hlt-font-mono: 'DM Mono', ui-monospace, 'Consolas', monospace;
 
   --hlt-r-chip: 8px;
@@ -31,7 +36,7 @@
   --hlt-s5: 32px; --hlt-s6: 48px; --hlt-s7: 64px; --hlt-s8: 96px;
 
   --hlt-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --hlt-shadow: 0 10px 30px -12px rgba(27, 46, 92, 0.22);
+  --hlt-shadow: 0 10px 30px -12px rgba(31, 77, 58, 0.22);
 }
 
 /* ---------- Section shell and colour combos (approved background combinations, p.14) ---------- */
@@ -55,7 +60,7 @@
 .hlt--paper { --hlt-bg: var(--hlt-paper); --hlt-heading: var(--hlt-navy); --hlt-text: var(--hlt-grey); }
 .hlt--splash-pale { --hlt-bg: var(--hlt-splash-pale); --hlt-heading: var(--hlt-navy); --hlt-text: var(--hlt-ocean); }
 .hlt--splash { --hlt-bg: var(--hlt-splash); --hlt-heading: var(--hlt-navy); --hlt-text: var(--hlt-navy); --hlt-accent: var(--hlt-paper); }
-.hlt--navy { --hlt-bg: var(--hlt-navy); --hlt-heading: var(--hlt-sun); --hlt-text: var(--hlt-sky); --hlt-btn-bg: var(--hlt-splash); --hlt-btn-text: var(--hlt-navy); }
+.hlt--navy { --hlt-bg: var(--hlt-navy); --hlt-heading: var(--hlt-paper); --hlt-text: var(--hlt-sky); --hlt-btn-bg: var(--hlt-paper); --hlt-btn-text: var(--hlt-navy); }
 .hlt--deep-navy { --hlt-bg: var(--hlt-navy-900); --hlt-heading: var(--hlt-splash); --hlt-text: var(--hlt-navy-100); --hlt-btn-bg: var(--hlt-splash); --hlt-btn-text: var(--hlt-navy); }
 
 .hlt__inner {
@@ -74,11 +79,12 @@
   font-family: var(--hlt-font-display);
   color: var(--hlt-heading);
   font-weight: 800;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin: 0;
 }
-.hlt .hlt-h1 { font-size: clamp(38px, 5.4vw, 68px); line-height: 1.02; }
-.hlt .hlt-h2 { font-size: clamp(32px, 4vw, 52px); line-height: 1.08; }
+/* Inter sets larger than Baloo 2 at the same size, so the two big steps are a notch smaller than HLT One's. */
+.hlt .hlt-h1 { font-size: clamp(36px, 4.8vw, 60px); line-height: 1.05; letter-spacing: -0.03em; }
+.hlt .hlt-h2 { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.12; letter-spacing: -0.025em; }
 .hlt .hlt-h3 { font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; font-weight: 700; }
 .hlt .hlt-h4 { font-size: 20px; line-height: 1.25; font-weight: 700; }
 .hlt p { margin: 0; }
@@ -97,6 +103,12 @@
 }
 .hlt-stack > * + * { margin-top: var(--hlt-gap, 18px); }
 .hlt-stack > .hlt-small { margin-top: 32px; }
+/* '.hlt p' zeroes paragraph margins, which also swallowed the stack gap above a
+   subheading that follows body text. */
+.hlt-stack > .hlt-body + .hlt-sub { margin-top: var(--hlt-gap, 18px); }
+/* Same for a list or a row of badges: their own 'margin: 0' came later and won.
+   A heading keeps its own, larger gap. */
+.hlt-stack > :not(h2) + .hlt-list, .hlt-stack > :not(h2) + .hlt-badges { margin-top: var(--hlt-gap, 18px); }
 .hlt-center { text-align: center; }
 .hlt-center .hlt-btn-row { justify-content: center; }
 .hlt-maxw { max-width: 720px; }
@@ -124,10 +136,11 @@
   transition: transform 0.35s var(--hlt-ease), box-shadow 0.35s var(--hlt-ease), background-color 0.25s, color 0.25s;
   -webkit-tap-highlight-color: transparent;
 }
-.hlt-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -10px rgba(27, 46, 92, 0.45); }
+.hlt-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -10px rgba(31, 77, 58, 0.45); }
 .hlt-btn:active { transform: translateY(0) scale(0.98); }
 .hlt-btn:focus-visible { outline: 3px solid var(--hlt-splash); outline-offset: 3px; }
 .hlt-btn--splash { --hlt-btn-bg: var(--hlt-splash); --hlt-btn-text: var(--hlt-navy); }
+.hlt-btn--white { --hlt-btn-bg: var(--hlt-paper); --hlt-btn-text: var(--hlt-navy); }
 .hlt-btn--white-text, .hlt-hero--body-white .hlt-btn--splash { --hlt-btn-text: #fff; }
 .hlt-btn--outline { background: transparent; color: var(--hlt-btn-bg); }
 .hlt-btn--block { width: 100%; }
@@ -151,7 +164,7 @@
 .hlt-badges--pills { gap: 10px; }
 .hlt-badges--pills .hlt-badge {
   padding: 10px 18px; border-radius: var(--hlt-r-pill);
-  background: var(--hlt-paper); box-shadow: inset 0 0 0 1.5px rgba(27, 46, 92, 0.12);
+  background: var(--hlt-paper); box-shadow: inset 0 0 0 1.5px rgba(31, 77, 58, 0.12);
   font-size: 16px;
 }
 .hlt-badges--pills .hlt-badge svg { width: 24px; height: 24px; color: var(--hlt-splash-deep); }
@@ -166,7 +179,7 @@
   content: '';
   position: absolute; left: 0; top: 3px;
   width: 22px; height: 22px; border-radius: 50%;
-  background: var(--hlt-splash) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231b2e5c' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 14px no-repeat;
+  background: var(--hlt-splash) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f4d3a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center / 14px no-repeat;
 }
 .hlt-list strong { color: var(--hlt-heading); font-family: var(--hlt-font-display); font-weight: 700; font-size: 1.08em; }
 
@@ -185,13 +198,13 @@
 .hlt-media--contain img { object-fit: contain; }
 .hlt-par { position: absolute; inset: -8% 0; will-change: transform; }
 .hlt-par img, .hlt-par svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.hlt-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(27, 46, 92, 0.2); transition: transform 0.3s var(--hlt-ease), background-color 0.3s; }
+.hlt-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(31, 77, 58, 0.2); transition: transform 0.3s var(--hlt-ease), background-color 0.3s; }
 .hlt-dot.is-active { background: var(--hlt-navy); transform: scale(1.4); }
 .hlt [hidden], .hlt-sticky [hidden] { display: none !important; }
 .hlt blockquote { margin: 0; padding: 0; border: 0; font-style: normal; }
 .hlt-rte > * + * { margin-top: 14px; }
 .hlt-rte strong { color: var(--hlt-heading); }
-.hlt-quote { position: relative; margin: 0; padding: 26px 28px 22px 64px; border-radius: var(--hlt-r-card); background: rgba(94, 194, 231, 0.12); }
+.hlt-quote { position: relative; margin: 0; padding: 26px 28px 22px 64px; border-radius: var(--hlt-r-card); background: rgba(163, 207, 181, 0.12); }
 .hlt-quote::before { content: '“'; position: absolute; left: 20px; top: 6px; font-family: var(--hlt-font-display); font-weight: 800; font-size: 64px; line-height: 1; color: var(--hlt-splash); }
 .hlt-quote blockquote { margin: 0; font-family: var(--hlt-font-display); font-weight: 600; font-size: 21px; line-height: 1.4; color: var(--hlt-heading); }
 .hlt-quote figcaption { margin-top: 8px; font-size: 14px; }
@@ -209,7 +222,7 @@
 .hlt-card {
   background: var(--hlt-paper);
   border-radius: var(--hlt-r-card);
-  box-shadow: inset 0 0 0 1.5px rgba(27, 46, 92, 0.08);
+  box-shadow: inset 0 0 0 1.5px rgba(31, 77, 58, 0.08);
   transition: transform 0.45s var(--hlt-ease), box-shadow 0.45s var(--hlt-ease);
 }
 .hlt-card:hover { transform: translateY(-6px); box-shadow: var(--hlt-shadow); }
@@ -268,8 +281,8 @@
 @keyframes hlt-twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(20deg); } }
 
 /* ---------- Accordion ---------- */
-.hlt-acc { border-top: 1.5px solid rgba(27, 46, 92, 0.14); }
-.hlt-acc:last-child { border-bottom: 1.5px solid rgba(27, 46, 92, 0.14); }
+.hlt-acc { border-top: 1.5px solid rgba(31, 77, 58, 0.14); }
+.hlt-acc:last-child { border-bottom: 1.5px solid rgba(31, 77, 58, 0.14); }
 .hlt-acc summary {
   list-style: none; cursor: pointer;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;

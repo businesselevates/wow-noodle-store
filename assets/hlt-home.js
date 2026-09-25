@@ -205,7 +205,7 @@
     var header = doc.querySelector('.section-header');
     var offset = header ? header.offsetHeight + 16 : 16;
     window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - offset, behavior: reduceMotion ? 'auto' : 'smooth' });
-    var focusEl = target.querySelector('[data-hlt-age][aria-pressed="true"]') || target;
+    var focusEl = target.querySelector('[data-hlt-age][aria-pressed="true"], [data-hlt-age][aria-checked="true"]') || target;
     setTimeout(function () { focusEl.focus({ preventScroll: true }); }, 600);
   });
 
@@ -279,7 +279,10 @@
     var data = JSON.parse(dataEl.textContent);
     var ages = data.ages || [];
     if (!ages.length) return;
-    var state = { age: ages[0].key, size: 'standard' };
+    /* Pack mode names the card that starts selected; the other modes start
+       on the first entry. */
+    var startKey = ages.some(function (a) { return a.key === data.initial; }) ? data.initial : ages[0].key;
+    var state = { age: startKey, size: 'standard' };
     var addBtn = box.querySelector('[data-hlt-add-bundle]');
     /* Single-product mode prints the price twice, on its own line and on the
        button, so every copy is updated rather than only the first. */
@@ -301,7 +304,14 @@
       var a = ageData(state.age);
       var v = a[state.size] || {};
       box.querySelectorAll('[data-hlt-age]').forEach(function (b) {
-        b.setAttribute('aria-pressed', b.getAttribute('data-hlt-age') === state.age ? 'true' : 'false');
+        var on = b.getAttribute('data-hlt-age') === state.age;
+        /* Age chips are toggle buttons; pack cards are radios. */
+        if (b.getAttribute('role') === 'radio') {
+          b.setAttribute('aria-checked', on ? 'true' : 'false');
+          b.classList.toggle('is-selected', on);
+        } else {
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        }
       });
       box.querySelectorAll('[data-hlt-size]').forEach(function (b) {
         var on = b.getAttribute('data-hlt-size') === state.size;
@@ -341,8 +351,15 @@
       if (sizeBtn) { state.size = sizeBtn.getAttribute('data-hlt-size'); render(); }
     });
     box.addEventListener('keydown', function (e) {
-      var sizeBtn = e.target.closest('[data-hlt-size]');
-      if (sizeBtn && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); sizeBtn.click(); }
+      var radio = e.target.closest('[data-hlt-size], [data-hlt-age][role="radio"]');
+      if (!radio) return;
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); radio.click(); return; }
+      /* Arrow keys move between the cards of one group, as in any radio group. */
+      var step = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+      if (!step) return;
+      var group = Array.prototype.filter.call(radio.parentElement.children, function (c) { return c.getAttribute('role') === 'radio' && !c.hidden; });
+      var next = group[(group.indexOf(radio) + step + group.length) % group.length];
+      if (next) { e.preventDefault(); next.focus(); next.click(); }
     });
     if (addBtn) {
       addBtn.addEventListener('click', function () {

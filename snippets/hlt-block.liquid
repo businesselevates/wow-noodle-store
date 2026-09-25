@@ -63,12 +63,16 @@
           assign t = it | strip
           assign tl = t | downcase
           assign icon = 'check'
-          if tl contains 'sugar' or tl contains 'salt'
+          if tl contains 'sugar' or tl contains 'salt' or tl contains 'sodium'
             assign icon = 'sugar-off'
-          elsif tl contains 'organic'
+          elsif tl contains 'organic' or tl contains 'plant'
             assign icon = 'leaf'
-          elsif tl contains 'preservative'
+          elsif tl contains 'preservative' or tl contains 'msg' or tl contains 'additive'
             assign icon = 'flask-off'
+          elsif tl contains 'low gi'
+            assign icon = 'gauge'
+          elsif tl contains 'protein'
+            assign icon = 'bowl'
           elsif tl contains 'halal'
             assign icon = 'certificate'
           elsif tl contains 'delivery'
@@ -94,7 +98,7 @@
     {%- assign target = block.settings.scroll_target | default: '#hlt-buy-box' -%}
     <div class="hlt-btn-row" data-hlt-reveal {{ block.shopify_attributes }}>
       <a
-        class="hlt-btn{% if block.settings.style == 'splash' %} hlt-btn--splash{% elsif block.settings.style == 'outline' %} hlt-btn--outline{% endif %}"
+        class="hlt-btn{% if block.settings.style == 'splash' %} hlt-btn--splash{% elsif block.settings.style == 'outline' %} hlt-btn--outline{% elsif block.settings.style == 'white' %} hlt-btn--white{% endif %}"
         href="{% if block.settings.scroll %}{{ target }}{% else %}{{ block.settings.link | default: '#' }}{% endif %}"
         {% if block.settings.scroll %}data-hlt-scroll-to="{{ target }}"{% endif %}
       >

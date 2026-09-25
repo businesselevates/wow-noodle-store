@@ -2,8 +2,8 @@ html {
   scroll-behavior: smooth;
 }
 :root {
-  --font-heading-family: 'Baloo 2', sans-serif;
-  --font-body-family: 'Nunito', sans-serif; 
+  --font-heading-family: 'Inter', sans-serif;
+  --font-body-family: 'Inter', sans-serif;
   --alpha-button-background: 1;
   --alpha-button-border: 1;
   --alpha-link: 0.85;

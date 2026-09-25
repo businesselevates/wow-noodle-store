@@ -8,7 +8,7 @@
 
 <section
   id="hlt-hero-{{ section.id }}"
-  class="hlt hlt--{{ section.settings.background }} hlt-hero hlt-hero--{{ section.settings.layout }}{% if section.settings.media_side == 'left' %} hlt-hero--media-left{% endif %}{% if section.settings.body_color != blank and section.settings.body_color != 'default' %} hlt-hero--body-{{ section.settings.body_color }}{% endif %}"
+  class="hlt hlt--{{ section.settings.background }} hlt-hero hlt-hero--{{ section.settings.layout }}{% if section.settings.media_side == 'left' %} hlt-hero--media-left{% endif %}{% if section.settings.body_color != blank and section.settings.body_color != 'default' %} hlt-hero--body-{{ section.settings.body_color }}{% endif %}{% if section.settings.mobile_text_position == 'bottom' %} hlt-hero--m-bottom{% endif %}"
   style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
 >
   {%- if section.settings.layout == 'overlay' -%}
@@ -36,7 +36,7 @@
   {%- endif -%}
 
   <div class="hlt__inner hlt-hero__grid">
-    <div class="hlt-hero__copy hlt-stack" data-hlt-stagger>
+    <div class="hlt-hero__copy hlt-stack{% if section.settings.layout == 'stacked' %} hlt-center{% endif %}" data-hlt-stagger>
       {%- if section.settings.overline != blank -%}
         <p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>
       {%- endif -%}
@@ -52,7 +52,7 @@
       {%- if section.settings.button_label != blank -%}
         <div class="hlt-btn-row" data-hlt-reveal>
           <a
-            class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'splash-white' %} hlt-btn--splash hlt-btn--white-text{% endif %}"
+            class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'splash-white' %} hlt-btn--splash hlt-btn--white-text{% elsif section.settings.button_style == 'white' %} hlt-btn--white{% endif %}"
             href="{% if section.settings.button_scroll %}{{ scroll_target }}{% else %}{{ section.settings.button_link | default: '#' }}{% endif %}"
             {% if section.settings.button_scroll %}data-hlt-scroll-to="{{ scroll_target }}"{% endif %}
           >
@@ -63,7 +63,7 @@
       {%- endif -%}
     </div>
 
-    {%- if section.settings.layout == 'split' -%}
+    {%- if section.settings.layout == 'split' or section.settings.layout == 'stacked' -%}
       <div class="hlt-hero__media-wrap" data-hlt-reveal="zoom">
         <div class="hlt-media hlt-hero__media" style="--hlt-ratio: {{ section.settings.ratio }};{% if section.settings.ratio_mobile != blank %} --hlt-ratio-m: {{ section.settings.ratio_mobile }};{% endif %}">
           {%- if section.settings.video != blank -%}
@@ -101,12 +101,16 @@
 
 {% stylesheet %}
   .hlt-hero__grid { display: grid; gap: 40px; align-items: center; }
+  .hlt-hero__copy > .hlt-h1 + .hlt-sub { margin-top: 16px; }
   .hlt-hero__media-wrap { position: relative; }
   .hlt-hero__media { box-shadow: var(--hlt-shadow); }
   @media (min-width: 990px) {
     .hlt-hero--split .hlt-hero__grid { grid-template-columns: 1fr 1fr; gap: 64px; }
     .hlt-hero--media-left .hlt-hero__media-wrap { order: -1; }
   }
+  /* Stacked: centred copy with the image full width underneath. */
+  .hlt-hero--stacked .hlt-hero__copy { max-width: 760px; margin: 0 auto; }
+  .hlt-hero--stacked .hlt-hero__grid { gap: 48px; }
   .hlt-hero--overlay { min-height: min(86vh, 760px); display: flex; align-items: center; }
   .hlt-hero--overlay .hlt-hero__grid { position: relative; z-index: 1; width: 100%; }
   .hlt-hero--overlay .hlt-hero__copy { max-width: 640px; }
@@ -120,7 +124,14 @@
   .hlt-hero__bg picture, .hlt-hero__media picture { display: contents; }
   .hlt-hero__bg { position: absolute; inset: 0; overflow: hidden; }
   .hlt-hero__bg img, .hlt-hero__bg svg { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; }
-  .hlt-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(17, 29, 61, calc(var(--hlt-overlay) + .15)) 0%, rgba(17, 29, 61, var(--hlt-overlay)) 45%, rgba(17, 29, 61, 0) 80%); }
+  .hlt-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(var(--hlt-overlay-rgb, 20, 38, 31), calc(var(--hlt-overlay) + .15)) 0%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), 0) 80%); }
+  /* Phones: with 'Text at the bottom' the copy sits on the empty lower part of
+     the phone crop, and the shade runs bottom to top so light text never
+     lands on an unshaded part of the photo. */
+  @media (max-width: 749px) {
+    .hlt-hero--overlay.hlt-hero--m-bottom { align-items: flex-end; min-height: min(92vh, 720px); }
+    .hlt-hero--m-bottom .hlt-hero__bg::after { background: linear-gradient(0deg, rgba(var(--hlt-overlay-rgb, 20, 38, 31), calc(var(--hlt-overlay) + .3)) 0%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), var(--hlt-overlay)) 45%, rgba(var(--hlt-overlay-rgb, 20, 38, 31), 0) 75%); }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -132,7 +143,8 @@
     { "type": "header", "content": "Layout" },
     { "type": "select", "id": "layout", "label": "Layout", "default": "split", "options": [
       { "value": "split", "label": "Text beside image" },
-      { "value": "overlay", "label": "Text over full-width image" }
+      { "value": "overlay", "label": "Text over full-width image" },
+      { "value": "stacked", "label": "Centred text, image underneath" }
     ] },
     { "type": "select", "id": "media_side", "label": "Image side (split layout)", "default": "right", "options": [
       { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" }
@@ -152,11 +164,14 @@
       { "value": "3 / 4", "label": "Tall portrait" },
       { "value": "16 / 9", "label": "Wide" }
     ] },
-    { "type": "video", "id": "video", "label": "Video (replaces image in split layout)" },
+    { "type": "video", "id": "video", "label": "Video (replaces image in split and stacked layouts)" },
     { "type": "select", "id": "ratio", "label": "Image shape", "default": "4 / 3", "options": [
-      { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" }
+      { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" }, { "value": "3 / 1", "label": "Panorama" }
     ] },
     { "type": "range", "id": "overlay", "label": "Overlay darkness (overlay layout)", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 45 },
+    { "type": "select", "id": "mobile_text_position", "label": "Text position on phones (overlay layout)", "default": "center", "options": [
+      { "value": "center", "label": "Middle" }, { "value": "bottom", "label": "Bottom, over the empty part of the phone image" }
+    ] },
     { "type": "text", "id": "parallax_speed", "label": "Parallax strength", "info": "0 turns it off. 0.1 to 0.3 looks natural.", "default": "0.15" },
     { "type": "checkbox", "id": "show_sparkles", "label": "Show twinkling sparkles", "default": true },
     { "type": "header", "content": "Text" },
@@ -174,7 +189,7 @@
     { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
     { "type": "url", "id": "button_link", "label": "Link (when not scrolling)" },
     { "type": "select", "id": "button_style", "label": "Style", "default": "navy", "options": [
-      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "splash-white", "label": "Splash blue, white text" }
+      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "splash-white", "label": "Splash blue, white text" }, { "value": "white", "label": "White" }
     ] },
     { "type": "header", "content": "Spacing and edges" },
     { "type": "checkbox", "id": "wave_bottom", "label": "Wavy bottom edge", "default": false },

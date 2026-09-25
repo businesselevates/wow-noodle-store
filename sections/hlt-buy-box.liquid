@@ -13,7 +13,9 @@
   comment
     'bundle' is the age + pack buy box. 'simple' is the same page for a product
     that has no such options: the variants become one row of chips, or nothing
-    at all when there is only one.
+    at all when there is only one. 'packs' is one row of pack-size cards, one
+    per Pack card block, each tied to a variant: the cards are the variant
+    picker.
   endcomment
   assign buy_mode = section.settings.buy_mode
   if buy_mode == blank
@@ -23,10 +25,29 @@
   assign prefix = section.settings.price_prefix
   assign anchor = section.settings.anchor_id | default: 'hlt-buy-box'
   assign age_blocks = section.blocks | where: 'type', 'age'
-  if buy_mode == 'simple'
+  assign pack_blocks = section.blocks | where: 'type', 'pack'
+  if buy_mode != 'bundle'
     assign age_blocks = section.blocks | where: 'type', 'hlt-no-such-block'
   endif
+  if buy_mode != 'packs'
+    assign pack_blocks = section.blocks | where: 'type', 'hlt-no-such-block'
+  endif
   assign first_age = age_blocks.first
+
+  comment
+    The pack that is chosen when the page loads: the first one ticked as
+    selected, otherwise the first pack.
+  endcomment
+  assign initial_key = ''
+  for pack in pack_blocks
+    if pack.settings.selected and initial_key == ''
+      assign initial_key = pack.id
+    endif
+  endfor
+  if initial_key == '' and pack_blocks.size > 0
+    assign initial_key = pack_blocks.first.id
+  endif
+  assign initial_price = ''
   assign use_product_images = section.settings.gallery_from_product
   assign variant_image_ids = ''
   if product != blank
@@ -44,8 +65,18 @@
     every product image is a tile.
   endcomment
   assign skip_image_ids = variant_image_ids
-  if buy_mode == 'simple'
+  if buy_mode != 'bundle'
     assign skip_image_ids = ''
+  endif
+
+  comment
+    Desktop shows the first image full width and a 2-column grid of tiles
+    under it. When an age image leads, the tiles are the next four; when a
+    tile leads, it is the first of five, so the grid under it stays even.
+  endcomment
+  assign tiles_before_view_all = 4
+  if age_blocks.size == 0 or section.settings.age_image_first == false
+    assign tiles_before_view_all = 5
   endif
 
   assign bb_title = section.settings.title
@@ -58,6 +89,7 @@
 {
   "addLabel": {{ section.settings.add_label | json }},
   "soldOutLabel": {{ section.settings.sold_out_label | json }},
+  "initial": {{ initial_key | json }},
   "ages": [
     {%- if buy_mode == 'simple' -%}
       {%- comment -%}
@@ -90,6 +122,54 @@
           }{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       {%- endif -%}
+    {%- elsif buy_mode == 'packs' -%}
+      {%- comment -%}
+        One entry per pack card, keyed by the block, with its variant under
+        both keys like simple mode. Whole-dollar prices drop the ".00".
+      {%- endcomment -%}
+      {%- for pack in pack_blocks -%}
+        {%- liquid
+          assign pv = nil
+          assign pack_index = forloop.index0
+          if product != blank
+            if pack.settings.option_value != blank
+              for v in product.variants
+                if v.title == pack.settings.option_value or v.option1 == pack.settings.option_value
+                  assign pv = v
+                  break
+                endif
+              endfor
+            else
+              assign pv = product.variants[pack_index]
+            endif
+          endif
+          assign p_price = pack.settings.fallback_price
+          assign p_compare = nil
+          assign p_save = nil
+          if pv
+            assign p_price = pv.price | money_without_currency | remove: '.00'
+            if pv.compare_at_price > pv.price
+              assign p_compare = pv.compare_at_price | money_without_currency | remove: '.00'
+              assign p_save = pv.compare_at_price | minus: pv.price | money_without_currency | remove: '.00'
+            endif
+          endif
+          if pack.id == initial_key
+            assign initial_price = p_price
+          endif
+        -%}
+        {%- capture p_money -%}
+          "id": {% if pv %}{{ pv.id }}{% else %}null{% endif %},
+          "available": {% if pv %}{{ pv.available }}{% else %}false{% endif %},
+          "price": {{ p_price | json }},
+          "compare": {% if p_compare %}{{ p_compare | json }}{% else %}null{% endif %},
+          "save": {% if p_save %}{{ p_save | json }}{% else %}null{% endif %}
+        {%- endcapture -%}
+        {
+          "key": {{ pack.id | json }},
+          "standard": { {{ p_money }} },
+          "value": { {{ p_money }} }
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
     {%- else -%}
     {%- for age in age_blocks -%}
       {%- liquid
@@ -192,7 +272,7 @@
               {%- assign needle = ',' | append: image.id | append: ',' -%}
               {%- unless skip_image_ids contains needle -%}
                 {%- assign hlt_tile_n = hlt_tile_n | plus: 1 -%}
-                <figure class="hlt-bb__slide{% if hlt_tile_n > 4 %} hlt-bb__slide--extra{% endif %}" data-hlt-slide="prod-{{ image.id }}">
+                <figure class="hlt-bb__slide{% if hlt_tile_n > tiles_before_view_all %} hlt-bb__slide--extra{% endif %}" data-hlt-slide="prod-{{ image.id }}">
                   <div class="hlt-media" style="--hlt-ratio: 1 / 1;">
                     {{ image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
                   </div>
@@ -214,7 +294,7 @@
                 endif
               -%}
               <figure
-                class="hlt-bb__slide{% if block.settings.style == 'quote' %} hlt-bb__slide--quote{% endif %}{% if hlt_tile_n > 4 %} hlt-bb__slide--extra{% endif %}"
+                class="hlt-bb__slide{% if block.settings.style == 'quote' %} hlt-bb__slide--quote{% endif %}{% if hlt_tile_n > tiles_before_view_all %} hlt-bb__slide--extra{% endif %}"
                 data-hlt-slide="{{ block.id }}"
                 {% if block.settings.only_for == 'value' %}data-hlt-size-only="value" hidden{% endif %}
                 {{ block.shopify_attributes }}
@@ -248,7 +328,7 @@
         <div class="hlt-bb__dots" data-hlt-dots aria-hidden="true"></div>
       </div>
 
-      {%- if hlt_tile_n > 4 -%}
+      {%- if hlt_tile_n > tiles_before_view_all -%}
         <button type="button" class="hlt-bb__view-all" data-hlt-view-all data-hlt-label-more="{{ section.settings.view_all_label | default: 'View all' | escape }}" data-hlt-label-less="{{ section.settings.view_less_label | default: 'View less' | escape }}" aria-expanded="false">
           <span data-hlt-view-all-label>{{ section.settings.view_all_label | default: 'View all' }}</span>
         </button>
@@ -335,7 +415,7 @@
         </ul>
       {%- endif -%}
       {%- if section.settings.show_eyebrow and section.settings.eyebrow != blank -%}<p class="hlt-overline">{{ section.settings.eyebrow }}</p>{%- endif -%}
-      {%- if bb_title != blank -%}<h2 class="hlt-h2 hlt-bb__title" style="--hlt-title-size: {{ section.settings.title_size }}px;">{{ bb_title }}</h2>{%- endif -%}
+      {%- if bb_title != blank -%}<h1 class="hlt-h2 hlt-bb__title" style="--hlt-title-size: {{ section.settings.title_size }}px;">{{ bb_title }}</h1>{%- endif -%}
       {%- if section.settings.body != blank -%}<div class="hlt-body">{{ section.settings.body }}</div>{%- endif -%}
     </div>
 
@@ -513,11 +593,96 @@
         </div>
         {%- endif -%}
 
+        {%- if pack_blocks.size > 0 -%}
+        {%- comment -%}
+          Pack mode: the cards are the variant picker. The id lets buttons
+          further down the page scroll straight to the cards rather than to the
+          top of the section.
+        {%- endcomment -%}
+        <div class="hlt-bb__group" id="{{ anchor }}-packs" tabindex="-1">
+          {%- if section.settings.bundle_label != blank -%}<p class="hlt-bb__label">{{ section.settings.bundle_label }}</p>{%- endif -%}
+          <div class="hlt-bb__cards hlt-bb__cards--packs" role="radiogroup" aria-label="{{ section.settings.bundle_label | default: section.settings.variant_label | default: 'Pack size' | escape }}">
+            {%- for pack in pack_blocks -%}
+              {%- liquid
+                assign pv = nil
+                assign pack_index = forloop.index0
+                if product != blank
+                  if pack.settings.option_value != blank
+                    for v in product.variants
+                      if v.title == pack.settings.option_value or v.option1 == pack.settings.option_value
+                        assign pv = v
+                        break
+                      endif
+                    endfor
+                  else
+                    assign pv = product.variants[pack_index]
+                  endif
+                endif
+                assign card_price = pack.settings.price
+                if card_price == blank
+                  if pv
+                    assign card_price = pv.price | money_without_currency | remove: '.00' | prepend: prefix
+                  else
+                    assign card_price = pack.settings.fallback_price | prepend: prefix
+                  endif
+                endif
+                assign card_compare = ''
+                if pv and pv.compare_at_price > pv.price
+                  assign card_compare = pv.compare_at_price | money_without_currency | remove: '.00' | prepend: prefix
+                endif
+                assign card_on = false
+                if pack.id == initial_key
+                  assign card_on = true
+                endif
+                assign pack_bullets = pack.settings.bullets | newline_to_br | split: '<br />'
+              -%}
+              <div
+                class="hlt-bb__card hlt-bb__card--pack{% if pack.settings.featured %} hlt-bb__card--featured{% endif %}{% if card_on %} is-selected{% endif %}"
+                role="radio"
+                tabindex="0"
+                data-hlt-age="{{ pack.id }}"
+                aria-checked="{{ card_on }}"
+                {{ pack.shopify_attributes }}
+              >
+                {%- if pack.settings.tag != blank -%}<span class="hlt-bb__card-tag">{{ pack.settings.tag }}</span>{%- endif -%}
+                {%- if pack.settings.save != blank -%}<span class="hlt-bb__card-save">{{ pack.settings.save }}</span>{%- endif -%}
+                <span class="hlt-bb__radio" aria-hidden="true"></span>
+                <div class="hlt-bb__card-head">
+                  <div>
+                    <p class="hlt-h4">{{ pack.settings.title }}</p>
+                    {%- if pack.settings.line != blank -%}<p class="hlt-bb__card-line">{{ pack.settings.line }}</p>{%- endif -%}
+                  </div>
+                  <div class="hlt-bb__card-price">
+                    <div>
+                      <p class="hlt-bb__price">{{ card_price }}</p>
+                      {%- if card_compare != blank -%}<p class="hlt-bb__was">{{ section.settings.compare_label | default: 'was' }} {{ card_compare }}</p>{%- endif -%}
+                      {%- if pack.settings.per != blank -%}<p class="hlt-bb__per">{{ pack.settings.per }}</p>{%- endif -%}
+                    </div>
+                  </div>
+                </div>
+                {%- assign pack_has_bullets = false -%}
+                {%- for b in pack_bullets -%}{%- assign bb = b | strip -%}{%- if bb != blank -%}{%- assign pack_has_bullets = true -%}{%- endif -%}{%- endfor -%}
+                {%- if pack_has_bullets -%}
+                  <ul class="hlt-bb__bullets">
+                    {%- for b in pack_bullets -%}
+                      {%- assign bb = b | strip -%}
+                      {%- if bb != blank -%}<li>{{ bb }}</li>{%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+        {%- endif -%}
+
         <div class="hlt-stack" style="--hlt-gap: 14px;">
           <button type="button" class="hlt-btn hlt-btn--block hlt-bb__add" data-hlt-add-bundle>
             {%- liquid
               if buy_mode == 'simple' and product != blank
                 assign add_fallback_price = product.selected_or_first_available_variant.price | money_without_currency
+              elsif buy_mode == 'packs'
+                assign add_fallback_price = initial_price
               else
                 assign add_fallback_price = first_age.settings.fallback_standard
               endif
@@ -525,6 +690,9 @@
             <span><span data-hlt-btn-label>{{ section.settings.add_label }}</span><span class="hlt-bb__add-price" data-hlt-price-wrap>, {{ prefix }}<span data-hlt-btn-price>{{ add_fallback_price }}</span></span></span>
           </button>
           <p class="hlt-bb__error" role="alert" data-hlt-error hidden></p>
+          {%- if section.settings.button_note != blank -%}
+            <p class="hlt-bb__note">{{ section.settings.button_note }}</p>
+          {%- endif -%}
 
           {%- assign badge_blocks = section.blocks | where: 'type', 'badge' -%}
           {%- assign badge_cols = badge_blocks.size -%}
@@ -693,6 +861,10 @@
       if product != blank
         assign show_sticky = true
       endif
+    elsif buy_mode == 'packs'
+      if pack_blocks.size > 0
+        assign show_sticky = true
+      endif
     elsif age_blocks.size > 0
       assign show_sticky = true
     endif
@@ -710,6 +882,13 @@
         <span class="visually-hidden">{{ section.settings.age_label }}</span>
         <select data-hlt-sticky-age>
           {%- for age in age_blocks -%}<option value="{{ age.id }}">{{ age.settings.chip_label }}</option>{%- endfor -%}
+        </select>
+      </label>
+      {%- elsif pack_blocks.size > 0 -%}
+      <label class="hlt-sticky__field">
+        <span class="visually-hidden">{{ section.settings.bundle_label | default: section.settings.variant_label | default: 'Pack size' }}</span>
+        <select data-hlt-sticky-age>
+          {%- for pack in pack_blocks -%}<option value="{{ pack.id }}"{% if pack.id == initial_key %} selected{% endif %}>{{ pack.settings.title }}</option>{%- endfor -%}
         </select>
       </label>
       {%- elsif buy_mode == 'simple' and product.variants.size > 1 -%}
@@ -940,7 +1119,7 @@
   "max_blocks": 40,
   "settings": [
     { "type": "header", "content": "Product" },
-    { "type": "select", "id": "buy_mode", "label": "Buy box", "default": "bundle", "info": "Bundle needs an age option (first) and a size option (second). Single suits any other product, including one with no options at all.", "options": [ { "value": "bundle", "label": "Bundle (age + pack)" }, { "value": "simple", "label": "Single product" } ] },
+    { "type": "select", "id": "buy_mode", "label": "Buy box", "default": "bundle", "info": "Bundle needs an age option (first) and a size option (second). Pack sizes shows one card per 'Pack card' block, each tied to a variant. Single suits any other product, including one with no options at all.", "options": [ { "value": "bundle", "label": "Bundle (age + pack)" }, { "value": "packs", "label": "Pack sizes (one card per variant)" }, { "value": "simple", "label": "Single product" } ] },
     { "type": "product", "id": "product", "label": "Product", "info": "Leave empty and the section shows the product whose page it is on, so one template serves every product. Pick one to pin the section to it." },
     { "type": "header", "content": "Single product panel" },
     { "type": "paragraph", "content": "The panel that replaces the two pack cards. It carries the price, the saving and what the money buys." },
@@ -984,6 +1163,7 @@
     { "type": "text", "id": "bundle_label", "label": "Bundle label", "default": "Pick your bundle" },
     { "type": "text", "id": "add_label", "label": "Add to cart label", "default": "Add to cart" },
     { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
+    { "type": "text", "id": "button_note", "label": "Small print under Add to cart", "info": "For example an allergen line. Leave empty to hide it." },
     { "type": "header", "content": "Card 1 (Standard)" },
     { "type": "text", "id": "card1_title", "label": "Title", "default": "Standard" },
     { "type": "text", "id": "card1_tag", "label": "Corner tag" },
@@ -1028,6 +1208,24 @@
       ]
     },
     {
+      "type": "pack",
+      "name": "Pack card",
+      "settings": [
+        { "type": "paragraph", "content": "Used when the buy box is set to 'Pack sizes'. One card per variant, in the order of these blocks." },
+        { "type": "text", "id": "title", "label": "Title", "default": "10 packs" },
+        { "type": "text", "id": "line", "label": "Line", "info": "Under the title, for example what arrives and how it ships." },
+        { "type": "text", "id": "option_value", "label": "Matching variant", "info": "The variant's name or first option value, for example: 10 packs. Leave empty to use the variant in the same position as this card." },
+        { "type": "checkbox", "id": "selected", "label": "Selected when the page loads", "default": false },
+        { "type": "checkbox", "id": "featured", "label": "Highlight this card", "info": "Gives the savings badge the accent colour.", "default": false },
+        { "type": "text", "id": "tag", "label": "Corner tag", "info": "Top right, for example: Most popular." },
+        { "type": "text", "id": "save", "label": "Savings badge", "info": "Top left on the card's border. Leave empty to hide it." },
+        { "type": "text", "id": "price", "label": "Price text", "info": "Leave empty to show the variant's own price, which keeps the card and the button in step." },
+        { "type": "text", "id": "per", "label": "Per-pack line", "info": "Under the price, for example: S$3.70 a pack." },
+        { "type": "textarea", "id": "bullets", "label": "Bullets", "info": "One per line. Leave empty for a compact card." },
+        { "type": "text", "id": "fallback_price", "label": "Button price if the variant is missing", "info": "Without the prefix, for example: 37." }
+      ]
+    },
+    {
       "type": "gallery_image",
       "name": "Gallery image",
       "settings": [
@@ -1057,6 +1255,7 @@
           { "value": "droplet", "label": "Droplet" }, { "value": "heart", "label": "Heart" }, { "value": "sparkle", "label": "Sparkle" },
           { "value": "clock", "label": "Clock" }, { "value": "truck", "label": "Truck" }, { "value": "stroller", "label": "Stroller" },
           { "value": "lock", "label": "Lock" }, { "value": "gift", "label": "Gift" }, { "value": "star", "label": "Star" },
+          { "value": "bowl", "label": "Noodle bowl" }, { "value": "chopsticks", "label": "Chopsticks" }, { "value": "gauge", "label": "Gauge" },
           { "value": "check", "label": "Check" }
         ] }
       ]
@@ -1068,7 +1267,8 @@
         { "type": "select", "id": "icon", "label": "Icon", "default": "certificate", "options": [
           { "value": "certificate", "label": "Certificate" }, { "value": "leaf", "label": "Leaf" }, { "value": "truck", "label": "Truck" },
           { "value": "return", "label": "Return" }, { "value": "lock", "label": "Lock" }, { "value": "package", "label": "Package" },
-          { "value": "clock", "label": "Clock" }, { "value": "heart", "label": "Heart" }, { "value": "check", "label": "Check" }
+          { "value": "clock", "label": "Clock" }, { "value": "heart", "label": "Heart" }, { "value": "check", "label": "Check" },
+          { "value": "bowl", "label": "Noodle bowl" }, { "value": "gauge", "label": "Gauge" }, { "value": "award", "label": "Award" }
         ] },
         { "type": "image_picker", "id": "logo", "label": "Logo (replaces icon)", "info": "For example the organic certifier's logo." },
         { "type": "text", "id": "text", "label": "Text", "info": "Keep it to two or three words so the grid stays tidy.", "default": "Halal certified" }
