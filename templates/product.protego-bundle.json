@@ -1,0 +1,1447 @@
+{
+  "sections": {
+    "hlt_page_settings": {
+      "type": "hlt-page-settings",
+      "settings": {
+        "hide_menu": false,
+        "hide_announcement": false
+      }
+    },
+    "hlt_buy_box": {
+      "type": "hlt-buy-box",
+      "blocks": {
+        "tag_protein": {
+          "type": "tag",
+          "settings": {
+            "text": "31.9g protein per 100g",
+            "icon": "bowl"
+          }
+        },
+        "tag_taste": {
+          "type": "tag",
+          "settings": {
+            "text": "Tastes like soba",
+            "icon": "chopsticks"
+          }
+        },
+        "tag_time": {
+          "type": "tag",
+          "settings": {
+            "text": "Ready in 5 minutes",
+            "icon": "clock"
+          }
+        },
+        "pack_10": {
+          "type": "pack",
+          "settings": {
+            "title": "10 packs",
+            "line": "Trial size. Shipping at checkout",
+            "option_value": "",
+            "selected": false,
+            "featured": false,
+            "tag": "",
+            "save": "",
+            "price": "",
+            "per": "S$3.70 a pack",
+            "bullets": "",
+            "fallback_price": "37"
+          }
+        },
+        "pack_20": {
+          "type": "pack",
+          "settings": {
+            "title": "20 packs",
+            "line": "Free shipping",
+            "option_value": "",
+            "selected": false,
+            "featured": false,
+            "tag": "",
+            "save": "",
+            "price": "",
+            "per": "S$3.70 a pack",
+            "bullets": "",
+            "fallback_price": "74"
+          }
+        },
+        "pack_40": {
+          "type": "pack",
+          "settings": {
+            "title": "40 packs",
+            "line": "Free shipping + 5 extra packs, so 45 arrive",
+            "option_value": "",
+            "selected": true,
+            "featured": true,
+            "tag": "Most popular",
+            "save": "",
+            "price": "",
+            "per": "S$3.29 a pack",
+            "bullets": "",
+            "fallback_price": "148"
+          }
+        },
+        "pack_100": {
+          "type": "pack",
+          "settings": {
+            "title": "100 packs",
+            "line": "Free shipping + 15 extra packs, so 115 arrive",
+            "option_value": "",
+            "selected": false,
+            "featured": false,
+            "tag": "",
+            "save": "",
+            "price": "",
+            "per": "S$3.22 a pack",
+            "bullets": "",
+            "fallback_price": "370"
+          }
+        },
+        "gallery_image_1": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "31.9g of protein per 100g, before you add anything.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_2": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "Same bowl. Swap what it is made of.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_3": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "Springy, like soba.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_4": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "Laksa Monday. Soba Tuesday. Soup Wednesday.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_5": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "One pack. One serving. One meal.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_6": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "Boil 5 minutes. Drain. Done.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "gallery_image_7": {
+          "type": "gallery_image",
+          "settings": {
+            "show": true,
+            "style": "photo",
+            "image_text": "Every figure on this page is on the back of the pack.",
+            "only_for": "all",
+            "pending_text": "",
+            "use_pending_text": false
+          }
+        },
+        "badge_protein": {
+          "type": "badge",
+          "settings": {
+            "icon": "bowl",
+            "text": "31.9g protein per 100g"
+          }
+        },
+        "badge_gi": {
+          "type": "badge",
+          "settings": {
+            "icon": "gauge",
+            "text": "Low GI"
+          }
+        },
+        "badge_plant": {
+          "type": "badge",
+          "settings": {
+            "icon": "leaf",
+            "text": "100% plant-based"
+          }
+        },
+        "badge_delivery": {
+          "type": "badge",
+          "settings": {
+            "icon": "truck",
+            "text": "Free delivery above S$70"
+          }
+        },
+        "badge_secure": {
+          "type": "badge",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "dropdown_more": {
+          "type": "dropdown",
+          "settings": {
+            "show": true,
+            "title": "Tell me more",
+            "open": false,
+            "link_label": "",
+            "link": "",
+            "pending_text": "",
+            "show_pending": false,
+            "text": "<p>The staple in most meals does nothing for your protein target, so every gram has to come from the meat, and by the third day of the same dish you are done with it. ProTEGO is made to be the part of the meal that counts. It is an Asian noodle with 31.9g of protein and 12.7g of fibre per 100g, which is 25.5g and 10.2g in an 80g pack, built from four ingredients and nothing else. It cooks in five minutes, tastes like soba, and takes on whatever you cook it in, so the same pack is laksa on Monday and cold soba on Tuesday. Low GI, very low in sodium, no MSG, no preservatives, 100% plant-based.</p>"
+          }
+        },
+        "dropdown_inside": {
+          "type": "dropdown",
+          "settings": {
+            "show": true,
+            "title": "What's inside",
+            "open": false,
+            "link_label": "",
+            "link": "",
+            "pending_text": "",
+            "show_pending": false,
+            "text": "<p>Four ingredients: highland green barley flour, gluten, peanut protein powder and sweet potato fibre powder. No MSG, no additives, no preservatives, 100% plant-based.</p><p>Per 80g pack: 25.5g protein, 10.2g fibre, 31.8g carbohydrate, 272 kcal. One pack is one serving.<br>Per 100g: 31.9g protein, 12.7g fibre, 39.7g carbohydrate, 3.2g sugar, 2.5g fat, 9.16mg sodium.</p><p>The protein is second-life protein made from oil meals. The sweet potato fibre is a by-product of potato noodle production.</p><p>Contains gluten and peanut. Manufactured on shared equipment with soy and sesame.</p>"
+          }
+        },
+        "dropdown_cook": {
+          "type": "dropdown",
+          "settings": {
+            "show": true,
+            "title": "How to cook it",
+            "open": false,
+            "link_label": "",
+            "link": "",
+            "pending_text": "",
+            "show_pending": false,
+            "text": "<p>Boil one 80g pack for five minutes and drain, or cook it straight in the stock, soup or stew you are making. Add an egg, a slice of fish or whatever protein you have, then a sauce or a soup: dashi, laksa, sesame and soy, pesto.</p><p>One pack cooks up to 2.4 times its dry weight, so it fills a bowl. Use it anywhere you would use soba, ramen, udon or spaghetti. It holds its shape through long cooking, and the next day in a meal prep box.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "tag_protein",
+        "tag_taste",
+        "tag_time",
+        "pack_10",
+        "pack_20",
+        "pack_40",
+        "pack_100",
+        "gallery_image_1",
+        "gallery_image_2",
+        "gallery_image_3",
+        "gallery_image_4",
+        "gallery_image_5",
+        "gallery_image_6",
+        "gallery_image_7",
+        "badge_protein",
+        "badge_gi",
+        "badge_plant",
+        "badge_delivery",
+        "badge_secure",
+        "dropdown_more",
+        "dropdown_inside",
+        "dropdown_cook"
+      ],
+      "settings": {
+        "buy_mode": "packs",
+        "product": "",
+        "variant_label": "Pack size",
+        "compare_label": "was",
+        "save_label": "Save",
+        "price_prefix": "S$",
+        "anchor_id": "hlt-buy-box",
+        "age_image_first": false,
+        "gallery_from_product": false,
+        "view_all_label": "View all",
+        "view_less_label": "View less",
+        "tile_captions": true,
+        "sticky_bar": true,
+        "show_rating": true,
+        "rating_value": 5,
+        "rating_text": "4.9 across 14 reviews",
+        "show_badge2": false,
+        "badge2_text": "",
+        "show_eyebrow": true,
+        "eyebrow": "W0W® ProTEGO®, high-protein noodles",
+        "title": "ProTEGO® Peanut, 80g packs",
+        "title_size": 32,
+        "body": "<p>An Asian noodle with 31.9g of protein per 100g, 25.5g in every 80g pack. Swap it for the rice, noodles or pasta you were going to eat anyway.</p>",
+        "tags": "",
+        "bundle_label": "",
+        "add_label": "Add to cart",
+        "sold_out_label": "Sold out",
+        "button_note": "Contains gluten and peanut. Manufactured on shared equipment with soy and sesame.",
+        "show_gift": false,
+        "background": "paper",
+        "padding_top": 32,
+        "padding_bottom": 48
+      }
+    },
+    "wow_served_at": {
+      "type": "hlt-logos",
+      "blocks": {
+        "venue_courtyard": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Courtyard by Marriott Novena",
+            "caption": ""
+          }
+        },
+        "venue_teats": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "Teats",
+            "caption": ""
+          }
+        },
+        "venue_five_star": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "5 Star Chicken Rice",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "venue_courtyard",
+        "venue_teats",
+        "venue_five_star"
+      ],
+      "settings": {
+        "layout": "strip",
+        "align": "center",
+        "overline": "You may have eaten it already",
+        "heading": "",
+        "text": "",
+        "small_print": "<p>Restaurants, hotels and meal services in Singapore that cook with W0W® ProTEGO®.</p>",
+        "grayscale": true,
+        "logo_height": 64,
+        "columns": 5,
+        "background": "cream",
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
+    },
+    "wow_hook": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "overlay",
+        "media_side": "right",
+        "background": "navy",
+        "ratio_mobile": "",
+        "ratio": "16 / 9",
+        "overlay": 45,
+        "mobile_text_position": "bottom",
+        "parallax_speed": "0.12",
+        "show_sparkles": false,
+        "overline": "",
+        "heading": "A bowl of noodles that counts as your protein.",
+        "use_h1": false,
+        "subheading": "31.9g of protein per 100g. Tastes like soba. Ready in five minutes.",
+        "body": "",
+        "body_color": "white",
+        "button_label": "Choose your pack size",
+        "button_scroll": true,
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_link": "",
+        "button_style": "white",
+        "wave_bottom": false,
+        "wave_color": "cream",
+        "padding_top": 120,
+        "padding_bottom": 120
+      }
+    },
+    "wow_problem": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Chicken breast again.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_filler": {
+          "type": "body",
+          "settings": {
+            "text": "<p>One carb filler, one meat, one veg. The filler does nothing for your protein target, so every gram has to come from the meat.</p>",
+            "large": true
+          }
+        },
+        "body_repeat": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Which is why you are eating the same two dishes on repeat. \"Boring AF.\" \"Gets sickening fast.\" \"Same thing by the third day.\"</p>",
+            "large": true
+          }
+        },
+        "subheading": {
+          "type": "subheading",
+          "settings": {
+            "text": "That is the meal's fault, not yours."
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "body_filler",
+        "body_repeat",
+        "subheading"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "cream",
+        "ratio": "4 / 3",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_swap": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "The filler can be the protein.",
+            "size": "hlt-h2"
+          }
+        },
+        "body": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Swap the rice, noodles or pasta for ProTEGO®. Same bowl, same sauce, same sides, same table. The base now carries 31.9g of protein per 100g, 25.5g in an 80g pack, before you add anything, so the meat can shrink or sit out altogether.</p>",
+            "large": true
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "label": "Choose your pack size",
+            "scroll": true,
+            "scroll_target": "#hlt-buy-box-packs",
+            "link": "",
+            "style": "navy"
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "body",
+        "button"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "left",
+        "background": "paper",
+        "ratio": "4 / 3",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_number": {
+      "type": "hlt-stats",
+      "blocks": {
+        "tile_protein": {
+          "type": "tile",
+          "settings": {
+            "value": "31.9g",
+            "label": "protein",
+            "detail": "25.5g in an 80g pack",
+            "icon": "none"
+          }
+        },
+        "tile_fibre": {
+          "type": "tile",
+          "settings": {
+            "value": "12.7g",
+            "label": "fibre per 100g",
+            "detail": "10.2g a pack",
+            "icon": "none"
+          }
+        },
+        "tile_kcal": {
+          "type": "tile",
+          "settings": {
+            "value": "340",
+            "label": "kcal per 100g",
+            "detail": "272 a pack",
+            "icon": "none"
+          }
+        },
+        "tile_pack": {
+          "type": "tile",
+          "settings": {
+            "value": "1 pack",
+            "label": "is 80g, one serving, one meal",
+            "detail": "",
+            "icon": "none"
+          }
+        }
+      },
+      "block_order": [
+        "tile_protein",
+        "tile_fibre",
+        "tile_kcal",
+        "tile_pack"
+      ],
+      "settings": {
+        "align": "left",
+        "overline": "",
+        "heading": "31.9g of protein per 100g.",
+        "text": "",
+        "columns": 4,
+        "body": "<p>Not just high in protein but an excellent source of protein under the Singapore Food Agency's Food Regulations: about 38% of its calories come from protein.</p>",
+        "small_print": "",
+        "button_label": "",
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_style": "navy",
+        "background": "splash-pale",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_taste": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "It tastes like soba.",
+            "size": "hlt-h2"
+          }
+        },
+        "body": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Springy, with a bite that holds all the way through the bowl. It takes on whatever you cook it in, so a laksa tastes of laksa.</p>",
+            "large": true
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "body"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "left",
+        "background": "paper",
+        "ratio": "1 / 1",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_compare": {
+      "type": "hlt-compare",
+      "blocks": {
+        "bar_1": {
+          "type": "bar",
+          "settings": {
+            "label": "Bee hoon",
+            "sublabel": "",
+            "value": "5.6",
+            "value_text": "5.6g",
+            "extra_text": "360 kcal",
+            "highlight": false
+          }
+        },
+        "bar_2": {
+          "type": "bar",
+          "settings": {
+            "label": "White rice",
+            "sublabel": "",
+            "value": "7.1",
+            "value_text": "7.1g",
+            "extra_text": "365 kcal",
+            "highlight": false
+          }
+        },
+        "bar_3": {
+          "type": "bar",
+          "settings": {
+            "label": "Pasta",
+            "sublabel": "",
+            "value": "13.0",
+            "value_text": "13.0g",
+            "extra_text": "371 kcal",
+            "highlight": false
+          }
+        },
+        "bar_4": {
+          "type": "bar",
+          "settings": {
+            "label": "Wholemeal pasta",
+            "sublabel": "",
+            "value": "13.5",
+            "value_text": "13.5g",
+            "extra_text": "362 kcal",
+            "highlight": false
+          }
+        },
+        "bar_5": {
+          "type": "bar",
+          "settings": {
+            "label": "Mee sua",
+            "sublabel": "",
+            "value": "14.0",
+            "value_text": "14.0g",
+            "extra_text": "370 kcal",
+            "highlight": false
+          }
+        },
+        "bar_6": {
+          "type": "bar",
+          "settings": {
+            "label": "Egg noodles (mee)",
+            "sublabel": "",
+            "value": "14.2",
+            "value_text": "14.2g",
+            "extra_text": "384 kcal",
+            "highlight": false
+          }
+        },
+        "bar_7": {
+          "type": "bar",
+          "settings": {
+            "label": "Soba",
+            "sublabel": "",
+            "value": "14.4",
+            "value_text": "14.4g",
+            "extra_text": "336 kcal",
+            "highlight": false
+          }
+        },
+        "bar_8": {
+          "type": "bar",
+          "settings": {
+            "label": "Protein pasta",
+            "sublabel": "",
+            "value": "20",
+            "value_text": "20g",
+            "extra_text": "354 kcal",
+            "highlight": false
+          }
+        },
+        "bar_9": {
+          "type": "bar",
+          "settings": {
+            "label": "ProTEGO®",
+            "sublabel": "25.5g in one 80g pack",
+            "value": "31.9",
+            "value_text": "31.9g",
+            "extra_text": "340 kcal",
+            "highlight": true
+          }
+        },
+        "row_1": {
+          "type": "row",
+          "settings": {
+            "label": "Protein",
+            "them": "5.6g to 20g",
+            "us": "31.9g",
+            "win": true
+          }
+        },
+        "row_2": {
+          "type": "row",
+          "settings": {
+            "label": "Calories",
+            "them": "336 to 384 kcal",
+            "us": "340 kcal",
+            "win": false
+          }
+        },
+        "row_3": {
+          "type": "row",
+          "settings": {
+            "label": "Carbohydrate",
+            "them": "63g to 81g",
+            "us": "39.7g",
+            "win": true
+          }
+        },
+        "row_4": {
+          "type": "row",
+          "settings": {
+            "label": "Protein per 100 calories",
+            "them": "1.6g to 5.7g",
+            "us": "9.4g",
+            "win": true
+          }
+        },
+        "row_5": {
+          "type": "row",
+          "settings": {
+            "label": "Fibre",
+            "them": "1.3g to 10.1g",
+            "us": "12.7g",
+            "win": true
+          }
+        },
+        "row_6": {
+          "type": "row",
+          "settings": {
+            "label": "Low GI",
+            "them": "Rarely tested, and almost never stated on the pack",
+            "us": "Yes, tested at an accredited lab",
+            "win": true
+          }
+        },
+        "row_7": {
+          "type": "row",
+          "settings": {
+            "label": "What is in it",
+            "them": "Varies, often a long list",
+            "us": "Four ingredients, printed on the pack",
+            "win": true
+          }
+        },
+        "row_8": {
+          "type": "row",
+          "settings": {
+            "label": "Works in laksa, soup, stir fry, pesto",
+            "them": "Yes",
+            "us": "Yes",
+            "win": false
+          }
+        },
+        "row_9": {
+          "type": "row",
+          "settings": {
+            "label": "Fills you up",
+            "them": "Yes",
+            "us": "Yes. Cooks to 2.4 times its dry weight",
+            "win": false
+          }
+        },
+        "row_10": {
+          "type": "row",
+          "settings": {
+            "label": "The texture you grew up with",
+            "them": "Yes",
+            "us": "Close. Most people say soba",
+            "win": false
+          }
+        }
+      },
+      "block_order": [
+        "bar_1",
+        "bar_2",
+        "bar_3",
+        "bar_4",
+        "bar_5",
+        "bar_6",
+        "bar_7",
+        "bar_8",
+        "bar_9",
+        "row_1",
+        "row_2",
+        "row_3",
+        "row_4",
+        "row_5",
+        "row_6",
+        "row_7",
+        "row_8",
+        "row_9",
+        "row_10"
+      ],
+      "settings": {
+        "overline": "",
+        "heading": "The same 100g of noodles, before you cook it.",
+        "text": "<p>Every nutrition panel in Singapore is printed per 100g, so this is the number you can check against any packet on the shelf.</p>",
+        "label_heading": "Noodle",
+        "value_heading": "Protein",
+        "extra_heading": "Calories",
+        "bar_max": "",
+        "chart_note": "<p>Weighed dry, as sold. Rice, pasta, wholemeal pasta, egg noodles and soba from Singapore's Health Promotion Board food composition database. Mee sua and bee hoon read from supermarket packs. Protein pasta from the manufacturer's published panel. ProTEGO® from its own nutrition panel. Other brands will vary a little.</p>",
+        "table_heading": "Swap the staple. Here is exactly what changes.",
+        "table_text": "",
+        "col1_label": "Per 100g, dry",
+        "them_label": "A normal noodle, rice or pasta",
+        "us_label": "ProTEGO®",
+        "button_label": "Choose your pack size",
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_style": "navy",
+        "background": "paper",
+        "padding_top": 72,
+        "padding_bottom": 80
+      }
+    },
+    "wow_cook": {
+      "type": "hlt-steps",
+      "blocks": {
+        "step_boil": {
+          "type": "step",
+          "settings": {
+            "title": "1. Boil.",
+            "text": "<p>One pack, five minutes, drain. Or cook it straight in your soup or stock.</p>"
+          }
+        },
+        "step_protein": {
+          "type": "step",
+          "settings": {
+            "title": "2. Add a protein.",
+            "text": "<p>An egg, a slice of fish, whatever you have.</p>"
+          }
+        },
+        "step_sauce": {
+          "type": "step",
+          "settings": {
+            "title": "3. Add a sauce or a soup.",
+            "text": "<p>Dashi, laksa, sesame and soy, pesto.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "step_boil",
+        "step_protein",
+        "step_sauce"
+      ],
+      "settings": {
+        "align": "left",
+        "overline": "",
+        "heading": "Five minutes, three steps.",
+        "text": "",
+        "columns": 3,
+        "ratio": "4 / 3",
+        "show_numbers": false,
+        "body": "<p>Already had a dish in mind? Use it anywhere you would use soba, ramen, udon or spaghetti.</p>",
+        "button_label": "Choose your pack size",
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_style": "navy",
+        "background": "cream",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_people": {
+      "type": "elv-trusted-marquee",
+      "blocks": {
+        "card_stroobant": {
+          "type": "card",
+          "settings": {
+            "name": "Emmanuel Stroobant",
+            "role": "Two-Michelin-starred chef",
+            "quote": "",
+            "video_url": "",
+            "link": ""
+          }
+        },
+        "card_raymond": {
+          "type": "card",
+          "settings": {
+            "name": "Raymond",
+            "role": "Founder, Mycrocell",
+            "quote": "",
+            "video_url": "",
+            "link": ""
+          }
+        },
+        "card_nus": {
+          "type": "card",
+          "settings": {
+            "name": "[Title]",
+            "role": "Food Science and Technology, NUS",
+            "quote": "",
+            "video_url": "",
+            "link": ""
+          }
+        },
+        "card_gym_1": {
+          "type": "card",
+          "settings": {
+            "name": "[Name]",
+            "role": "Gym pop-up customer",
+            "quote": "",
+            "video_url": "",
+            "link": ""
+          }
+        },
+        "card_gym_2": {
+          "type": "card",
+          "settings": {
+            "name": "[Name]",
+            "role": "Gym pop-up customer",
+            "quote": "",
+            "video_url": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_stroobant",
+        "card_raymond",
+        "card_nus",
+        "card_gym_1",
+        "card_gym_2"
+      ],
+      "settings": {
+        "eyebrow": "Trusted by the best",
+        "title": "<strong>People who have actually eaten it.</strong>",
+        "subtitle": "",
+        "bg_color": "#ffffff",
+        "ink_color": "#1f4d3a",
+        "gold_color": "#c8641e",
+        "serif_font": "",
+        "speed": 7,
+        "button_label": "Choose your pack size",
+        "scroll_target": "#hlt-buy-box-packs",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "stat_value_font": "heading",
+        "stat_value_custom_font": "assistant_n4",
+        "stat_value_weight": "800",
+        "stat_value_size": 36,
+        "stat_value_size_mobile": 24,
+        "stat_label_font": "body",
+        "stat_label_custom_font": "assistant_n4",
+        "stat_label_weight": "700",
+        "stat_label_size": 10,
+        "stat_label_size_mobile": 10,
+        "stat_label_uppercase": true,
+        "stat_label_spacing": 20,
+        "stat_label_opacity": 55,
+        "stat_gap": 56,
+        "stat_inner_gap": 6
+      }
+    },
+    "wow_reviews": {
+      "type": "hlt-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "text": "Got myself 30 packs of the dry noodles; each pack can actually last me for 2 meals as I have them with vegetables and chicken. Absolutely delicious way to add more protein into my daily intake... it tastes just like soba noodles.",
+            "name": "Karen",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "text": "The texture is firm but also bouncy and I like that it keeps you full for longer... A really good (and even tastier!) alternative to soba noodles.",
+            "name": "Emma",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "text": "Great texture to the noodles. Love that there is a bit of chewiness/bite to it. It serves as a good base for sauces too. Also rather filling!",
+            "name": "Guo An",
+            "tag": "",
+            "lead_for": "0"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "text": "Texture of health product is artificial, like eating plastic, but ProTEGO the texture is like hand make noodles. Very nice.",
+            "name": "Sheldon Sim",
+            "tag": "FDM 2025",
+            "lead_for": "0"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4"
+      ],
+      "settings": {
+        "heading": "Rated 4.9 out of 5 across 14 reviews.",
+        "subheading": "",
+        "show_stars": false,
+        "background": "paper",
+        "wave_top": false,
+        "wave_top_color": "cream",
+        "button_label": "Choose your pack size",
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_style": "navy",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_inside": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Four ingredients, and a panel you can check.",
+            "size": "hlt-h2"
+          }
+        },
+        "list": {
+          "type": "list",
+          "settings": {
+            "items": "Highland green barley flour\nGluten\nPeanut protein powder\nSweet potato fibre powder",
+            "bold_lead": false,
+            "pending_last_line": "",
+            "show_pending": false
+          }
+        },
+        "badges": {
+          "type": "badges",
+          "settings": {
+            "items": "No MSG | No additives | No preservatives | 100% plant-based | Very low in sodium | Low GI"
+          }
+        },
+        "body": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Two of the four are second-life ingredients, which is where the next section starts.</p>",
+            "large": true
+          }
+        },
+        "small_print": {
+          "type": "small_print",
+          "settings": {
+            "text": "Contains gluten and peanut. Manufactured on shared equipment with soy and sesame."
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "list",
+        "badges",
+        "body",
+        "small_print"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "splash-pale",
+        "ratio": "1 / 1",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_second_life": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Two of the four ingredients had a first life somewhere else.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_origin": {
+          "type": "body",
+          "settings": {
+            "text": "<p>The protein comes from oil meals, the solids left behind after oil is pressed. The fibre is upcycled from potato noodle production. Both were already food, and both were headed somewhere other than a plate.</p>",
+            "large": true
+          }
+        },
+        "body_claim": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Zero waste ingredients, in the world's only noodle made with upcycled second-life protein. KosmodeHealth calls the work #Wastes2Health.</p>",
+            "large": true
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "body_origin",
+        "body_claim"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "cream",
+        "ratio": "4 / 3",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_awards": {
+      "type": "hlt-logos",
+      "blocks": {
+        "award_bt_uob": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "BT-UOB Sustainability Award 2026",
+            "caption": "Special Recognition (SMEs)"
+          }
+        },
+        "award_sifst": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SIFST Food Product Award",
+            "caption": "2026 to 2028, Best Product"
+          }
+        },
+        "award_sbr": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Singapore Business Review",
+            "caption": "National Award 2025, F&B"
+          }
+        },
+        "award_sial": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SIAL Innovation Award 2025",
+            "caption": ""
+          }
+        },
+        "award_spark": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "The SPARK Sustainability",
+            "caption": "Innovator Award 2025"
+          }
+        },
+        "award_foodtech500": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "FoodTech500 2025",
+            "caption": "ranked 411th"
+          }
+        },
+        "award_sicc": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SICC Most Transformational",
+            "caption": "Collaboration Award 2023"
+          }
+        },
+        "award_sushitech": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SushiTech Tokyo 2025",
+            "caption": ""
+          }
+        },
+        "award_apex": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Apex UNGCNS Award 2024",
+            "caption": "UN Global Compact Network Singapore"
+          }
+        },
+        "note_nus_nestle": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "note",
+            "name": "Developed with NUS Food Science and Technology. Spent barley grain collaboration with Nestlé Singapore.",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "award_bt_uob",
+        "award_sifst",
+        "award_sbr",
+        "award_sial",
+        "award_spark",
+        "award_foodtech500",
+        "award_sicc",
+        "award_sushitech",
+        "award_apex",
+        "note_nus_nestle"
+      ],
+      "settings": {
+        "layout": "grid",
+        "align": "left",
+        "overline": "",
+        "heading": "Award-winning work, and what each award was for.",
+        "text": "",
+        "small_print": "<p>Awarded to KosmodeHealth for its W0W® and ProTEGO® innovations.</p>",
+        "grayscale": true,
+        "logo_height": 56,
+        "columns": 5,
+        "background": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_faq": {
+      "type": "hlt-faq",
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How does a noodle have 31.9g of protein per 100g?",
+            "answer": "<p>Because protein is one of the four things it is made from. The panel reads 31.9g per 100g and 25.5g in an 80g pack, and both are printed on the back.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it going to taste like health food?",
+            "answer": "<p>Most people say soba. Springy, with a bite that holds. Fourteen reviews on the 10-pack average 4.9 out of 5.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How do I cook it?",
+            "answer": "<p>Boil five minutes and drain, or cook it straight in your soup. It holds its shape through long cooking, and the next day in a meal prep box.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it cheaper than chicken breast?",
+            "answer": "<p>No. Chicken breast costs less and always will. What it cannot do is be a different meal every day.</p>"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Can I eat it if I avoid gluten or peanuts?",
+            "answer": "<p>No. Contains gluten and peanut, and it is made on shared equipment with soy and sesame.</p>"
+          }
+        },
+        "question_6": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How many packs should I start with?",
+            "answer": "<p>Ten. That is ten dinners, enough to know whether you keep reaching for it. If you already know, the 40-pack is where the extra packs begin.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4",
+        "question_5",
+        "question_6"
+      ],
+      "settings": {
+        "heading": "Questions people ask before they buy",
+        "text": "",
+        "layout": "stacked",
+        "background": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "wow_final_cta": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "stacked",
+        "media_side": "right",
+        "background": "navy",
+        "ratio_mobile": "4 / 3",
+        "ratio": "3 / 1",
+        "overlay": 0,
+        "mobile_text_position": "center",
+        "parallax_speed": "0.12",
+        "show_sparkles": false,
+        "overline": "",
+        "heading": "Keep the bowl. Change what it is made of.",
+        "use_h1": false,
+        "subheading": "",
+        "body": "",
+        "body_color": "default",
+        "button_label": "Choose your pack size",
+        "button_scroll": true,
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_link": "",
+        "button_style": "white",
+        "wave_bottom": false,
+        "wave_color": "navy",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "variant_picker",
+        "buy_buttons",
+        "description"
+      ],
+      "disabled": true,
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail_slider",
+        "mobile_thumbnails": "hide",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 16
+      }
+    }
+  },
+  "order": [
+    "hlt_page_settings",
+    "hlt_buy_box",
+    "wow_served_at",
+    "wow_hook",
+    "wow_problem",
+    "wow_swap",
+    "wow_number",
+    "wow_taste",
+    "wow_compare",
+    "wow_cook",
+    "wow_people",
+    "wow_reviews",
+    "wow_inside",
+    "wow_second_life",
+    "wow_awards",
+    "wow_faq",
+    "wow_final_cta",
+    "main"
+  ]
+}
