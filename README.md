@@ -63,6 +63,47 @@ Everything below is in the template and needs only the asset or a switch in the 
 - Venue logos and award logos. Until they are uploaded, the names show as text.
 - The "4.9 across 14 reviews" pill in the buy box and the section 11 heading depend on the Wix reviews being migrated.
 
+## The Our story page
+
+Template: `templates/page.our-story.json` ("our-story" in the theme editor), built from the About page wireframe (draft 1, 13 Oct 2026). The copy is the wireframe's, word for word.
+
+| # | Wireframe section | Theme section |
+|---|---|---|
+| A01 | Hero | `hlt-hero`, text beside image, H1, text link to ProTEGO® |
+| A02 | Why we started | `hlt-media-text` |
+| A03 | Our name | `hlt-name` (new): two zero tiles, the W0W® logo, the ProTEGO® card |
+| A04 | How we got here | `hlt-timeline` (new) |
+| A05 | The people | `hlt-people` (new) |
+| A06 | Recognition | `hlt-logos` twice, "Featured in" then the awards, wrapping rows; the awards carry the `awards` anchor |
+| A07 | Where to find us | `hlt-media-text`, then `hlt-logos` for the venues |
+| A08 | For food makers | `hlt-band` (new) |
+| A09 | Final call to action | `hlt-hero`, centred, with Bella's line above the heading |
+
+### Setting it up
+
+1. Online Store > Pages > Add page: title "Our story", handle `our-story`, theme template `our-story`.
+2. Search engine listing on the same page: title "Our story | W0W® ProTEGO® noodles, made in Singapore", description "W0W® is made in Singapore by KosmodeHealth, an NUS spin-off. ProTEGO® noodles carry 25g of protein a pack, made with second-life ingredients."
+3. Online Store > Navigation > URL redirects: `/aboutus` to `/pages/our-story`.
+4. Point the "Our story" menu item, the homepage's "Read our story" link and the footer's "Awards" link (`/pages/our-story#awards`) at the page.
+
+Files to copy into Horizon, on top of the ProTEGO page's: `sections/hlt-{name,timeline,people,band}.liquid` and `templates/page.our-story.json`, plus the updated `sections/hlt-{hero,media-text,logos}.liquid`, `snippets/hlt-block.liquid` and `assets/hlt-home.css`.
+
+### What fills in by itself
+
+- The 31.9g in the ProTEGO® card comes from the product's `w0w.protein_per_100g` metafield (product: 10 Individual Pack), so it changes when Sunflower ProTEGO® replaces the recipe. 31.9 is used if the metafield is empty.
+- Hero and final call to action link to the 10 Individual Pack product. It opens with the 40-pack selected once the product uses the `pdp-lander` template (it is on the default product template today).
+- Images left empty: the A07 tasting photo and the A09 dishes band are left out on the live store until chosen; people without a photo show as text cards. The A01 hero and A02 diagram show a placeholder until uploaded.
+
+### Waiting on KosmodeHealth
+
+- Years for Barley Fresh and ProTEGO®: both entries have "Year still to confirm" ticked, so they show no year on the live store. Untick and type the year once known, then reorder the entries.
+- "Work with KosmodeHealth" (A08): the band stays off the live store until its link is set.
+- Instagram link (A07): the store has no Instagram address in its settings, so the link stays hidden until one is added to the button.
+- Venues: Teats, Five Star Kampung Chicken Rice, Grand Mercure Roxy, Pasta Mama and TSquared Eats are switched off until they serve ProTEGO®.
+- Logo files for the press, awards and venues; until uploaded each shows its name.
+- Founders' photo (A01), portraits (A05), the W0W® logo and ProTEGO® lockup (A03).
+- Florence's two or three sentences on why they started: they replace the A05 quote.
+
 ## Other templates
 
 The homepage, the pantry pages and the other HLT One templates are still in the theme with HLT One's content. Replace them with W0W's content or delete them before this theme is published.

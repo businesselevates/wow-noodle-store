@@ -95,17 +95,29 @@
     </figure>
 
   {%- when 'button' -%}
+    {%- comment -%}
+      A text link with nowhere to go yet is left off the live store rather than
+      pointing at '#'. The theme editor still shows it.
+    {%- endcomment -%}
+    {%- liquid
+      assign skip_button = false
+      if block.settings.style == 'link' and block.settings.scroll != true and block.settings.link == blank and request.design_mode == false
+        assign skip_button = true
+      endif
+    -%}
+    {%- unless skip_button -%}
     {%- assign target = block.settings.scroll_target | default: '#hlt-buy-box' -%}
     <div class="hlt-btn-row" data-hlt-reveal {{ block.shopify_attributes }}>
       <a
-        class="hlt-btn{% if block.settings.style == 'splash' %} hlt-btn--splash{% elsif block.settings.style == 'outline' %} hlt-btn--outline{% elsif block.settings.style == 'white' %} hlt-btn--white{% endif %}"
+        class="hlt-btn{% if block.settings.style == 'splash' %} hlt-btn--splash{% elsif block.settings.style == 'outline' %} hlt-btn--outline{% elsif block.settings.style == 'white' %} hlt-btn--white{% elsif block.settings.style == 'link' %} hlt-btn--link{% endif %}"
         href="{% if block.settings.scroll %}{{ target }}{% else %}{{ block.settings.link | default: '#' }}{% endif %}"
-        {% if block.settings.scroll %}data-hlt-scroll-to="{{ target }}"{% endif %}
+        {% if block.settings.scroll %}data-hlt-scroll-to="{{ target }}"{% elsif block.settings.new_tab %}target="_blank" rel="noopener"{% endif %}
       >
         {{- block.settings.label -}}
         {% render 'hlt-icon', name: 'arrow-right', size: 20 %}
       </a>
     </div>
+    {%- endunless -%}
 
   {%- when 'image' -%}
     <div class="hlt-media" style="--hlt-ratio: {{ block.settings.ratio }};" data-hlt-reveal="zoom" {{ block.shopify_attributes }}>

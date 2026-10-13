@@ -16,6 +16,7 @@
   endfor
 -%}
 <section
+  {% if section.settings.anchor_id != blank %}id="{{ section.settings.anchor_id | handleize }}"{% endif %}
   class="hlt hlt--{{ section.settings.background }} hlt-logos hlt-logos--{{ layout }}{% if section.settings.grayscale %} hlt-logos--mono{% endif %}"
   style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-logo-h: {{ section.settings.logo_height }}px; --hlt-logo-cols: {{ section.settings.columns }};"
 >
@@ -66,14 +67,22 @@
   .hlt-logos--mono .hlt-logos__img { filter: grayscale(1); opacity: 0.75; transition: filter 0.3s, opacity 0.3s; }
   .hlt-logos--mono .hlt-logos__item:hover .hlt-logos__img { filter: none; opacity: 1; }
 
-  /* Strip: one row, centred, sliding sideways on phones rather than wrapping. */
+  /* Strip: one row, centred, sliding sideways on phones rather than wrapping.
+     Wrap: the same logos, wrapping onto more rows from tablet width up, for a
+     list too long for one row. */
+  .hlt-logos--wrap .hlt-logos__list,
   .hlt-logos--strip .hlt-logos__list {
     display: flex; align-items: center; justify-content: center; gap: clamp(24px, 4vw, 56px);
     overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; padding: 4px 2px;
   }
-  .hlt-logos--strip .hlt-logos__list::-webkit-scrollbar { display: none; }
+  .hlt-logos--strip .hlt-logos__list::-webkit-scrollbar,
+  .hlt-logos--wrap .hlt-logos__list::-webkit-scrollbar { display: none; }
+  @media (min-width: 750px) { .hlt-logos--wrap .hlt-logos__list { flex-wrap: wrap; overflow: visible; row-gap: 18px; } }
+  .hlt-logos--wrap .hlt-logos__item,
   .hlt-logos--strip .hlt-logos__item { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .hlt-logos--wrap .hlt-logos__img,
   .hlt-logos--strip .hlt-logos__img { height: var(--hlt-logo-h, 72px); width: auto; max-width: 220px; object-fit: contain; }
+  .hlt-logos--wrap .hlt-logos__name,
   .hlt-logos--strip .hlt-logos__name {
     display: inline-flex; align-items: center; min-height: calc(var(--hlt-logo-h, 72px) * 0.62);
     padding: 10px 22px; border-radius: var(--hlt-r-pill);
@@ -81,9 +90,9 @@
     white-space: nowrap;
   }
   @media (max-width: 749px) {
-    .hlt-logos--strip .hlt-logos__list { justify-content: flex-start; }
-    .hlt-logos--strip .hlt-logos__list > :first-child { margin-left: auto; }
-    .hlt-logos--strip .hlt-logos__list > :last-child { margin-right: auto; }
+    .hlt-logos--strip .hlt-logos__list, .hlt-logos--wrap .hlt-logos__list { justify-content: flex-start; }
+    .hlt-logos--strip .hlt-logos__list > :first-child, .hlt-logos--wrap .hlt-logos__list > :first-child { margin-left: auto; }
+    .hlt-logos--strip .hlt-logos__list > :last-child, .hlt-logos--wrap .hlt-logos__list > :last-child { margin-right: auto; }
   }
 
   /* Grid: one tile per award, with what it was for underneath. */
@@ -114,7 +123,7 @@
   "max_blocks": 24,
   "settings": [
     { "type": "select", "id": "layout", "label": "Layout", "default": "strip", "options": [
-      { "value": "strip", "label": "One row of logos" }, { "value": "grid", "label": "Grid of tiles (awards)" }
+      { "value": "strip", "label": "One row of logos" }, { "value": "wrap", "label": "Logos wrapping onto more rows" }, { "value": "grid", "label": "Grid of tiles (awards)" }
     ] },
     { "type": "select", "id": "align", "label": "Heading alignment", "default": "center", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Centred" } ] },
     { "type": "text", "id": "overline", "label": "Overline" },
@@ -124,6 +133,7 @@
     { "type": "checkbox", "id": "grayscale", "label": "Show logos in grey", "info": "They take their own colour on hover.", "default": true },
     { "type": "range", "id": "logo_height", "label": "Logo height", "min": 32, "max": 120, "step": 4, "unit": "px", "default": 72 },
     { "type": "range", "id": "columns", "label": "Tiles per row on desktop (grid)", "info": "Phones show two across.", "min": 3, "max": 6, "step": 1, "default": 5 },
+    { "type": "text", "id": "anchor_id", "label": "Anchor", "info": "Optional. With 'awards' here, a link to /pages/our-story#awards lands on this section." },
     { "type": "header", "content": "Colours and spacing" },
     { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
       { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
