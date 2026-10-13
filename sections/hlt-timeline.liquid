@@ -1,0 +1,90 @@
+{%- comment -%}
+  HLT Timeline: a brand's history, a year and an entry per row. An entry whose
+  year is not confirmed yet shows "Year to confirm" in the theme editor and no
+  year on the live store, so a guess never goes out. Entries can be switched off
+  without losing their text.
+{%- endcomment -%}
+{%- assign entries = section.blocks | where: 'type', 'entry' -%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-tl"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hlt__inner">
+    <div class="hlt-stack hlt-tl__head" data-hlt-stagger>
+      {%- if section.settings.overline != blank -%}<p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="hlt-body hlt-body--lg hlt-maxw hlt-rte" data-hlt-reveal>{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+
+    {%- if entries.size > 0 -%}
+      <ol class="hlt-tl__list" role="list" data-hlt-stagger>
+        {%- for block in entries -%}
+          {%- unless block.settings.show -%}{%- continue -%}{%- endunless -%}
+          <li class="hlt-tl__item" data-hlt-reveal {{ block.shopify_attributes }}>
+            <div class="hlt-tl__year">
+              {%- if block.settings.year_tbc -%}
+                {%- if request.design_mode -%}<span class="hlt-tl__tbc">Year to confirm</span>{%- endif -%}
+              {%- else -%}
+                {{ block.settings.year }}
+              {%- endif -%}
+            </div>
+            <div class="hlt-tl__entry">
+              {%- if block.settings.title != blank -%}<h3 class="hlt-tl__title">{{ block.settings.title }}</h3>{%- endif -%}
+              {%- if block.settings.text != blank -%}<div class="hlt-body hlt-rte">{{ block.settings.text }}</div>{%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-tl__head { max-width: 820px; }
+  .hlt-tl__list { list-style: none; margin: 36px 0 0; padding: 0; max-width: 880px; }
+  .hlt-tl__item { display: grid; gap: 6px; padding: 22px 0; border-top: 1.5px solid rgba(59, 77, 56, 0.12); }
+  .hlt-tl__item:first-child { border-top: 0; padding-top: 0; }
+  @media (min-width: 750px) { .hlt-tl__item { grid-template-columns: 140px minmax(0, 1fr); gap: 28px; } }
+  .hlt-tl__year {
+    font-family: var(--hlt-font-display); font-weight: 800; font-size: 26px; line-height: 1.15;
+    color: var(--hlt-heading); font-variant-numeric: tabular-nums;
+  }
+  .hlt-tl__year:empty { display: none; }
+  @media (min-width: 750px) { .hlt-tl__year:empty { display: block; } }
+  .hlt-tl__tbc {
+    display: inline-block; padding: 4px 10px; border-radius: var(--hlt-r-chip);
+    border: 1.5px dashed var(--hlt-splash); background: rgba(240, 168, 31, 0.12);
+    font-family: var(--hlt-font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: #8a5d0b;
+  }
+  .hlt .hlt-tl__title { font-family: var(--hlt-font-body); font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--hlt-heading); margin-bottom: 4px; }
+  .hlt-tl__entry .hlt-body { max-width: 62ch; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Timeline",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 16,
+  "settings": [
+    { "type": "text", "id": "overline", "label": "Overline", "default": "How we got here" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "From the first idea to today." },
+    { "type": "richtext", "id": "text", "label": "Text above the timeline" },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    { "type": "entry", "name": "Entry", "settings": [
+      { "type": "checkbox", "id": "show", "label": "Show", "default": true },
+      { "type": "text", "id": "year", "label": "Year", "default": "2026" },
+      { "type": "checkbox", "id": "year_tbc", "label": "Year still to confirm", "info": "Hides the year on the live store. The editor shows 'Year to confirm'.", "default": false },
+      { "type": "text", "id": "title", "label": "Title", "info": "Optional, shown in bold above the text." },
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>What happened that year.</p>" }
+    ] }
+  ],
+  "presets": [ { "name": "HLT Timeline", "blocks": [ { "type": "entry" }, { "type": "entry" }, { "type": "entry" } ] } ]
+}
+{% endschema %}

@@ -1,0 +1,144 @@
+{%- comment -%}
+  HLT Name: what a brand name stands for. The copy column carries the story and a
+  row of big-digit tiles (W0W(R)'s two zeros); the card beside it explains the
+  product name. A number in the card can come from a product metafield, so the
+  page changes when the recipe does: write [protein] in the card text and pick
+  the product and metafield below.
+{%- endcomment -%}
+{%- liquid
+  assign zeros = section.blocks | where: 'type', 'zero'
+
+  assign protein = section.settings.protein_value
+  if section.settings.product != blank and section.settings.protein_metafield contains '.'
+    assign mf_ns = section.settings.protein_metafield | split: '.' | first | strip
+    assign mf_key = section.settings.protein_metafield | split: '.' | last | strip
+    assign mf_value = section.settings.product.metafields[mf_ns][mf_key].value
+    if mf_value != blank
+      assign protein = mf_value
+    endif
+  endif
+  assign protein_text = protein | append: section.settings.protein_unit
+  assign card_body = section.settings.card_body | replace: '[protein]', protein_text
+-%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-name"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="hlt__inner hlt-name__grid">
+    <div class="hlt-stack hlt-name__copy" data-hlt-stagger>
+      {%- if section.settings.overline != blank -%}<p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.intro != blank -%}<div class="hlt-body hlt-body--lg hlt-rte" data-hlt-reveal>{{ section.settings.intro }}</div>{%- endif -%}
+
+      {%- if zeros.size > 0 -%}
+        <ul class="hlt-name__zeros" role="list" data-hlt-reveal>
+          {%- for block in zeros -%}
+            <li class="hlt-name__zero" {{ block.shopify_attributes }}>
+              <span class="hlt-name__digit" aria-hidden="true">{{ block.settings.digit }}</span>
+              <span class="hlt-name__label"><span class="visually-hidden">{{ block.settings.digit }} </span>{{ block.settings.label }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.body != blank -%}<div class="hlt-body hlt-rte" data-hlt-reveal>{{ section.settings.body }}</div>{%- endif -%}
+
+      {%- if section.settings.logo != blank -%}
+        {%- assign logo_alt = section.settings.logo.alt | default: section.settings.logo_alt -%}
+        <div class="hlt-name__logo" data-hlt-reveal>
+          {{ section.settings.logo | image_url: width: 600 | image_tag: loading: 'lazy', widths: '300, 450, 600', sizes: '260px', alt: logo_alt }}
+        </div>
+      {%- elsif request.design_mode -%}
+        <div class="hlt-name__logo hlt-name__logo--empty" data-hlt-reveal>Logo</div>
+      {%- endif -%}
+    </div>
+
+    <div class="hlt-name__card" data-hlt-reveal="right">
+      {%- if section.settings.card_image != blank -%}
+        {%- assign card_alt = section.settings.card_image.alt | default: section.settings.card_image_alt -%}
+        <div class="hlt-name__card-media">
+          {{ section.settings.card_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 800, 1200', sizes: '(min-width: 990px) 40vw, 100vw', alt: card_alt }}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.card_heading != blank -%}<h3 class="hlt-h3">{{ section.settings.card_heading }}</h3>{%- endif -%}
+      {%- if card_body != blank -%}<div class="hlt-body hlt-rte">{{ card_body }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-name__grid { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 990px) { .hlt-name__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 72px; } }
+
+  .hlt-name__zeros { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px; }
+  .hlt-stack > .hlt-name__zeros { margin-top: 26px; }
+  .hlt-stack > .hlt-name__zeros + * { margin-top: 26px; }
+  .hlt-name__zero {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px; border-radius: var(--hlt-r-card);
+    background: var(--hlt-paper); box-shadow: inset 0 0 0 1.5px rgba(59, 77, 56, 0.12);
+  }
+  .hlt-name__digit { font-family: var(--hlt-font-display); font-weight: 800; font-size: 44px; line-height: 1; color: var(--hlt-sun); }
+  .hlt-name__label { font-weight: 700; font-size: 16px; line-height: 1.3; color: var(--hlt-heading); max-width: 18ch; }
+
+  .hlt-name__logo { max-width: 220px; }
+  .hlt-name__logo img { display: block; width: 100%; height: auto; }
+  .hlt-name__logo--empty {
+    display: grid; place-items: center; aspect-ratio: 1 / 1;
+    border: 2px dashed rgba(59, 77, 56, 0.25); border-radius: var(--hlt-r-card);
+    font-size: 13px; color: var(--hlt-text);
+  }
+
+  .hlt-name__card {
+    --hlt-heading: var(--hlt-cream-brand);
+    --hlt-text: var(--hlt-sky);
+    display: grid; gap: 16px; align-content: start;
+    padding: clamp(24px, 3vw, 36px); border-radius: var(--hlt-r-card);
+    background: var(--hlt-navy); color: var(--hlt-text);
+    box-shadow: var(--hlt-shadow);
+  }
+  .hlt-name__card .hlt-rte strong { color: var(--hlt-cream-brand); }
+  .hlt-name__card-media { margin-bottom: 4px; }
+  .hlt-name__card-media img { display: block; width: 100%; max-width: 360px; height: auto; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT Name",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "cream", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "header", "content": "Story" },
+    { "type": "text", "id": "overline", "label": "Overline", "default": "Our name" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What the 0 in W0W® stands for." },
+    { "type": "richtext", "id": "intro", "label": "Text above the tiles", "default": "<p>Every W0W® product is built on two zeros:</p>" },
+    { "type": "richtext", "id": "body", "label": "Text under the tiles" },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Transparent PNG or SVG, about 1200 x 1200." },
+    { "type": "text", "id": "logo_alt", "label": "Logo description", "info": "Used when the image has no alt text of its own.", "default": "W0W® logo" },
+    { "type": "header", "content": "Card" },
+    { "type": "image_picker", "id": "card_image", "label": "Card image", "info": "For example the product logo lockup, transparent, about 1200 x 800." },
+    { "type": "text", "id": "card_image_alt", "label": "Card image description", "default": "ProTEGO® logo" },
+    { "type": "text", "id": "card_heading", "label": "Card heading", "default": "ProTEGO® means Protein Protects." },
+    { "type": "richtext", "id": "card_body", "label": "Card text", "info": "Write [protein] where the protein figure goes.", "default": "<p>Tego is Latin for protect.</p>" },
+    { "type": "header", "content": "Protein figure" },
+    { "type": "product", "id": "product", "label": "Product it comes from" },
+    { "type": "text", "id": "protein_metafield", "label": "Metafield", "info": "namespace.key of a number metafield on that product.", "default": "w0w.protein_per_100g" },
+    { "type": "text", "id": "protein_value", "label": "Figure to use when the metafield is empty", "default": "31.9" },
+    { "type": "text", "id": "protein_unit", "label": "Unit after the figure", "default": "g" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    { "type": "zero", "name": "Tile", "settings": [
+      { "type": "text", "id": "digit", "label": "Big character", "default": "0" },
+      { "type": "text", "id": "label", "label": "Label", "default": "Glycemic Spike" }
+    ] }
+  ],
+  "presets": [ { "name": "HLT Name", "blocks": [ { "type": "zero" }, { "type": "zero" } ] } ]
+}
+{% endschema %}

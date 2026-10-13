@@ -1,5 +1,11 @@
+{%- liquid
+  assign show_media = true
+  if section.settings.hide_empty_media and section.settings.image == blank and section.settings.video == blank and request.design_mode == false
+    assign show_media = false
+  endif
+-%}
 <section
-  class="hlt hlt--{{ section.settings.background }} hlt-mt hlt-mt--{{ section.settings.style }}{% if section.settings.media_side == 'left' %} hlt-mt--left{% endif %}"
+  class="hlt hlt--{{ section.settings.background }} hlt-mt hlt-mt--{{ section.settings.style }}{% if section.settings.media_side == 'left' %} hlt-mt--left{% endif %}{% unless show_media %} hlt-mt--no-media{% endunless %}"
   style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-copy-gap: {{ section.settings.copy_gap }}px; --hlt-after-heading: {{ section.settings.space_after_heading }}px; --hlt-row-gap: {{ section.settings.icon_row_gap }}px; --hlt-after-rows: {{ section.settings.space_after_icon_rows }}px; --hlt-before-button: {{ section.settings.space_before_button }}px;"
 >
   {%- if section.settings.wave_top -%}
@@ -9,6 +15,7 @@
   {%- endif -%}
 
   <div class="{% if section.settings.style == 'card' %}hlt__inner {% endif %}hlt-mt__grid">
+    {%- if show_media -%}
     <div class="hlt-mt__media-wrap" data-hlt-reveal="{% if section.settings.media_side == 'left' %}left{% else %}right{% endif %}">
       <div class="hlt-media hlt-mt__media" style="--hlt-ratio: {{ section.settings.ratio }};">
         {%- if section.settings.video != blank -%}
@@ -26,6 +33,7 @@
         <span class="hlt-sparkle" style="bottom: 12%; right: -6px; animation-delay: 1.2s; font-size: 16px;" aria-hidden="true">✦</span>
       {%- endif -%}
     </div>
+    {%- endif -%}
 
     <div class="hlt-mt__copy">
       <div class="hlt-stack hlt-mt__copy-inner" data-hlt-stagger>
@@ -49,6 +57,9 @@
     .hlt-mt--left .hlt-mt__media-wrap { order: -1; }
     .hlt-mt:not(.hlt-mt--left) .hlt-mt__media-wrap { order: 2; }
   }
+  /* No image yet: the copy runs alone, at a readable width. */
+  .hlt-mt--no-media .hlt-mt__grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .hlt-mt--no-media .hlt-mt__copy-inner { max-width: 760px; }
   .hlt-mt--card .hlt-mt__media { box-shadow: var(--hlt-shadow); }
 
   /* Breathing room in the copy column. Every value below is a section
@@ -115,6 +126,7 @@
     { "type": "header", "content": "Media" },
     { "type": "image_picker", "id": "image", "label": "Image" },
     { "type": "video", "id": "video", "label": "Video (replaces image, plays muted on loop)" },
+    { "type": "checkbox", "id": "hide_empty_media", "label": "Leave the image out until one is chosen", "info": "On the live store the section shows only its text while it has no image or video. The theme editor still shows the empty slot.", "default": false },
     { "type": "select", "id": "ratio", "label": "Shape", "default": "1 / 1", "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" } ] },
     { "type": "text", "id": "parallax_speed", "label": "Parallax strength", "info": "0 turns it off.", "default": "0.12" },
     { "type": "checkbox", "id": "sparkles", "label": "Twinkling sparkles", "default": false },
@@ -180,7 +192,8 @@
       { "type": "checkbox", "id": "scroll", "label": "Scroll to the buy box", "default": true },
       { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
       { "type": "url", "id": "link", "label": "Link (when not scrolling)" },
-      { "type": "select", "id": "style", "label": "Style", "default": "navy", "options": [ { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "outline", "label": "Outline" }, { "value": "white", "label": "White" } ] }
+      { "type": "checkbox", "id": "new_tab", "label": "Open the link in a new tab", "default": false },
+      { "type": "select", "id": "style", "label": "Style", "default": "navy", "options": [ { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "outline", "label": "Outline" }, { "value": "white", "label": "White" }, { "value": "link", "label": "Text link" } ] }
     ] },
     { "type": "spacer", "name": "Spacer", "settings": [ { "type": "range", "id": "height", "label": "Height", "min": 8, "max": 96, "step": 8, "unit": "px", "default": 24 } ] }
   ],

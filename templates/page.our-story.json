@@ -1,0 +1,732 @@
+{
+  "sections": {
+    "hlt_page_settings": {
+      "type": "hlt-page-settings",
+      "settings": {
+        "hide_menu": false,
+        "hide_announcement": false,
+        "roca_files": false
+      }
+    },
+    "story_hero": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "split",
+        "media_side": "right",
+        "background": "cream",
+        "ratio_mobile": "1 / 1",
+        "ratio": "4 / 3",
+        "hide_empty_media": false,
+        "overlay": 0,
+        "mobile_text_position": "center",
+        "parallax_speed": "0.12",
+        "show_sparkles": false,
+        "overline": "Our story",
+        "quote": "",
+        "quote_attribution": "",
+        "heading": "We kept the noodle and changed what's in it.",
+        "use_h1": true,
+        "subheading": "",
+        "body": "<p>Noodles and rice are how most of us eat in Singapore. We would rather change what the noodle is made of than ask you to give it up.</p><p>W0W® is made in Singapore by KosmodeHealth, which began as a spin-off from the Food Science and Technology department at the National University of Singapore.</p>",
+        "body_color": "default",
+        "button_label": "See ProTEGO®",
+        "button_scroll": false,
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_link": "shopify://products/10-individual-pack-80g-w0w®-protego™",
+        "button_style": "link",
+        "wave_bottom": false,
+        "wave_color": "paper",
+        "padding_top": 72,
+        "padding_bottom": 72
+      }
+    },
+    "story_why": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "overline": {
+          "type": "overline",
+          "settings": {
+            "text": "Why we started"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Grow it once, use it twice.",
+            "size": "hlt-h2"
+          }
+        },
+        "body_second_life": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Pressing peanuts for oil leaves solids behind, called oil meal. Making potato noodles leaves sweet potato fibre. Both are food that has already been grown and harvested once. We take the protein from the oil meal and the fibre from the sweet potato, and give them a second life in a noodle.</p>",
+            "large": false
+          }
+        },
+        "body_belief": {
+          "type": "body",
+          "settings": {
+            "text": "<p>We don't believe feeding people well means growing more. Using each crop twice is our part of the answer. We call it <strong>#Wastes2Health</strong>.</p>",
+            "large": false
+          }
+        },
+        "body_health": {
+          "type": "body",
+          "settings": {
+            "text": "<p>Your health still comes first. We only use a second-life ingredient where it is good for the person eating it. That is why two of ProTEGO®'s four ingredients are second-life: the peanut protein and the sweet potato fibre.</p>",
+            "large": false
+          }
+        }
+      },
+      "block_order": [
+        "overline",
+        "heading",
+        "body_second_life",
+        "body_belief",
+        "body_health"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "paper",
+        "ratio": "4 / 3",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "hide_empty_media": false,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "story_name": {
+      "type": "hlt-name",
+      "blocks": {
+        "zero_spike": {
+          "type": "zero",
+          "settings": {
+            "digit": "0",
+            "label": "Glycemic Spike"
+          }
+        },
+        "zero_waste": {
+          "type": "zero",
+          "settings": {
+            "digit": "0",
+            "label": "-waste second-life ingredients"
+          }
+        }
+      },
+      "block_order": [
+        "zero_spike",
+        "zero_waste"
+      ],
+      "settings": {
+        "background": "cream",
+        "overline": "Our name",
+        "heading": "What the 0 in W0W® stands for.",
+        "intro": "<p>Every W0W® product is built on two zeros:</p>",
+        "body": "<p>Look at the circle around our logo. The top half is a barley stalk, for our first noodle. The bottom is a strand of noodle.</p>",
+        "logo_alt": "W0W® logo",
+        "card_image_alt": "ProTEGO®, a W0W® product. Protein Protects.",
+        "card_heading": "ProTEGO® means Protein Protects.",
+        "card_body": "<p>Tego is Latin for protect. ProTEGO® looks after you with [protein] of protein per 100g, and after the earth with second-life ingredients. It is the world's only noodle made with upcycled second-life protein.</p>",
+        "product": "10-individual-pack-80g-w0w®-protego™",
+        "protein_metafield": "w0w.protein_per_100g",
+        "protein_value": "31.9",
+        "protein_unit": "g",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "story_timeline": {
+      "type": "hlt-timeline",
+      "blocks": {
+        "barley_fresh": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "",
+            "year_tbc": true,
+            "title": "Our first noodle.",
+            "text": "<p>W0W® Barley Fresh was made from barley protein and fibre recovered from spent barley grains. It was so unlike other noodles that normal noodle factories could not make it at scale, so we stopped making it. The barley stalk in our logo comes from that noodle.</p>"
+          }
+        },
+        "y2023": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "2023",
+            "year_tbc": false,
+            "title": "",
+            "text": "<p>Our spent barley work with a malt drink maker wins the Singapore International Chamber of Commerce's Most Transformational Collaboration Award.</p>"
+          }
+        },
+        "y2024": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "2024",
+            "year_tbc": false,
+            "title": "",
+            "text": "<p>The Apex Award from the UN Global Compact Network Singapore.</p>"
+          }
+        },
+        "protego": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "",
+            "year_tbc": true,
+            "title": "ProTEGO®.",
+            "text": "<p>A dry noodle with 25.5g of protein in every 80g pack, made with second-life peanut protein and sweet potato fibre.</p>"
+          }
+        },
+        "y2025": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "2025",
+            "year_tbc": false,
+            "title": "",
+            "text": "<p>The SIAL Innovation Award, The SPARK Sustainability Innovator Award, the Singapore Business Review National Award for F&amp;B, FoodTech500 and SushiTech Tokyo.</p>"
+          }
+        },
+        "y2026": {
+          "type": "entry",
+          "settings": {
+            "show": true,
+            "year": "2026",
+            "year_tbc": false,
+            "title": "",
+            "text": "<p>The SIFST Food Product Award 2026 to 2028 for Best Product, and on 23 September, the BT-UOB Sustainability Award, Special Recognition for SMEs.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "barley_fresh",
+        "y2023",
+        "y2024",
+        "protego",
+        "y2025",
+        "y2026"
+      ],
+      "settings": {
+        "overline": "How we got here",
+        "heading": "From spent barley to ProTEGO®.",
+        "text": "",
+        "background": "paper",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "story_people": {
+      "type": "hlt-people",
+      "blocks": {
+        "florence": {
+          "type": "person",
+          "settings": {
+            "name": "Florence Leong",
+            "role": "Co-founder",
+            "text": "<p>Florence spent years in the pharmaceutical industry before co-founding KosmodeHealth. She leads the W0W® brand.</p>"
+          }
+        },
+        "dr_huang": {
+          "type": "person",
+          "settings": {
+            "name": "Dr Huang Dejian",
+            "role": "Co-founder",
+            "text": "<p>Dr Huang is deputy head of Food Science and Technology at the National University of Singapore. ProTEGO® was developed by him.</p>"
+          }
+        },
+        "chef_stroobant": {
+          "type": "person",
+          "settings": {
+            "name": "Emmanuel Stroobant",
+            "role": "Michelin-starred chef",
+            "text": "<p>Chef Stroobant endorses ProTEGO®. It holds together through long cooking, where most noodles break.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "florence",
+        "dr_huang",
+        "chef_stroobant"
+      ],
+      "settings": {
+        "overline": "The people",
+        "heading": "Who's behind W0W®.",
+        "quote": "\"Addressing health and nutrition without damaging the earth.\"",
+        "quote_attribution": "Florence Leong, co-founder",
+        "columns": 3,
+        "background": "paper",
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    },
+    "story_press": {
+      "type": "hlt-logos",
+      "blocks": {
+        "press_cna": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "CNA",
+            "caption": ""
+          }
+        },
+        "press_cna938": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "CNA 938",
+            "caption": ""
+          }
+        },
+        "press_capital958": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Capital 958",
+            "caption": ""
+          }
+        },
+        "press_zaobao": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Lianhe Zaobao",
+            "caption": ""
+          }
+        },
+        "press_st": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "The Straits Times",
+            "caption": ""
+          }
+        },
+        "press_bt": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "The Business Times",
+            "caption": ""
+          }
+        },
+        "press_ch8": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Channel 8",
+            "caption": ""
+          }
+        },
+        "press_foodnavigator": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "FoodNavigator",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "press_cna",
+        "press_cna938",
+        "press_capital958",
+        "press_zaobao",
+        "press_st",
+        "press_bt",
+        "press_ch8",
+        "press_foodnavigator"
+      ],
+      "settings": {
+        "align": "center",
+        "heading": "",
+        "text": "",
+        "grayscale": true,
+        "columns": 5,
+        "background": "cream",
+        "layout": "wrap",
+        "overline": "Featured in",
+        "small_print": "",
+        "anchor_id": "",
+        "logo_height": 40,
+        "padding_top": 64,
+        "padding_bottom": 16
+      }
+    },
+    "story_awards": {
+      "type": "hlt-logos",
+      "blocks": {
+        "award_bt_uob": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "BT-UOB Sustainability Award 2026",
+            "caption": ""
+          }
+        },
+        "award_sifst": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SIFST Food Product Award 2026 to 2028",
+            "caption": ""
+          }
+        },
+        "award_sbr": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Singapore Business Review National Award 2025",
+            "caption": ""
+          }
+        },
+        "award_sial": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SIAL Innovation Award 2025",
+            "caption": ""
+          }
+        },
+        "award_spark": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "The SPARK Sustainability Innovator Award 2025",
+            "caption": ""
+          }
+        },
+        "award_foodtech500": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "FoodTech500 2025",
+            "caption": ""
+          }
+        },
+        "award_sushitech": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SushiTech Tokyo 2025",
+            "caption": ""
+          }
+        },
+        "award_apex": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Apex UNGCNS Award 2024",
+            "caption": ""
+          }
+        },
+        "award_sicc": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "SICC Most Transformational Collaboration Award 2023",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "award_bt_uob",
+        "award_sifst",
+        "award_sbr",
+        "award_sial",
+        "award_spark",
+        "award_foodtech500",
+        "award_sushitech",
+        "award_apex",
+        "award_sicc"
+      ],
+      "settings": {
+        "align": "center",
+        "heading": "",
+        "text": "",
+        "grayscale": true,
+        "columns": 5,
+        "background": "cream",
+        "layout": "wrap",
+        "overline": "Award-winning work from Singapore",
+        "small_print": "<p>Awarded to KosmodeHealth for its W0W® and ProTEGO® innovations.</p>",
+        "anchor_id": "awards",
+        "logo_height": 48,
+        "padding_top": 32,
+        "padding_bottom": 64
+      }
+    },
+    "story_where": {
+      "type": "hlt-media-text",
+      "blocks": {
+        "overline": {
+          "type": "overline",
+          "settings": {
+            "text": "Try it first"
+          }
+        },
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "text": "Taste it before you cook it.",
+            "size": "hlt-h2"
+          }
+        },
+        "body": {
+          "type": "body",
+          "settings": {
+            "text": "<p>ProTEGO® is on the menu at these places in Singapore. We also run tastings at gyms and events.</p>",
+            "large": false
+          }
+        },
+        "instagram": {
+          "type": "button",
+          "settings": {
+            "label": "Follow us on Instagram for the next tasting",
+            "scroll": false,
+            "scroll_target": "",
+            "link": "",
+            "new_tab": true,
+            "style": "link"
+          }
+        }
+      },
+      "block_order": [
+        "overline",
+        "heading",
+        "body",
+        "instagram"
+      ],
+      "settings": {
+        "style": "card",
+        "media_side": "right",
+        "background": "paper",
+        "ratio": "16 / 9",
+        "parallax_speed": "0.12",
+        "sparkles": false,
+        "hide_empty_media": true,
+        "copy_gap": 24,
+        "space_after_heading": 28,
+        "icon_row_gap": 18,
+        "space_after_icon_rows": 0,
+        "space_before_button": 4,
+        "wave_top": false,
+        "wave_top_color": "paper",
+        "wave_bottom": false,
+        "wave_bottom_color": "paper",
+        "padding_top": 80,
+        "padding_bottom": 16
+      }
+    },
+    "story_venues": {
+      "type": "hlt-logos",
+      "blocks": {
+        "venue_soup_spoon": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "The Soup Spoon",
+            "caption": ""
+          }
+        },
+        "venue_courtyard": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Courtyard by Marriott Novena",
+            "caption": ""
+          }
+        },
+        "venue_goodwood": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Goodwood Park Hotel",
+            "caption": ""
+          }
+        },
+        "venue_tomoro": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Tomoro Coffee",
+            "caption": ""
+          }
+        },
+        "venue_veg_an": {
+          "type": "logo",
+          "settings": {
+            "show": true,
+            "style": "logo",
+            "name": "Veg-An",
+            "caption": ""
+          }
+        },
+        "venue_teats": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "Teats",
+            "caption": ""
+          }
+        },
+        "venue_five_star": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "Five Star Kampung Chicken Rice",
+            "caption": ""
+          }
+        },
+        "venue_grand_mercure": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "Grand Mercure Roxy",
+            "caption": ""
+          }
+        },
+        "venue_pasta_mama": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "Pasta Mama",
+            "caption": ""
+          }
+        },
+        "venue_tsquared": {
+          "type": "logo",
+          "settings": {
+            "show": false,
+            "style": "logo",
+            "name": "TSquared Eats",
+            "caption": ""
+          }
+        }
+      },
+      "block_order": [
+        "venue_soup_spoon",
+        "venue_courtyard",
+        "venue_goodwood",
+        "venue_tomoro",
+        "venue_veg_an",
+        "venue_teats",
+        "venue_five_star",
+        "venue_grand_mercure",
+        "venue_pasta_mama",
+        "venue_tsquared"
+      ],
+      "settings": {
+        "layout": "wrap",
+        "align": "center",
+        "overline": "On the menu at",
+        "heading": "",
+        "text": "",
+        "small_print": "",
+        "anchor_id": "",
+        "grayscale": true,
+        "logo_height": 32,
+        "columns": 5,
+        "background": "paper",
+        "padding_top": 24,
+        "padding_bottom": 64
+      }
+    },
+    "story_food_makers": {
+      "type": "hlt-band",
+      "settings": {
+        "overline": "For food makers",
+        "text": "<p>KosmodeHealth also works with food makers. We help turn their by-products into ingredients, and help them make food with ours.</p>",
+        "link_label": "Work with KosmodeHealth",
+        "link": "",
+        "new_tab": true,
+        "background": "paper",
+        "padding_top": 0,
+        "padding_bottom": 64
+      }
+    },
+    "story_final_cta": {
+      "type": "hlt-hero",
+      "settings": {
+        "layout": "stacked",
+        "media_side": "right",
+        "background": "navy",
+        "ratio_mobile": "4 / 3",
+        "ratio": "3 / 1",
+        "hide_empty_media": true,
+        "overlay": 0,
+        "mobile_text_position": "center",
+        "parallax_speed": "0.12",
+        "show_sparkles": false,
+        "overline": "",
+        "quote": "\"I can eat this everyday\"",
+        "quote_attribution": "Bella, customer",
+        "heading": "Keep your noodles. Get 25g of protein in the bowl.",
+        "use_h1": false,
+        "subheading": "",
+        "body": "",
+        "body_color": "default",
+        "button_label": "Choose your pack size",
+        "button_scroll": false,
+        "scroll_target": "#hlt-buy-box-packs",
+        "button_link": "shopify://products/10-individual-pack-80g-w0w®-protego™",
+        "button_style": "splash",
+        "wave_bottom": false,
+        "wave_color": "navy",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    }
+  },
+  "order": [
+    "hlt_page_settings",
+    "story_hero",
+    "story_why",
+    "story_name",
+    "story_timeline",
+    "story_people",
+    "story_press",
+    "story_awards",
+    "story_where",
+    "story_venues",
+    "story_food_makers",
+    "story_final_cta"
+  ]
+}

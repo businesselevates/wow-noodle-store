@@ -4,11 +4,19 @@
     assign heading_tag = 'h1'
   endif
   assign scroll_target = section.settings.scroll_target | default: '#hlt-buy-box'
+  assign has_media = true
+  if section.settings.image == blank and section.settings.video == blank
+    assign has_media = false
+  endif
+  assign show_media = true
+  if section.settings.hide_empty_media and has_media == false and request.design_mode == false
+    assign show_media = false
+  endif
 -%}
 
 <section
   id="hlt-hero-{{ section.id }}"
-  class="hlt hlt--{{ section.settings.background }} hlt-hero hlt-hero--{{ section.settings.layout }}{% if section.settings.media_side == 'left' %} hlt-hero--media-left{% endif %}{% if section.settings.body_color != blank and section.settings.body_color != 'default' %} hlt-hero--body-{{ section.settings.body_color }}{% endif %}{% if section.settings.mobile_text_position == 'bottom' %} hlt-hero--m-bottom{% endif %}"
+  class="hlt hlt--{{ section.settings.background }} hlt-hero hlt-hero--{{ section.settings.layout }}{% if section.settings.media_side == 'left' %} hlt-hero--media-left{% endif %}{% if section.settings.body_color != blank and section.settings.body_color != 'default' %} hlt-hero--body-{{ section.settings.body_color }}{% endif %}{% if section.settings.mobile_text_position == 'bottom' %} hlt-hero--m-bottom{% endif %}{% unless show_media %} hlt-hero--no-media{% endunless %}"
   style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-overlay: {{ section.settings.overlay | divided_by: 100.0 }};"
 >
   {%- if section.settings.layout == 'overlay' -%}
@@ -40,6 +48,12 @@
       {%- if section.settings.overline != blank -%}
         <p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>
       {%- endif -%}
+      {%- if section.settings.quote != blank -%}
+        <figure class="hlt-hero__quote" data-hlt-reveal>
+          <blockquote>{{ section.settings.quote }}</blockquote>
+          {%- if section.settings.quote_attribution != blank -%}<figcaption>{{ section.settings.quote_attribution }}</figcaption>{%- endif -%}
+        </figure>
+      {%- endif -%}
       {%- if section.settings.heading != blank -%}
         <{{ heading_tag }} class="hlt-h1" data-hlt-reveal>{{ section.settings.heading }}</{{ heading_tag }}>
       {%- endif -%}
@@ -52,7 +66,7 @@
       {%- if section.settings.button_label != blank -%}
         <div class="hlt-btn-row" data-hlt-reveal>
           <a
-            class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'splash-white' %} hlt-btn--splash hlt-btn--white-text{% elsif section.settings.button_style == 'white' %} hlt-btn--white{% endif %}"
+            class="hlt-btn{% if section.settings.button_style == 'splash' %} hlt-btn--splash{% elsif section.settings.button_style == 'splash-white' %} hlt-btn--splash hlt-btn--white-text{% elsif section.settings.button_style == 'white' %} hlt-btn--white{% elsif section.settings.button_style == 'link' %} hlt-btn--link{% endif %}"
             href="{% if section.settings.button_scroll %}{{ scroll_target }}{% else %}{{ section.settings.button_link | default: '#' }}{% endif %}"
             {% if section.settings.button_scroll %}data-hlt-scroll-to="{{ scroll_target }}"{% endif %}
           >
@@ -63,7 +77,7 @@
       {%- endif -%}
     </div>
 
-    {%- if section.settings.layout == 'split' or section.settings.layout == 'stacked' -%}
+    {%- if show_media and section.settings.layout == 'split' or show_media and section.settings.layout == 'stacked' -%}
       <div class="hlt-hero__media-wrap" data-hlt-reveal="zoom">
         <div class="hlt-media hlt-hero__media" style="--hlt-ratio: {{ section.settings.ratio }};{% if section.settings.ratio_mobile != blank %} --hlt-ratio-m: {{ section.settings.ratio_mobile }};{% endif %}">
           {%- if section.settings.video != blank -%}
@@ -121,6 +135,15 @@
   @media (max-width: 749px) {
     .hlt-hero__media { aspect-ratio: var(--hlt-ratio-m, var(--hlt-ratio, 1 / 1)); }
   }
+  /* Without its image (and 'Leave the image out until one is chosen' ticked) a
+     split hero is a single column of copy. */
+  .hlt-hero--no-media .hlt-hero__grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .hlt-hero--no-media.hlt-hero--split .hlt-hero__copy { max-width: 760px; }
+  /* A customer's line above the heading, as in a final call to action. */
+  .hlt-hero__quote { margin: 0; }
+  .hlt-hero__quote blockquote { font-family: var(--hlt-font-display); font-style: italic; font-weight: 500; font-size: clamp(18px, 1.8vw, 22px); line-height: 1.4; color: var(--hlt-text); }
+  .hlt-hero__quote figcaption { margin-top: 6px; font-size: 14px; font-weight: 600; color: var(--hlt-peach); }
+  .hlt--cream .hlt-hero__quote figcaption, .hlt--paper .hlt-hero__quote figcaption, .hlt--splash-pale .hlt-hero__quote figcaption { color: var(--hlt-sun); }
   .hlt-hero__bg picture, .hlt-hero__media picture { display: contents; }
   .hlt-hero__bg { position: absolute; inset: 0; overflow: hidden; }
   .hlt-hero__bg img, .hlt-hero__bg svg { position: absolute; inset: -8% 0; width: 100%; height: 116%; object-fit: cover; }
@@ -165,6 +188,7 @@
       { "value": "16 / 9", "label": "Wide" }
     ] },
     { "type": "video", "id": "video", "label": "Video (replaces image in split and stacked layouts)" },
+    { "type": "checkbox", "id": "hide_empty_media", "label": "Leave the image out until one is chosen", "info": "Split and stacked layouts. On the live store the section shows only its text while it has no image or video. The theme editor still shows the empty slot.", "default": false },
     { "type": "select", "id": "ratio", "label": "Image shape", "default": "4 / 3", "options": [
       { "value": "1 / 1", "label": "Square" }, { "value": "4 / 3", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" }, { "value": "16 / 9", "label": "Wide" }, { "value": "3 / 1", "label": "Panorama" }
     ] },
@@ -176,6 +200,8 @@
     { "type": "checkbox", "id": "show_sparkles", "label": "Show twinkling sparkles", "default": true },
     { "type": "header", "content": "Text" },
     { "type": "text", "id": "overline", "label": "Overline" },
+    { "type": "textarea", "id": "quote", "label": "Quote above the heading", "info": "Optional. A short customer line, shown in italics." },
+    { "type": "text", "id": "quote_attribution", "label": "Quote attribution" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Snacks you can hand over anywhere." },
     { "type": "checkbox", "id": "use_h1", "label": "Use as the page's main heading (H1)", "default": false },
     { "type": "text", "id": "subheading", "label": "Subheading", "default": "Easy for little mouths. Easy to feel good about. Easy to take anywhere." },
@@ -189,7 +215,7 @@
     { "type": "text", "id": "scroll_target", "label": "Scroll target", "default": "#hlt-buy-box" },
     { "type": "url", "id": "button_link", "label": "Link (when not scrolling)" },
     { "type": "select", "id": "button_style", "label": "Style", "default": "navy", "options": [
-      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "splash-white", "label": "Splash blue, white text" }, { "value": "white", "label": "White" }
+      { "value": "navy", "label": "Navy" }, { "value": "splash", "label": "Splash blue" }, { "value": "splash-white", "label": "Splash blue, white text" }, { "value": "white", "label": "White" }, { "value": "link", "label": "Text link" }
     ] },
     { "type": "header", "content": "Spacing and edges" },
     { "type": "checkbox", "id": "wave_bottom", "label": "Wavy bottom edge", "default": false },

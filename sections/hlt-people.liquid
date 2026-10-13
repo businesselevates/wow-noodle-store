@@ -1,0 +1,100 @@
+{%- comment -%}
+  HLT People: who is behind the brand. A quote across the top, then a card per
+  person. A card without a photo runs as text on cream rather than showing a
+  placeholder or a stock photo.
+{%- endcomment -%}
+{%- assign people = section.blocks | where: 'type', 'person' -%}
+<section
+  class="hlt hlt--{{ section.settings.background }} hlt-people"
+  style="--hlt-pt: {{ section.settings.padding_top }}px; --hlt-pb: {{ section.settings.padding_bottom }}px; --hlt-people-cols: {{ section.settings.columns }};"
+>
+  <div class="hlt__inner">
+    <div class="hlt-stack hlt-people__head" data-hlt-stagger>
+      {%- if section.settings.overline != blank -%}<p class="hlt-overline" data-hlt-reveal>{{ section.settings.overline }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="hlt-h2" data-hlt-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.quote != blank -%}
+        <figure class="hlt-people__quote" data-hlt-reveal>
+          <blockquote>{{ section.settings.quote }}</blockquote>
+          {%- if section.settings.quote_attribution != blank -%}<figcaption>{{ section.settings.quote_attribution }}</figcaption>{%- endif -%}
+        </figure>
+      {%- endif -%}
+    </div>
+
+    {%- if people.size > 0 -%}
+      <ul class="hlt-people__grid" role="list" data-hlt-stagger>
+        {%- for block in people -%}
+          <li class="hlt-people__card{% if block.settings.image == blank %} hlt-people__card--text{% endif %}" data-hlt-reveal {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              {%- assign portrait_alt = block.settings.image.alt | default: block.settings.name -%}
+              <div class="hlt-media hlt-people__media" style="--hlt-ratio: 4 / 5;">
+                {{ block.settings.image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(min-width: 990px) 33vw, 100vw', alt: portrait_alt }}
+              </div>
+            {%- endif -%}
+            <div class="hlt-people__copy">
+              {%- if block.settings.name != blank -%}<h3 class="hlt-h4">{{ block.settings.name }}</h3>{%- endif -%}
+              {%- if block.settings.role != blank -%}<p class="hlt-people__role">{{ block.settings.role }}</p>{%- endif -%}
+              {%- if block.settings.text != blank -%}<div class="hlt-body hlt-rte">{{ block.settings.text }}</div>{%- endif -%}
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .hlt-people__head { max-width: 860px; }
+  .hlt-people__quote { margin: 0; }
+  .hlt-stack > .hlt-people__quote { margin-top: 28px; }
+  .hlt-people__quote blockquote {
+    font-family: var(--hlt-font-display); font-weight: 700;
+    font-size: clamp(22px, 2.6vw, 30px); line-height: 1.3; color: var(--hlt-heading);
+    max-width: 30ch; text-wrap: balance;
+  }
+  .hlt-people__quote figcaption { margin-top: 10px; font-size: 14px; color: var(--hlt-text); }
+
+  .hlt-people__grid { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 28px; }
+  @media (min-width: 750px) { .hlt-people__grid { grid-template-columns: repeat(var(--hlt-people-cols, 3), minmax(0, 1fr)); gap: 24px; } }
+  .hlt-people__card { display: grid; gap: 16px; align-content: start; }
+  .hlt-people__card--text {
+    padding: 26px 24px; border-radius: var(--hlt-r-card);
+    background: var(--hlt-cream);
+  }
+  .hlt--cream .hlt-people__card--text { background: var(--hlt-paper); }
+  .hlt-people__copy { display: grid; gap: 6px; }
+  .hlt-people__role {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--hlt-splash-deep);
+  }
+  .hlt-people__copy .hlt-body { margin-top: 6px; font-size: 16px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "HLT People",
+  "tag": "div",
+  "class": "hlt-section",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "overline", "label": "Overline", "default": "The people" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Who's behind it." },
+    { "type": "textarea", "id": "quote", "label": "Quote" },
+    { "type": "text", "id": "quote_attribution", "label": "Quote attribution" },
+    { "type": "range", "id": "columns", "label": "Cards per row on desktop", "info": "Phones show one per row.", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "select", "id": "background", "label": "Colour combination", "default": "paper", "options": [
+      { "value": "cream", "label": "Cream" }, { "value": "paper", "label": "Paper" }, { "value": "splash-pale", "label": "Splash pale" }
+    ] },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    { "type": "person", "name": "Person", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Portrait", "info": "Portrait shape, about 1200 x 1500. Leave empty to show the card as text." },
+      { "type": "text", "id": "name", "label": "Name", "default": "Name" },
+      { "type": "text", "id": "role", "label": "Role", "default": "Co-founder" },
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>A line or two about them.</p>" }
+    ] }
+  ],
+  "presets": [ { "name": "HLT People", "blocks": [ { "type": "person" }, { "type": "person" }, { "type": "person" } ] } ]
+}
+{% endschema %}
