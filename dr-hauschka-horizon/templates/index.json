@@ -140,14 +140,6 @@
     "trust_logos": {
       "type": "dh-logos",
       "blocks": {
-        "logo_LTBNf8": {
-          "type": "logo",
-          "settings": {
-            "name": "Logo",
-            "image": "shopify://shop_images/Screenshot_58-removebg-preview.png",
-            "show": true
-          }
-        },
         "l1": {
           "type": "logo",
           "settings": {
@@ -168,13 +160,12 @@
           "type": "line",
           "disabled": true,
           "settings": {
-            "text": "NATRUE certified natural cosmetics  ·  Daily Vanity Beauty Awards 2026: Apricot Day Cream, \"Dry skin\" winner",
+            "text": "Daily Vanity Beauty Awards 2026: Apricot Day Cream, \"Dry skin\" winner",
             "show": true
           }
         }
       },
       "block_order": [
-        "logo_LTBNf8",
         "l1",
         "l2",
         "n1"
@@ -226,7 +217,7 @@
             "title": "Sensitive skin",
             "line": "Reacts easily to new products",
             "link": "shopify://collections/redness-sensitive-skin",
-            "image": "shopify://shop_images/Clarifying_Toner_with_Cap.png",
+            "image": "shopify://shop_images/SoothingDayLotion50ml.png",
             "colour": "pink"
           }
         },
@@ -256,7 +247,7 @@
             "title": "Blemish-prone skin",
             "line": "Breaks out easily",
             "link": "https://drhauschka.sg/collections/blemish-prone-skin",
-            "image": "shopify://shop_images/DrHauschka-Ice-Plant-Face-Cream-40ml.jpg",
+            "image": "shopify://shop_images/Clarifying_Toner_with_Cap.png",
             "colour": "green"
           }
         },
@@ -304,8 +295,8 @@
           "type": "review",
           "settings": {
             "show": true,
-            "quote": "This Ice Plant Face Cream has really helped! I'm happy and will order again.",
-            "cite": "Customer in Alaska, aged 70 to 79 · Ice Plant Face Cream · lovelyskin.com",
+            "quote": "I was having a real hard time with flaky dry skin and decided to try the Ice Plant Face Cream. I am so glad I did as it did the trick.",
+            "cite": "Cynthia B., US · Ice Plant Face Cream · drhauschka.com",
             "link": "/products/ice-plant-face-cream-40-ml"
           }
         },
@@ -336,8 +327,8 @@
             "sale_end": "2026-11-15T23:59",
             "button_label": "Choose this set",
             "link": "/products/ice-plant-face-cream-40-ml?set=gift",
-            "image": "shopify://shop_images/gallery-02b_gift-set-v2.webp",
-            "image_alt": "The Ice Plant Gift Set: Face Cream and Hand Cream"
+            "image": "shopify://shop_images/gift-set-block_face-hands.webp",
+            "image_alt": "The Ice Plant Gift Set: Ice Plant Face Cream 40ml and Ice Plant Hand Cream 50ml"
           }
         },
         "set2": {
@@ -358,8 +349,8 @@
             "sale_end": "2026-11-15T23:59",
             "button_label": "Choose this set",
             "link": "/products/ice-plant-face-cream-40-ml?set=giftbody",
-            "image": "shopify://shop_images/gallery-02c_face-hands-body-v2.webp",
-            "image_alt": "The Ice Plant Gift Set: Face, Hands and Body"
+            "image": "shopify://shop_images/gift-set-block_face-hands-body.webp",
+            "image_alt": "The Ice Plant Gift Set: Face, Hands and Body: Face Cream 40ml, Hand Cream 50ml and Body Care Lotion 145ml"
           }
         }
       },
@@ -401,7 +392,7 @@
         "heading": "Natural skincare made in Germany since 1967",
         "text": "<p>Dr. Hauschka is made by WALA, from plants, many of them grown in its own garden. In Singapore, Lyne and her team look after you at our International Plaza studio and here online.</p>",
         "button_1": "Our story",
-        "link_1": "/pages/about-us",
+        "link_1": "/products/ice-plant-face-cream-40-ml",
         "button_2": "Visit the studio",
         "link_2": "/pages/store-locator",
         "note": "IMG-16 (2560 x 1100 and 1170 x 1500) not made yet: the store locator photo stands in."

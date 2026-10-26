@@ -51,7 +51,14 @@
         endcase
       -%}
       {%- if b.show -%}
-        <div class="dh-hero__slide{% if forloop.first %} is-active{% endif %}" data-dh-slide data-dh-scheduled{% if b.start != blank %} data-dh-start="{{ b.start | escape }}"{% endif %}{% if b.end != blank %} data-dh-end="{{ b.end | escape }}"{% endif %} role="group" aria-roledescription="slide" aria-label="{{ b.heading | strip_html | escape }}" style="--slide-bg: {{ bg }};" {{ block.shopify_attributes }}>
+        {%- liquid
+          # A phone image of its own (1170 x 1500, top 55% left empty) carries the copy over its top.
+          assign overlay_m = false
+          if b.image_mobile != blank and b.image != blank and b.image_mobile.src != b.image.src
+            assign overlay_m = true
+          endif
+        -%}
+        <div class="dh-hero__slide{% if forloop.first %} is-active{% endif %}{% if overlay_m %} dh-hero__slide--overlay-m{% endif %}" data-dh-slide data-dh-scheduled{% if b.start != blank %} data-dh-start="{{ b.start | escape }}"{% endif %}{% if b.end != blank %} data-dh-end="{{ b.end | escape }}"{% endif %} role="group" aria-roledescription="slide" aria-label="{{ b.heading | strip_html | escape }}" style="--slide-bg: {{ bg }};" {{ block.shopify_attributes }}>
           <div class="dh-hero__media{% if b.image == blank %} dh-hero__media--fallback{% endif %}">
             {%- if b.image != blank -%}
               {%- assign mob = b.image_mobile | default: b.image -%}
@@ -87,7 +94,10 @@
     <button type="button" class="dh-hero__arrow" data-dh-prev aria-label="Previous slide">{% render 'dh-icon', name: 'arrow-left' %}</button>
     <div class="dh-hero__dots" data-dh-dots></div>
     <button type="button" class="dh-hero__arrow" data-dh-next aria-label="Next slide">{% render 'dh-icon', name: 'arrow-right' %}</button>
-    <button type="button" class="dh-hero__pause" data-dh-pause data-pause="Pause" data-play="Play">Pause</button>
+    <button type="button" class="dh-hero__pause" data-dh-pause aria-label="Pause slideshow" data-pause="Pause slideshow" data-play="Play slideshow">
+      <svg class="dh-hero__pause-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M5.5 3v10M10.5 3v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="dh-hero__play-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path d="M5 3.2v9.6L12.5 8z" fill="currentColor"/></svg>
+    </button>
   </div>
 </section>
 

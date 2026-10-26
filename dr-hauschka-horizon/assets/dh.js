@@ -313,7 +313,10 @@
     }
     function setPaused(p) {
       paused = p;
-      if (pauseBtn) pauseBtn.textContent = p ? pauseBtn.getAttribute('data-play') : pauseBtn.getAttribute('data-pause');
+      if (pauseBtn) {
+        pauseBtn.setAttribute('aria-label', p ? pauseBtn.getAttribute('data-play') : pauseBtn.getAttribute('data-pause'));
+        pauseBtn.classList.toggle('is-paused', p);
+      }
       restart();
     }
     hero.querySelector('[data-dh-prev]').addEventListener('click', function () { go(index - 1); });

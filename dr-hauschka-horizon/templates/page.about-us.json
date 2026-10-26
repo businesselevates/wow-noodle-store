@@ -95,7 +95,7 @@
         "text": {
           "type": "text",
           "settings": {
-            "text": "<p>WALA harvests most of its plants by hand: in its own herb garden, on its farm at the foot of the Swabian Jura, and through partner farms around the world. Many ingredients are organic, and some are grown biodynamically.</p><p>Dr. Hauschka skincare and make-up carry the NATRUE seal, an independent label for natural and organic cosmetics.</p>"
+            "text": "<p>WALA harvests most of its plants by hand: in its own herb garden, on its farm at the foot of the Swabian Jura, and through partner farms around the world. Many ingredients are organic, and some are grown biodynamically.</p>"
           }
         },
         "icon_1": {
@@ -111,20 +111,12 @@
             "icon": "no-drop",
             "text": "No mineral oils, silicones, PEGs or synthetic preservatives"
           }
-        },
-        "icon_3": {
-          "type": "icon",
-          "settings": {
-            "icon": "seal",
-            "text": "NATRUE certified natural skincare and make-up"
-          }
         }
       },
       "block_order": [
         "text",
         "icon_1",
-        "icon_2",
-        "icon_3"
+        "icon_2"
       ],
       "settings": {
         "background": "warm",

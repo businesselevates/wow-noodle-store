@@ -26,12 +26,21 @@
 .dh-hero__dots { display: flex; gap: 8px; }
 .dh-hero__dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--dh-ink); background: transparent; padding: 0; cursor: pointer; }
 .dh-hero__dot[aria-current="true"] { background: var(--dh-ink); }
-.dh-hero__pause { font-size: 12px; background: none; border: 0; text-decoration: underline; cursor: pointer; color: var(--dh-ink); font-family: var(--dh-font-body); }
+.dh-hero__pause { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 1px solid var(--dh-ink); border-radius: 50%; background: rgba(255, 255, 255, .85); color: var(--dh-ink); cursor: pointer; }
+.dh-hero__pause .dh-hero__play-icon, .dh-hero__pause.is-paused .dh-hero__pause-icon { display: none; }
+.dh-hero__pause.is-paused .dh-hero__play-icon { display: block; }
+/* P2-22h D5: dots and the pause icon on phones, no arrows. */
+@media (max-width: 989px) { .dh-hero__arrow { display: none; } }
+/* P2-22h D3: a phone image of its own keeps its full height and carries the copy over its empty top. */
+@media (max-width: 989px) {
+  .dh-hero__slide--overlay-m .dh-hero__media img { height: auto; }
+  .dh-hero__slide--overlay-m .dh-hero__content { position: absolute; inset: 0 0 auto 0; padding: 28px var(--dh-gutter) 0; background: none; }
+}
 @media (prefers-reduced-motion: reduce) { .dh-hero__slide, .dh-hero__slide.is-active { transition: none; } }
 
 .dh-logos__row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px 48px; margin-top: 16px; }
-.dh-logos__row img { height: 32px; width: auto; }
-@media (min-width: 990px) { .dh-logos__row img { height: 40px; } }
+/* P2-22h F3: every logo 28px tall, in one grey (#3D3D3D at 70%). */
+.dh-logos__row img { height: 28px; width: auto; filter: brightness(0) invert(24%); opacity: .7; }
 .dh-logos__line { margin-top: 14px; font-size: 14px; color: var(--dh-ink); text-align: center; }
 
 .dh-head { display: flex; justify-content: space-between; align-items: end; gap: 18px; margin-bottom: 26px; }
@@ -58,6 +67,12 @@
 .dh-tile__title { display: block; font-family: var(--dh-font-heading); font-size: 22px; line-height: 1.2; }
 .dh-tile__line { display: block; font-size: 13px; color: var(--dh-ink-soft); margin-top: 4px; }
 @media (min-width: 990px) { .dh-tile__title { font-size: 28px; } .dh-tile__line { font-size: 15px; } .dh-tile__label { padding: 24px; } }
+/* P2-22h D2: on phones the title and line sit under the image, not over it. */
+@media (max-width: 989px) {
+  .dh-tile:not(.dh-tile--flat) { aspect-ratio: auto; justify-content: flex-start; }
+  .dh-tile:not(.dh-tile--flat) img { position: static; aspect-ratio: 3 / 4; height: auto; }
+  .dh-tile:not(.dh-tile--flat) .dh-tile__label { background: var(--dh-white); padding: 12px; }
+}
 a.dh-tile:hover .dh-tile__title { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
 .dh-feat__top { display: grid; gap: 28px; align-items: center; }

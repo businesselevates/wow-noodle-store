@@ -63,24 +63,16 @@
         "g5": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/gallery-05_review.webp",
+            "image": "shopify://shop_images/gallery-05_review-stars.webp",
             "alt": "Review: My very sensitive skin tolerates this cream excellently, it is absorbed quickly, is odourless and the make-up on top also lasts very well. Birgit B., Germany, verified review on violey.com (translated from German)",
-            "for": "all"
-          }
-        },
-        "g6": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/Regenerating_Intensive_Day_Cream_Application_Texture_Face_Model_Female_Grey-Haired_-_2426_Poster_A4.jpg",
-            "alt": "G6 facial bonus: our treatment room at International Plaza. Overlay: Spend S$200, get a free 1-hour facial (photo from Lyne, P2-21b row 27)",
             "for": "all"
           }
         },
         "g7": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/DrHauschka_Cosmetics_Parlour_2025_-_5447.jpg",
-            "alt": "G7 promise card with Lyne's photo and signature (Lyne, P2-21b row 28)",
+            "image": "shopify://shop_images/gallery-07_promise-textonly.webp",
+            "alt": "Lyne's 30-Day Suits-Your-Skin Promise: if the Face Cream doesn't suit your skin, your S$79 comes back.",
             "for": "all"
           }
         },
@@ -106,14 +98,6 @@
             "text": "Sinks in, takes make-up",
             "show": true,
             "note": ""
-          }
-        },
-        "pill3": {
-          "type": "pill",
-          "settings": {
-            "text": "Certified natural (NATRUE)",
-            "show": false,
-            "note": "Off until Lyne confirms the Face Cream is covered (P2-21b row 12)."
           }
         },
         "opt_face": {
@@ -174,15 +158,6 @@
             "note": ""
           }
         },
-        "icon2": {
-          "type": "icon",
-          "settings": {
-            "icon": "leaf",
-            "label": "NATRUE certified natural",
-            "show": false,
-            "note": "Off until Lyne confirms NATRUE scope and sends the official artwork (P2-21b row 12)."
-          }
-        },
         "icon3": {
           "type": "icon",
           "settings": {
@@ -231,11 +206,11 @@
             "anchor": "",
             "open": false,
             "content": "",
-            "content_face": "<p><strong>Face Cream only: 1 item</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li></ul>",
-            "content_gift": "<p><strong>The Ice Plant Gift Set: 2 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li></ul>",
-            "content_giftbody": "<p><strong>The Ice Plant Gift Set: Face, Hands and Body: 3 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li><li>1 × Ice Plant Body Care Lotion, 145ml</li></ul>",
-            "content_after": "<p>All three products contain peanut oil and sweet almond oil.</p>",
-            "note": "PLACEHOLDER: gift box or gift wrap line, if Lyne offers one"
+            "content_face": "<p><strong>Face Cream only: 1 item</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li></ul><p>Contains peanut oil, sweet almond oil, lanolin, alcohol and amyris oil.</p>",
+            "content_gift": "<p><strong>The Ice Plant Gift Set: 2 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li></ul><p>Both contain sweet almond oil, lanolin, alcohol and amyris oil. The Face Cream also has peanut oil. The Hand Cream also has sesame oil and lactose.</p>",
+            "content_giftbody": "<p><strong>The Ice Plant Gift Set: Face, Hands and Body: 3 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li><li>1 × Ice Plant Body Care Lotion, 145ml</li></ul><p>All three contain sweet almond oil, lanolin, alcohol and amyris oil. The Face Cream also has peanut oil. The Hand Cream also has sesame oil and lactose.</p>",
+            "content_after": "",
+            "note": ""
           }
         },
         "acc3": {
@@ -249,7 +224,7 @@
             "content_gift": "",
             "content_giftbody": "",
             "content_after": "",
-            "note": "PLACEHOLDER: how long a 40ml tube lasts with daily use, from Lyne"
+            "note": ""
           }
         },
         "note1": {
@@ -267,17 +242,14 @@
         "g3",
         "g4",
         "g5",
-        "g6",
         "g7",
         "g8",
         "pill1",
         "pill2",
-        "pill3",
         "opt_face",
         "opt_gift",
         "opt_giftbody",
         "icon1",
-        "icon2",
         "icon3",
         "icon4",
         "icon5",
@@ -303,14 +275,6 @@
     "trust": {
       "type": "dh-trust-strip",
       "blocks": {
-        "t1": {
-          "type": "item",
-          "settings": {
-            "text": "NATRUE certified natural cosmetics",
-            "show": true,
-            "note": "Stays off until Lyne confirms the Face Cream sits inside the certification."
-          }
-        },
         "t2": {
           "type": "item",
           "settings": {
@@ -327,20 +291,19 @@
             "note": ""
           }
         },
-        "t4": {
+        "t0": {
           "type": "item",
           "settings": {
-            "text": "Official Dr. Hauschka distributor in Singapore",
-            "show": false,
-            "note": "Off until Lyne confirms the wording and proof."
+            "text": "No perfume added",
+            "show": true,
+            "note": ""
           }
         }
       },
       "block_order": [
-        "t1",
+        "t0",
         "t2",
-        "t3",
-        "t4"
+        "t3"
       ],
       "settings": {
         "background": "white"
@@ -551,13 +514,6 @@
             "text": "<p>Dry air and handwashing work on the backs of your hands too. The Ice Plant Hand Cream is made from the same plant, with no perfume added.</p><p>Buying for someone else? Both sets make an easy gift for anyone with very dry skin.</p>"
           }
         },
-        "ph1": {
-          "type": "placeholder",
-          "settings": {
-            "text": "<p>[PLACEHOLDER: gift box or wrap, and the last order date for Christmas delivery]</p>",
-            "show": false
-          }
-        },
         "cards": {
           "type": "setcards",
           "settings": {
@@ -588,7 +544,6 @@
       },
       "block_order": [
         "p1",
-        "ph1",
         "cards",
         "q1",
         "b1"
@@ -671,8 +626,8 @@
           "type": "review",
           "settings": {
             "show": true,
-            "quote": "This Ice Plant Face Cream has really helped! I'm happy and will order again.",
-            "cite": "Customer in Alaska, aged 70 to 79 · Ice Plant Face Cream · lovelyskin.com"
+            "quote": "I was having a real hard time with flaky dry skin and decided to try the Ice Plant Face Cream. I am so glad I did as it did the trick.",
+            "cite": "Cynthia B., US · Ice Plant Face Cream · drhauschka.com"
           }
         },
         "r3": {
@@ -711,7 +666,7 @@
         "background": "warm",
         "heading": "Buyers overseas keep ordering it again",
         "intro": "<p>This cream is new to most of Singapore, so these reviews come from buyers in Germany and the US. Each one names the product it's about.</p>",
-        "note": "PLACEHOLDER: WALA's official testimonials, and Singapore customers' words once they come in",
+        "note": "",
         "button_label": "Find your set",
         "button_link": "",
         "padding_top": 88,
@@ -783,23 +738,15 @@
             "text": "<p>Dr. Hauschka creams are made by WALA, in Germany, from plants. The company has made skincare since 1967. In Singapore, Lyne Ong and her team at PamperInc sell it from their International Plaza studio and online.</p>"
           }
         },
-        "ph1": {
-          "type": "placeholder",
-          "settings": {
-            "text": "<p>[PLACEHOLDER: “official distributor” wording and proof]</p>",
-            "show": false
-          }
-        },
         "p2": {
           "type": "text",
           "settings": {
-            "text": "<p>Dr. Hauschka Apricot Day Cream won the “Dry skin” category at Daily Vanity's Beauty Awards 2026. (A different cream from this one, from the same maker.)</p>"
+            "text": "<p>Another Dr. Hauschka cream, the Apricot Day Cream, won the “Dry skin” category at Daily Vanity's Beauty Awards 2026.</p>"
           }
         }
       },
       "block_order": [
         "p1",
-        "ph1",
         "p2"
       ],
       "settings": {
@@ -850,7 +797,7 @@
             "show": true,
             "question": "Is it heavy?",
             "answer": "<p>It's a light cream that sinks in fast and works under make-up.</p>",
-            "note": "PLACEHOLDER: what Singapore wearers say after a full day in the office"
+            "note": ""
           }
         },
         "q4": {
@@ -858,8 +805,8 @@
           "settings": {
             "show": true,
             "question": "S$79 is a lot for one tube. What am I paying for?",
-            "answer": "<p>A face cream that's certified natural, has no added perfume, and is made around ice plant juice. And if it ends up in the drawer like the others, you get your money back.</p>",
-            "note": "PLACEHOLDER: how long a tube lasts (goes after “ice plant juice.”). “Certified natural” waits on NATRUE scope too."
+            "answer": "<p>A face cream made around ice plant juice, with no perfume added, from WALA in Germany, who have made skincare since 1967. And if it ends up in the drawer like the others, you get your money back.</p>",
+            "note": ""
           }
         },
         "q5": {
@@ -876,7 +823,7 @@
           "settings": {
             "show": true,
             "question": "Is it the real thing? What about expiry dates?",
-            "answer": "<p>[PLACEHOLDER: official distributor proof, and how batch and expiry dates are shown.]</p>",
+            "answer": "<p>Yes. Lyne orders it from WALA, the maker in Germany, and we send it out from our International Plaza studio. Want to see the expiry date before you pay? WhatsApp us on +65 9751 6279 and we'll send you a photo of the tube you'll get.</p>",
             "note": ""
           }
         },
@@ -903,8 +850,8 @@
           "settings": {
             "show": true,
             "question": "How does Lyne's 30-day promise work?",
-            "answer": "<p>If the Face Cream doesn't suit your skin within 30 days of delivery, WhatsApp us a photo of the tube. Choose S$79 store credit or your S$79 back. You don't need to send it back. One claim per customer.</p>",
-            "note": "PLACEHOLDER: WhatsApp number"
+            "answer": "<p>If the Face Cream doesn't suit your skin within 30 days of delivery, WhatsApp us on +65 9751 6279 with a photo of the tube. Choose S$79 store credit or your S$79 back. You don't need to send it back. One claim per customer.</p>",
+            "note": ""
           }
         },
         "q10": {

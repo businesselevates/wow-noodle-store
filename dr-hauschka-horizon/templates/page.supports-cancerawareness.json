@@ -13,16 +13,18 @@
       "type": "dh-campaign-hero",
       "settings": {
         "background": "green",
-        "alt": "",
+        "alt": "Six Dr. Hauschka gentle care sets on a soft plain background",
         "eyebrow": "",
         "heading": "Cancer Care Support",
         "text": "<p>Simple care sets for skin that feels drier than it used to, and a little help from us while you need it.</p>",
         "button_label": "Shop the sets",
         "button_anchor": "sets",
         "button_link": "",
-        "note": "IMG-C1 waiting (Elevates, Kennedy): the six sets as real product renders on a soft plain background, no people or medical imagery. Desktop 1920 x 800, phone 800 x 1000. Until then this stays a plain colour banner.",
+        "note": "",
         "padding": 64,
-        "padding_m": 32
+        "padding_m": 32,
+        "image": "shopify://shop_images/IMG-C1_cancer-care_desktop-1920x800.webp",
+        "image_mobile": "shopify://shop_images/IMG-C1_cancer-care_phone-800x1000.webp"
       }
     },
     "intro": {
@@ -64,7 +66,7 @@
         "anchor": "sets",
         "heading": "The sets",
         "text": "<p>Every set lists what's inside on its own page.</p>",
-        "collection": "body-moisturisers",
+        "collection": "gentle-care-sets",
         "max": 6,
         "columns": "3",
         "button_label": "Add to cart",
@@ -72,7 +74,7 @@
         "soldout_label": "Sold out",
         "link_label": "",
         "link_url": "",
-        "note": "Collection Gentle Care Sets (cancer-patients), sorted by hand: two face sets, two starter sets, body set, hair set. Only the first 6 show. No strike-through prices until Kennedy confirms the compare-at prices (Before publish row 3).",
+        "note": "",
         "padding_top": 80,
         "padding_bottom": 80
       }
@@ -145,7 +147,7 @@
             "show": true,
             "question": "Who is this month's code for?",
             "answer": "<p>People going through cancer treatment. Send us a WhatsApp message and we'll give it to you.</p>",
-            "note": "Delete this question when the code section is hidden."
+            "note": ""
           }
         },
         "q2": {

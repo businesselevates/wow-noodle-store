@@ -10,8 +10,29 @@
       <div class="dh-stack">
         <h2>{{ s.signup_heading }}</h2>
         {%- if s.signup_line != blank -%}<p>{{ s.signup_line }}</p>{%- endif -%}
-        <div class="dh-footer__signup-slot">{{ s.signup_embed }}</div>
-        {%- if s.signup_embed == blank -%}<p class="dh-ph">Klaviyo embedded form goes here (list "Footer newsletter", no discount flow). Waiting on Lyne's Klaviyo account, P1-15b.</p>{%- endif -%}
+        {%- if s.signup_embed != blank -%}
+          <div class="dh-footer__signup-slot">{{ s.signup_embed }}</div>
+        {%- else -%}
+          {%- comment -%}
+            Shopify's own email sign-up (as Horizon's Email signup block): saves the shopper as a customer
+            with email marketing consent, which Klaviyo picks up once its Shopify sync is on (P2-22h B10).
+          {%- endcomment -%}
+          {%- form 'customer', id: 'dh-footer-signup', class: 'dh-signup' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="dh-signup__msg" role="status">Thanks, you're signed up.</p>
+            {%- else -%}
+              <div class="dh-signup__row">
+                <label class="dh-vh" for="dh-footer-signup-email">Your email</label>
+                <input id="dh-footer-signup-email" class="dh-signup__input" type="email" name="contact[email]" value="{{ form.email }}" placeholder="Your email" autocomplete="email" autocapitalize="off" spellcheck="false" required{% if form.errors %} aria-invalid="true" aria-describedby="dh-footer-signup-error"{% endif %}>
+                <button type="submit" class="dh-btn dh-btn--solid dh-signup__btn">Sign up</button>
+              </div>
+              {%- if form.errors -%}
+                <div id="dh-footer-signup-error" class="dh-signup__msg" role="alert">{{ form.errors | default_errors }}</div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        {%- endif -%}
         {%- if s.consent != blank -%}<p class="dh-small">{{ s.consent }}</p>{%- endif -%}
       </div>
       {%- for i in (1..3) -%}
@@ -32,6 +53,13 @@
     {%- if s.address != blank -%}<p class="dh-footer__address">{{ s.address }}</p>{%- endif -%}
   </div>
 </section>
+
+{% stylesheet %}
+  .dh-signup__row { display: flex; gap: 8px; max-width: 420px; }
+  .dh-signup__input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--dh-ink); background: var(--dh-white); color: var(--dh-ink); font: inherit; font-size: 15px; border-radius: 0; }
+  .dh-signup__btn { min-height: 44px; padding-inline: 18px; }
+  .dh-signup__msg { margin-top: 8px; font-size: 14px; color: var(--dh-ink); }
+{% endstylesheet %}
 
 {% schema %}
 {
