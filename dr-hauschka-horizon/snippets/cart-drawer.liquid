@@ -106,12 +106,15 @@
             {%- if cart.empty? -%}
               {{ empty_cart_drawer_content }}
             {%- else -%}
+              {% # Dr Hauschka cart (P2-22g): progress bar under the header, add-on under the lines. %}
+              {% render 'dh-cart-progress' %}
               <scroll-hint
                 class="cart-drawer__content"
                 aria-label="{{ 'accessibility.cart' | t }}"
               >
                 <scroll-hint class="cart-drawer__items">
                   {% render 'cart-products', context: 'drawer' %}
+                  {% render 'dh-cart-addon' %}
                 </scroll-hint>
 
                 <div class="cart-drawer__summary">
@@ -203,7 +206,8 @@
     align-items: center;
     gap: var(--gap-xl);
     padding: var(--cart-drawer-summary-padding);
-    margin-top: auto;
+    /* Dr Hauschka cart (P2-22g): the footer follows the last line, no white gap above it. */
+    margin-top: 0;
     background-color: var(--color-background);
     /* stylelint-disable-next-line color-named */
     mask-image: linear-gradient(to bottom, transparent, black var(--cart-drawer-summary-padding));

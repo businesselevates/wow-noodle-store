@@ -300,41 +300,7 @@
                     {%- endif -%}
                   </div>
 
-                  <div class="cart-items__unit-price-wrapper">
-                    <div>
-                      {% if item.original_price != item.final_price %}
-                        <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                        <span
-                          ><bdi>{{ item.final_price | money }}</bdi></span
-                        >
-                        <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                        <s class="compare-at-price">
-                          {% if item.variant.compare_at_price > item.original_price %}
-                            <bdi>{{ item.variant.compare_at_price | money }}</bdi>
-                          {% else %}
-                            <bdi>{{ item.original_price | money }}</bdi>
-                          {% endif %}
-                        </s>
-                      {% else %}
-                        {% if item.variant.compare_at_price > item.original_price %}
-                          <span class="visually-hidden">{{ 'content.price_sale' | t }}</span>
-                        {% else %}
-                          <span class="visually-hidden">{{ 'content.price' | t }}</span>
-                        {% endif %}
-
-                        <span
-                          ><bdi>{{ item.original_price | money }}</bdi></span
-                        >
-
-                        {% if item.variant.compare_at_price > item.original_price %}
-                          <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
-                          <s class="compare-at-price"
-                            ><bdi>{{ item.variant.compare_at_price | money }}</bdi></s
-                          >
-                        {% endif %}
-                      {% endif %}
-                    </div>
-                  </div>
+                  {% # Dr Hauschka cart (P2-22g, block 3): the price shows once, on the right. %}
                 </td>
                 <td
                   class="cart-items__quantity"
@@ -396,11 +362,18 @@
                   </div>
                 </td>
                 {%- liquid
+                  # Dr Hauschka cart (P2-22g, block 3): the line price before discount codes, which
+                  # the totals list on their own row, with the compare-at price struck under it.
+                  capture price
+                    render 'dh-money', cents: item.original_line_price
+                  endcapture
+                  assign compare_line_price = 0
+                  if item.variant.compare_at_price > item.original_price
+                    assign compare_line_price = item.variant.compare_at_price | times: item.quantity
+                  endif
                   if settings.currency_code_enabled_cart_items
-                    assign price = item.final_line_price | money_with_currency
                     assign unit_price = item.unit_price | money_with_currency
                   else
-                    assign price = item.final_line_price | money
                     assign unit_price = item.unit_price | money
                   endif
                 -%}
@@ -409,9 +382,13 @@
                   role="cell"
                   headers="productTotal"
                 >
-                  <text-component value="{{ price | strip_html }}"
+                  <text-component value="{{ price }}"
                     ><bdi>{{ price }}</bdi></text-component
                   >
+                  {%- if compare_line_price > 0 -%}
+                    <span class="visually-hidden">{{ 'content.price_regular' | t }}</span>
+                    <s class="cart-items__price-compare"><bdi>{% render 'dh-money', cents: compare_line_price %}</bdi></s>
+                  {%- endif -%}
                   {%- if item.unit_price_measurement -%}
                     <div class="cart-items__price-unit cart-secondary-typography">
                       {% render 'unit-price', price: unit_price, measurement: item.unit_price_measurement %}
@@ -715,6 +692,12 @@
     display: block;
     font-size: var(--font-size--sm);
     line-height: var(--line-height);
+  }
+
+  .cart-items__price-compare {
+    display: block;
+    font-size: var(--font-size--xs);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text, 0.62));
   }
 
   .cart-items__price-unit {

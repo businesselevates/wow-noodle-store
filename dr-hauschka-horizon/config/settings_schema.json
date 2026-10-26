@@ -1569,6 +1569,85 @@
       },
       {
         "type": "header",
+        "content": "Dr Hauschka cart"
+      },
+      {
+        "type": "checkbox",
+        "id": "dh_discount_field_open",
+        "label": "Show discount field open",
+        "info": "On for code campaigns (11.11, code 1111): the code field and Apply sit open. Off: a \"Have a discount code?\" link opens the field.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "dh_show_progress_bar",
+        "label": "Show free delivery and facial progress bar",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "dh_free_delivery_threshold",
+        "label": "Free delivery from (S$)",
+        "info": "Match the Shopify shipping rate \"FREE SHIPPING with $100 purchase\".",
+        "default": 100
+      },
+      {
+        "type": "number",
+        "id": "dh_delivery_fee",
+        "label": "Standard delivery fee (S$)",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "id": "dh_facial_threshold",
+        "label": "Free 1-hour facial from (S$)",
+        "info": "Match the amount Rivo counts toward the facial.",
+        "default": 200
+      },
+      {
+        "type": "select",
+        "id": "dh_threshold_basis",
+        "label": "Count toward free delivery and the facial",
+        "info": "Use whichever amount Shopify's free shipping rate uses at checkout, so the bar and the delivery row agree with checkout.",
+        "options": [
+          {
+            "value": "after_discounts",
+            "label": "Cart total after discount codes"
+          },
+          {
+            "value": "before_discounts",
+            "label": "Cart total before discount codes"
+          }
+        ],
+        "default": "after_discounts"
+      },
+      {
+        "type": "product",
+        "id": "dh_cart_addon_product",
+        "label": "Cart add-on product",
+        "info": "Empty uses Ice Plant Hand Cream 50ml. Hidden when it is in the cart or out of stock."
+      },
+      {
+        "type": "text",
+        "id": "dh_cart_addon_title",
+        "label": "Add-on name",
+        "default": "Ice Plant Hand Cream"
+      },
+      {
+        "type": "text",
+        "id": "dh_cart_addon_note",
+        "label": "Add-on line",
+        "default": "For very dry hands"
+      },
+      {
+        "type": "checkbox",
+        "id": "dh_trust_show_distributor",
+        "label": "Show \"Official Dr. Hauschka distributor in Singapore\"",
+        "info": "Leave off until Lyne confirms the wording. Review numbers come from Judge.me.",
+        "default": false
+      },
+      {
+        "type": "header",
         "content": "t:content.product_media"
       },
       {

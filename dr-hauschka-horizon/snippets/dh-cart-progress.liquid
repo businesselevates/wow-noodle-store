@@ -1,0 +1,158 @@
+{%- doc -%}
+  Free delivery and free facial progress bar for the cart drawer and the cart page (task P2-22g,
+  block 2). One track with two stops: a van at the free delivery threshold and a gift at the
+  facial threshold, both from theme settings. Liquid renders it, so Horizon's cart section
+  re-render moves it whenever quantities, add-ons or discount codes change. Prints nothing on an
+  empty cart or when the bar is switched off.
+
+  @example
+  {% render 'dh-cart-progress' %}
+{%- enddoc -%}
+{%- if cart.item_count > 0 and settings.dh_show_progress_bar -%}
+{%- liquid
+  capture dh_basis
+    render 'dh-cart-basis'
+  endcapture
+  assign dh_basis = dh_basis | plus: 0
+  assign delivery_at = settings.dh_free_delivery_threshold | default: 100 | times: 100
+  assign facial_at = settings.dh_facial_threshold | default: 200 | times: 100
+
+  # Gaps are whole dollars, rounded up so S$27.85 short reads S$28, never less than needed.
+  if dh_basis < delivery_at
+    assign gap = delivery_at | minus: dh_basis | divided_by: 100.0 | ceil
+  elsif dh_basis < facial_at
+    assign gap = facial_at | minus: dh_basis | divided_by: 100.0 | ceil
+  endif
+
+  assign fill = dh_basis | times: 100.0 | divided_by: facial_at
+  if fill > 100
+    assign fill = 100
+  endif
+  assign van_at = delivery_at | times: 100.0 | divided_by: facial_at
+-%}
+
+<div class="dh-cart-progress">
+  <p class="dh-cart-progress__msg" aria-live="polite">
+    {%- if dh_basis < delivery_at -%}
+      S${{ gap }} more for free delivery
+    {%- elsif dh_basis < facial_at -%}
+      ✅ Free delivery. S${{ gap }} more for a free 1-hour facial 🎁
+    {%- else -%}
+      ✅ Free delivery. 🎁 This order earns you a free 1-hour facial. We'll email you how to book.
+    {%- endif -%}
+  </p>
+  <div
+    class="dh-cart-progress__track"
+    role="progressbar"
+    aria-label="Spend toward free delivery and a free facial"
+    aria-valuemin="0"
+    aria-valuemax="{{ facial_at | divided_by: 100 }}"
+    aria-valuenow="{{ dh_basis | divided_by: 100 }}"
+    aria-valuetext="{% render 'dh-money', cents: dh_basis %} of {% render 'dh-money', cents: facial_at %}"
+  >
+    <span
+      class="dh-cart-progress__fill"
+      style="--dh-fill: {{ fill | round: 2 }}%;"
+    ></span>
+    <span
+      class="dh-cart-progress__stop{% if dh_basis >= delivery_at %} is-reached{% endif %}"
+      style="--dh-at: {{ van_at | round: 2 }}%;"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 7h11v9H2zM13 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="1.7"/><circle cx="16.5" cy="18" r="1.7"/></svg>
+      <small>{% render 'dh-money', cents: delivery_at %}</small>
+    </span>
+    <span
+      class="dh-cart-progress__stop dh-cart-progress__stop--end{% if dh_basis >= facial_at %} is-reached{% endif %}"
+      style="--dh-at: 100%;"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3.5" y="9" width="17" height="4" rx="0.5"/><path d="M5 13v8h14v-8M12 9v12M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9Zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9Z"/></svg>
+      <small>{% render 'dh-money', cents: facial_at %}</small>
+    </span>
+  </div>
+  <p class="dh-cart-progress__fine">One facial per customer.</p>
+</div>
+{%- endif -%}
+
+{% stylesheet %}
+  .dh-cart-progress {
+    padding: var(--padding-md) var(--cart-drawer-padding, var(--padding-md)) var(--padding-sm);
+    background-color: rgb(var(--color-foreground-rgb) / 0.03);
+    border-block: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+  }
+
+  .dh-cart-progress__msg {
+    margin: 0 0 var(--margin-sm);
+    font-size: var(--font-size--sm);
+    color: var(--color-foreground);
+    line-height: 1.4;
+  }
+
+  .dh-cart-progress__track {
+    position: relative;
+    height: 6px;
+    margin: 0 10px 30px;
+    border-radius: 3px;
+    background-color: rgb(var(--color-foreground-rgb) / 0.12);
+  }
+
+  .dh-cart-progress__fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--dh-fill);
+    border-radius: inherit;
+    background-color: var(--color-foreground);
+    transition: width var(--animation-speed, 0.3s) var(--animation-easing, ease);
+  }
+
+  .dh-cart-progress__stop {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: var(--dh-at);
+    display: grid;
+    justify-items: center;
+    width: 22px;
+    height: 22px;
+    translate: -50% -50%;
+    color: rgb(var(--color-foreground-rgb) / 0.55);
+    background-color: var(--color-background);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.25);
+    border-radius: 50%;
+  }
+
+  .dh-cart-progress__stop svg {
+    width: 14px;
+    height: 14px;
+    margin-block-start: 3px;
+  }
+
+  .dh-cart-progress__stop.is-reached {
+    color: var(--color-background);
+    background-color: var(--color-foreground);
+    border-color: var(--color-foreground);
+  }
+
+  .dh-cart-progress__stop small {
+    position: absolute;
+    top: calc(100% + 4px);
+    font-size: var(--font-size--2xs, 11px);
+    color: rgb(var(--color-foreground-rgb) / 0.62);
+    white-space: nowrap;
+  }
+
+  .dh-cart-progress__fine {
+    margin: 0;
+    font-size: var(--font-size--2xs, 11px);
+    color: rgb(var(--color-foreground-rgb) / 0.62);
+  }
+
+  [dir='rtl'] .dh-cart-progress__stop {
+    translate: 50% -50%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dh-cart-progress__fill {
+      transition: none;
+    }
+  }
+{% endstylesheet %}

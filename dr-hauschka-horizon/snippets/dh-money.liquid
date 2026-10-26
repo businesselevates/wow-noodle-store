@@ -1,0 +1,11 @@
+{%- doc -%}
+  Prints an amount the way the Dr Hauschka cart copy writes it: S$79, S$72.15, S$1,079.
+  The shop's money format is "${{amount}}", so whole amounts drop their ".00" and the
+  dollar sign gains the S.
+
+  @param {number} cents - Amount in cents.
+
+  @example
+  {% render 'dh-money', cents: cart.total_price %}
+{%- enddoc -%}
+{{- cents | money_without_trailing_zeros | remove: '$' | prepend: 'S$' -}}

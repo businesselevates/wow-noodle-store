@@ -48,7 +48,10 @@
       </div>
 
       <div class="cart-page__items">
+        {% # Dr Hauschka cart (P2-22g): same progress bar and add-on as the drawer. %}
+        {% render 'dh-cart-progress' %}
         {%- content_for 'block', id: 'cart-page-items', type: '_cart-products' %}
+        {% render 'dh-cart-addon' %}
       </div>
 
       {%- unless cart.empty? -%}
@@ -100,6 +103,10 @@
 
   .cart-page__title + .cart-page__items {
     margin-block-start: var(--margin-lg);
+  }
+
+  .cart-page__items > .dh-cart-progress {
+    margin-block-end: var(--margin-lg);
   }
 
   @media screen and (min-width: 750px) {

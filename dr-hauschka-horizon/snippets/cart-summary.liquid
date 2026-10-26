@@ -1,5 +1,5 @@
 {%- doc -%}
-  Renders the cart summary totals.
+  Renders the cart summary: discount, note, totals with delivery, checkout and the trust line.
 
   @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons, instead of relying on platform's layout.
   @param {string} [section_id] - The section ID for cart discount component.
@@ -8,235 +8,214 @@
 {% render 'text-component-shimmer-styles' %}
 {% render 'cart-typography-styles' %}
 
-<div class="cart-totals">
-  {% # We need to keep this node in place to allow morphing to work properly # %}
-  <div class="cart-totals__original-container cart-primary-typography">
-    {%- if cart.cart_level_discount_applications.size > 0 -%}
-      <span class="cart-totals__item cart-totals__original">
-        <span class="cart-totals__original-label">{{ 'content.cart_subtotal' | t }}</span>
-        <span
-          class="cart-totals__original-value cart-secondary-typography"
-          data-testid="cart-subtotal-value"
-        >
-          <bdi>{{- cart.items_subtotal_price | money -}}</bdi>
-        </span>
-      </span>
-      <ul
-        class="cart-discounts"
-        role="list"
-        aria-label="{{ 'content.discounts' | t }}"
-      >
-        {%- for discount in cart.cart_level_discount_applications -%}
-          <li class="cart-discounts__item">
-            <span class="cart-discounts__label">
-              {{- 'icon-discount.svg' | inline_asset_content -}}
-              <bdi>{{ discount.title | escape }}</bdi>
-            </span>
-            <span class="cart-discounts__value cart-secondary-typography"
-              ><bdi>-{{ discount.total_allocated_amount | money }}</bdi>
-            </span>
-          </li>
-        {%- endfor -%}
-      </ul>
-    {%- endif -%}
-  </div>
+{%- liquid
+  # Dr Hauschka cart (task P2-22g, blocks 5 to 10): discount, note, totals with the delivery
+  # row, checkout button with the total, express pay, trust line. Shared by the drawer and the
+  # cart page, and re-rendered by Horizon on every cart change.
+  capture dh_basis
+    render 'dh-cart-basis'
+  endcapture
+  assign dh_basis = dh_basis | plus: 0
+  assign delivery_at = settings.dh_free_delivery_threshold | default: 100 | times: 100
+  assign delivery_fee = settings.dh_delivery_fee | default: 5 | times: 100 | round
+  if dh_basis >= delivery_at
+    assign delivery_fee = 0
+  endif
+  assign order_total = cart.total_price | plus: delivery_fee
 
-  {% if settings.show_cart_note or settings.show_add_discount_code %}
+  assign discount_codes = cart.discount_applications | where: 'type', 'discount_code' | map: 'title' | uniq
+-%}
+
+<div class="cart-totals">
+  {% # Kept empty: Horizon's drawer and summary CSS key their top border off this node being empty. %}
+  <div class="cart-totals__original-container"></div>
+
+  {% if settings.show_add_discount_code or settings.show_cart_note %}
     <div class="cart-actions">
-      {% if settings.show_cart_note %}
-        <cart-note style="display: flex;">
-          {% capture cart_note_accordion_children %}
-            <details
-              {% if settings.cart_note_open_by_default %}
-                open
+      {% if settings.show_add_discount_code %}
+        {% capture cart_discount_form %}
+          <div id="cart-discount-disclosure">
+            <cart-discount-component
+              {% if section_id != blank %}
+                data-section-id="{{ section_id }}"
               {% endif %}
             >
-              <summary class="cart-note__summary">
-                <span class="cart-note__label cart-primary-typography">
-                  {{ 'content.seller_note' | t }}
-                </span>
-
-                <span class="cart-totals__icon">
-                  {{- 'icon-plus.svg' | inline_asset_content -}}
-                </span>
-              </summary>
-
-              <div class="details-content cart-note__inner">
-                <label
-                  for="cart-note"
-                  class="visually-hidden"
+              <div class="cart-discount__content">
+                <form
+                  on:submit="/applyDiscount"
+                  onsubmit="return false;"
+                  class="cart-discount__form"
                 >
-                  {{- 'content.seller_note' | t -}}
-                </label>
-                <textarea
-                  form="cart-form"
-                  on:input="/updateCartNote"
-                  id="cart-note"
-                  class="cart-note__instructions"
-                  name="note"
-                  data-skip-node-update
-                >{{ cart.note }}</textarea>
+                  <label
+                    for="cart-discount"
+                    class="visually-hidden"
+                  >
+                    {{- 'accessibility.discount' | t -}}
+                  </label>
+                  <input
+                    id="cart-discount"
+                    class="cart-discount__input"
+                    type="text"
+                    name="discount"
+                    size="8"
+                    placeholder="{{ 'content.discount_code' | t }}"
+                    autocomplete="off"
+                    required
+                    data-skip-node-update
+                  >
+                  <button
+                    type="submit"
+                    class="button button-secondary cart-discount__button"
+                  >
+                    {{ 'actions.apply' | t }}
+                  </button>
+                </form>
               </div>
+              <div
+                class="cart-discount__error hidden"
+                role="alert"
+                ref="cartDiscountError"
+              >
+                <span class="svg-wrapper">
+                  {{- 'icon-error.svg' | inline_asset_content -}}
+                </span>
+                <small
+                  class="cart-discount__error-text cart-primary-typography hidden"
+                  ref="cartDiscountErrorDiscountCode"
+                >
+                  {{ 'content.discount_code_error' | t: code: 'test' }}
+                </small>
+                <small
+                  class="cart-discount__error-text cart-primary-typography hidden"
+                  ref="cartDiscountErrorShipping"
+                >
+                  {{ 'content.shipping_discount_error' | t }}
+                </small>
+              </div>
+              <ul class="cart-discount__codes">
+                {% for discount_code in discount_codes %}
+                  {%- assign code_amount = 0 -%}
+                  {%- for application in cart.discount_applications -%}
+                    {%- if application.title == discount_code -%}
+                      {%- assign code_amount = code_amount | plus: application.total_allocated_amount -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <li
+                    class="cart-discount__pill"
+                    data-discount-code="{{ discount_code | escape }}"
+                    aria-label="{{ 'accessibility.discount_applied' | t: code: discount_code | escape }}"
+                  >
+                    <p class="cart-discount__pill-code">
+                      <bdi>{{ discount_code | escape }}</bdi>
+                    </p>
+                    {%- if code_amount > 0 -%}
+                      <span class="cart-discount__pill-amount">−{% render 'dh-money', cents: code_amount %}</span>
+                    {%- endif -%}
+                    <button
+                      type="button"
+                      on:click="/removeDiscount"
+                      class="cart-discount__pill-remove svg-wrapper svg-wrapper--smaller button-unstyled"
+                      aria-label="{{ 'actions.remove_discount' | t: code: discount_code | escape }}"
+                    >
+                      {{- 'icon-filters-close.svg' | inline_asset_content -}}
+                    </button>
+                  </li>
+                {% endfor %}
+              </ul>
+            </cart-discount-component>
+          </div>
+        {% endcapture %}
+
+        <div class="cart-discount dh-cart-action">
+          {%- comment -%}
+            Theme setting "Show discount field open": on for code campaigns, off (default) shows a
+            link that opens the field in place. An applied code always shows the field and its chip.
+          {%- endcomment -%}
+          {% if settings.dh_discount_field_open or discount_codes.size > 0 %}
+            {{ cart_discount_form }}
+          {% else %}
+            <details class="dh-cart-link">
+              <summary class="dh-cart-link__summary cart-primary-typography">Have a discount code?</summary>
+              {{ cart_discount_form }}
             </details>
-          {% endcapture %}
-          {% render 'accordion-custom-component',
-            children: cart_note_accordion_children,
-            class: 'cart-note',
-            open_by_default_on_desktop: settings.cart_note_open_by_default,
-            open_by_default_on_mobile: settings.cart_note_open_by_default
-          %}
-        </cart-note>
+          {% endif %}
+        </div>
       {% endif %}
-      {% if settings.show_cart_note and settings.show_add_discount_code %}
-        <div class="cart-actions__divider"></div>
-      {% endif %}
-      {% if settings.show_add_discount_code %}
-        {% liquid
-          assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
-          for item in cart.items
-            for allocation in item.line_level_discount_allocations
-              if allocation.discount_application.type == 'discount_code'
-                assign discount_codes = item.line_level_discount_allocations | slice: forloop.index0 | map: 'discount_application' | map: 'title' | concat: discount_codes
-              endif
-            endfor
-          endfor
 
-          assign discount_codes = discount_codes | uniq
-
-          # Evaluate the boolean expression for the disclosure state
-          if discount_codes.size == 0
-            assign disclosure_expanded = false
-          else
-            assign disclosure_expanded = true
-          endif
-        %}
-
-        {% capture cart_discount_accordion_children %}
+      {% if settings.show_cart_note %}
+        <cart-note class="cart-note dh-cart-action">
           <details
-            {% if disclosure_expanded %}
+            class="dh-cart-link"
+            {% if cart.note != blank or settings.cart_note_open_by_default %}
               open
             {% endif %}
           >
-            <summary class="cart-discount__summary">
-              <span class="cart-discount__label cart-primary-typography">{{ 'content.discount' | t }}</span>
-
-              <span class="cart-totals__icon">
-                {{- 'icon-plus.svg' | inline_asset_content -}}
-              </span>
-            </summary>
-
-            <div class="details-content">
-              <div id="cart-discount-disclosure">
-                <cart-discount-component
-                  {% if section_id != blank %}
-                    data-section-id="{{ section_id }}"
-                  {% endif %}
-                >
-                  <div class="cart-discount__content">
-                    <form
-                      on:submit="/applyDiscount"
-                      onsubmit="return false;"
-                      class="cart-discount__form"
-                    >
-                      <label
-                        for="cart-discount"
-                        class="visually-hidden"
-                      >
-                        {{- 'accessibility.discount' | t -}}
-                      </label>
-                      <input
-                        id="cart-discount"
-                        class="cart-discount__input"
-                        type="text"
-                        name="discount"
-                        size="8"
-                        placeholder="{{ 'content.discount_code' | t }}"
-                        required
-                        data-skip-node-update
-                      >
-                      <button
-                        type="submit"
-                        class="button cart-discount__button"
-                      >
-                        {{ 'actions.apply' | t }}
-                      </button>
-                    </form>
-                  </div>
-                  <div
-                    class="cart-discount__error hidden"
-                    role="alert"
-                    ref="cartDiscountError"
-                  >
-                    <span class="svg-wrapper">
-                      {{- 'icon-error.svg' | inline_asset_content -}}
-                    </span>
-                    <small
-                      class="cart-discount__error-text cart-primary-typography hidden"
-                      ref="cartDiscountErrorDiscountCode"
-                    >
-                      {{ 'content.discount_code_error' | t: code: 'test' }}
-                    </small>
-                    <small
-                      class="cart-discount__error-text cart-primary-typography hidden"
-                      ref="cartDiscountErrorShipping"
-                    >
-                      {{ 'content.shipping_discount_error' | t }}
-                    </small>
-                  </div>
-                  <ul class="cart-discount__codes">
-                    {% for discount_code in discount_codes %}
-                      <li
-                        class="cart-discount__pill"
-                        data-discount-code="{{ discount_code }}"
-                        aria-label="{{ 'accessibility.discount_applied' | t: code: discount_code }}"
-                      >
-                        <p class="cart-discount__pill-code">
-                          <bdi>{{ discount_code }}</bdi>
-                        </p>
-                        <button
-                          type="button"
-                          on:click="/removeDiscount"
-                          class="cart-discount__pill-remove svg-wrapper svg-wrapper--smaller button-unstyled"
-                          aria-label="{{ 'actions.remove_discount' | t: code: discount_code }}"
-                        >
-                          {{- 'icon-filters-close.svg' | inline_asset_content -}}
-                        </button>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                </cart-discount-component>
-              </div>
+            <summary class="dh-cart-link__summary cart-primary-typography">Add a note to your order</summary>
+            <div class="cart-note__inner">
+              <label
+                for="cart-note"
+                class="visually-hidden"
+              >
+                Add a note to your order
+              </label>
+              <textarea
+                form="cart-form"
+                on:input="/updateCartNote"
+                id="cart-note"
+                class="cart-note__instructions"
+                name="note"
+                data-skip-node-update
+              >{{ cart.note }}</textarea>
             </div>
           </details>
-        {% endcapture %}
-        {% render 'accordion-custom-component', children: cart_discount_accordion_children, class: 'cart-discount' %}
+        </cart-note>
       {% endif %}
     </div>
   {% endif %}
 
-  {%- liquid
-    if settings.currency_code_enabled_cart_total
-      assign total_price = cart.total_price | money_with_currency
-    else
-      assign total_price = cart.total_price | money
-    endif
-  -%}
-
-  <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">
+  <div class="cart-totals__container dh-cart-totals cart-primary-typography{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">
+    <span class="cart-totals__item">
+      <span>{{ 'content.cart_subtotal' | t }}</span>
+      <span
+        class="cart-secondary-typography"
+        data-testid="cart-subtotal-value"
+      >
+        {%- render 'dh-money', cents: cart.original_total_price -%}
+      </span>
+    </span>
+    {%- for application in cart.discount_applications -%}
+      {%- if application.total_allocated_amount > 0 -%}
+        <span class="cart-totals__item">
+          <span>Discount (<bdi>{{ application.title | escape }}</bdi>)</span>
+          <span class="cart-secondary-typography">−{% render 'dh-money', cents: application.total_allocated_amount %}</span>
+        </span>
+      {%- endif -%}
+    {%- endfor -%}
+    <span class="cart-totals__item">
+      <span>Delivery (3 to 5 working days)</span>
+      <span class="cart-secondary-typography{% if delivery_fee == 0 %} dh-cart-totals__free{% endif %}">
+        {%- if delivery_fee == 0 -%}
+          Free
+        {%- else -%}
+          {%- render 'dh-money', cents: delivery_fee -%}
+        {%- endif -%}
+      </span>
+    </span>
     <span
       class="cart-totals__item cart-totals__total"
       role="status"
     >
-      <span class="cart-totals__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+      <span class="cart-totals__total-label">Total</span>
+      {%- capture order_total_text -%}{% render 'dh-money', cents: order_total %}{%- endcapture -%}
       <text-component
         ref="cartTotal"
-        value="{{ total_price | strip_html }}"
+        value="{{ order_total_text }}"
         class="cart-totals__total-value cart-secondary-typography"
         {% comment %} Used by payment_terms web component {% endcomment %}
         data-testid="cart-total-value"
         data-cart-subtotal
       >
-        <bdi>{{ total_price }}</bdi>
+        <bdi>{{ order_total_text }}</bdi>
       </text-component>
     </span>
     {% if settings.show_installments %}
@@ -246,9 +225,6 @@
         {% endform %}
       </span>
     {% endif %}
-    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
-      {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
-    </div>
   </div>
 </div>
 
@@ -263,8 +239,9 @@
     {% endif %}
     form="cart-form"
   >
-    <span class="button-text">
-      {{ 'content.checkout' | t }}
+    <span class="button-text dh-checkout-text">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+      {{ 'content.checkout' | t }} · {{ order_total_text }}
     </span>
   </button>
 
@@ -279,6 +256,31 @@
     </div>
   {% endif %}
 </div>
+
+{%- liquid
+  # Review numbers come live from Judge.me's shop metafields (559 at 4.97 on 26 Oct 2026).
+  # The distributor line stays off until Lyne confirms the wording (theme setting).
+  assign review_count = shop.metafields.judgeme.all_reviews_count.value | plus: 0
+  assign review_rating = shop.metafields.judgeme.all_reviews_rating.value
+-%}
+{%- if review_count > 0 or settings.dh_trust_show_distributor -%}
+  <p class="dh-cart-trust">
+    {%- if review_count > 0 -%}
+      <span
+        class="dh-cart-trust__stars"
+        aria-hidden="true"
+        >★★★★★</span
+      >
+      <span class="visually-hidden">Rated {{ review_rating }} out of 5:</span>
+      {{ review_rating }} from {{ review_count }} reviews
+    {%- endif -%}
+    {%- if review_count > 0 and settings.dh_trust_show_distributor %} · {% endif -%}
+    {%- if settings.dh_trust_show_distributor -%}
+      Official Dr. Hauschka distributor in Singapore
+    {%- endif -%}
+  </p>
+{%- endif -%}
+
 
 {% stylesheet %}
   .cart-actions {
@@ -609,5 +611,76 @@
     .cart-summary--extend {
       height: 100%;
     }
+  }
+
+  /* Dr Hauschka cart (task P2-22g) */
+  .dh-cart-action {
+    width: 100%;
+  }
+
+  .dh-cart-link__summary {
+    display: flex;
+    align-items: center;
+    min-height: var(--minimum-touch-target);
+    padding-block: var(--padding-xs);
+    font-size: var(--font-size--sm);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .dh-cart-link__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .dh-cart-link__summary:hover {
+    text-decoration-color: transparent;
+  }
+
+  .dh-cart-action > #cart-discount-disclosure {
+    padding-block: var(--padding-xs);
+  }
+
+  .cart-discount__pill-amount {
+    font-size: var(--font-size--xs);
+    text-transform: none;
+    white-space: nowrap;
+  }
+
+  .dh-cart-totals {
+    row-gap: var(--gap-xs);
+  }
+
+  .dh-cart-totals .cart-totals__item {
+    font-size: var(--cart-font-size--sm);
+  }
+
+  .dh-cart-totals .cart-totals__total {
+    margin-block-start: var(--margin-xs);
+  }
+
+  .dh-cart-totals__free {
+    color: #2f6b3a;
+  }
+
+  .dh-checkout-text {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs);
+  }
+
+  .dh-cart-trust {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: var(--font-size--xs);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-70));
+  }
+
+  .dh-cart-trust__stars {
+    margin-inline-end: var(--margin-3xs);
+    color: #b8942f;
+    letter-spacing: 1px;
   }
 {% endstylesheet %}

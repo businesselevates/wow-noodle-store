@@ -81,7 +81,8 @@
               var drawer = document.querySelector('theme-drawer#cart-drawer');
               if (drawer && typeof drawer.open === 'function') {
                 window.setTimeout(function () { if (!drawer.isOpen) drawer.open(); }, 50);
-              } else {
+              } else if (!document.querySelector('cart-items-component')) {
+                // The cart page's own cart re-renders from the event above, so only leave other pages.
                 window.location.href = cartRoot() + 'cart';
               }
             });
