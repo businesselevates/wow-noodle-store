@@ -99,6 +99,7 @@
               {%- endif -%}
             {%- when 'quote' -%}
               <blockquote class="dh-quote" {{ block.shopify_attributes }}>
+                {%- render 'dh-stars' -%}
                 <p>“{{ block.settings.quote }}”</p>
                 {%- if block.settings.cite != blank -%}<cite>{{ block.settings.cite }}</cite>{%- endif -%}
               </blockquote>
