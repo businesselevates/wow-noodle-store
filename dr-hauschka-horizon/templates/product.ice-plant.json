@@ -1,0 +1,973 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "buybox": {
+      "type": "dh-pdp",
+      "blocks": {
+        "g1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-01_hero.webp",
+            "alt": "Dr. Hauschka Ice Plant Face Cream tube beside a slice of ice plant leaf. For very dry, sensitive skin that reacts to most creams",
+            "for": "all"
+          }
+        },
+        "g2b": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-02b_gift-set-v2.webp",
+            "alt": "What's in The Ice Plant Gift Set: Face Cream 40ml S$79, Hand Cream 50ml S$40. Yours for S$119, with free delivery.",
+            "for": "gift"
+          }
+        },
+        "g2a": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-02a_face-cream-only.webp",
+            "alt": "Ice Plant Face Cream, 40ml, S$79",
+            "for": "face"
+          }
+        },
+        "g2c": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-02c_face-hands-body-v2.webp",
+            "alt": "What's in The Ice Plant Gift Set: Face, Hands and Body: Face Cream 40ml S$79, Hand Cream 50ml S$40, Body Care Lotion 145ml S$62. Yours for S$181, with free delivery.",
+            "for": "giftbody"
+          }
+        },
+        "g3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-03_ice-plant.webp",
+            "alt": "The ice plant close up. Ice plant juice is the 3rd ingredient, after water and jojoba oil",
+            "for": "all"
+          }
+        },
+        "g4": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-04_texture.webp",
+            "alt": "Texture of the cream. Sinks in fast. Make-up sits on top.",
+            "for": "all"
+          }
+        },
+        "g5": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-05_review.webp",
+            "alt": "Review: My very sensitive skin tolerates this cream excellently, it is absorbed quickly, is odourless and the make-up on top also lasts very well. Birgit B., Germany, verified review on violey.com (translated from German)",
+            "for": "all"
+          }
+        },
+        "g6": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Regenerating_Intensive_Day_Cream_Application_Texture_Face_Model_Female_Grey-Haired_-_2426_Poster_A4.jpg",
+            "alt": "G6 facial bonus: our treatment room at International Plaza. Overlay: Spend S$200, get a free 1-hour facial (photo from Lyne, P2-21b row 27)",
+            "for": "all"
+          }
+        },
+        "g7": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/DrHauschka_Cosmetics_Parlour_2025_-_5447.jpg",
+            "alt": "G7 promise card with Lyne's photo and signature (Lyne, P2-21b row 28)",
+            "for": "all"
+          }
+        },
+        "g8": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/gallery-08_ingredients.webp",
+            "alt": "The full ingredient list of the Ice Plant Face Cream",
+            "for": "all"
+          }
+        },
+        "pill1": {
+          "type": "pill",
+          "settings": {
+            "text": "No added perfume",
+            "show": true,
+            "note": ""
+          }
+        },
+        "pill2": {
+          "type": "pill",
+          "settings": {
+            "text": "Sinks in, takes make-up",
+            "show": true,
+            "note": ""
+          }
+        },
+        "pill3": {
+          "type": "pill",
+          "settings": {
+            "text": "Certified natural (NATRUE)",
+            "show": false,
+            "note": "Off until Lyne confirms the Face Cream is covered (P2-21b row 12)."
+          }
+        },
+        "opt_face": {
+          "type": "option",
+          "settings": {
+            "key": "face",
+            "name": "Face Cream only",
+            "contents": "1 tube, 40ml",
+            "badge": "",
+            "delivery": "",
+            "blurb": "",
+            "selected": false,
+            "variant_title": "Face Cream only",
+            "products": []
+          }
+        },
+        "opt_gift": {
+          "type": "option",
+          "settings": {
+            "key": "gift",
+            "name": "The Ice Plant Gift Set",
+            "contents": "Face Cream 40ml + Hand Cream 50ml",
+            "badge": "Free delivery",
+            "delivery": "free delivery",
+            "blurb": "",
+            "selected": true,
+            "variant_title": "The Ice Plant Gift Set",
+            "products": [
+              "ice-plant-face-cream-40-ml",
+              "ice-plant-hand-cream-50-ml"
+            ]
+          }
+        },
+        "opt_giftbody": {
+          "type": "option",
+          "settings": {
+            "key": "giftbody",
+            "name": "The Ice Plant Gift Set: Face, Hands and Body",
+            "contents": "Face Cream 40ml + Hand Cream 50ml + Body Care Lotion 145ml",
+            "badge": "Free delivery",
+            "delivery": "free delivery",
+            "blurb": "",
+            "selected": false,
+            "variant_title": "The Ice Plant Gift Set: Face, Hands and Body",
+            "products": [
+              "ice-plant-face-cream-40-ml",
+              "ice-plant-hand-cream-50-ml",
+              "ice-plant-body-care-lotion-145-ml"
+            ]
+          }
+        },
+        "icon1": {
+          "type": "icon",
+          "settings": {
+            "icon": "no-perfume",
+            "label": "No added perfume",
+            "show": true,
+            "note": ""
+          }
+        },
+        "icon2": {
+          "type": "icon",
+          "settings": {
+            "icon": "leaf",
+            "label": "NATRUE certified natural",
+            "show": false,
+            "note": "Off until Lyne confirms NATRUE scope and sends the official artwork (P2-21b row 12)."
+          }
+        },
+        "icon3": {
+          "type": "icon",
+          "settings": {
+            "icon": "germany",
+            "label": "Made in Germany by WALA",
+            "show": true,
+            "note": ""
+          }
+        },
+        "icon4": {
+          "type": "icon",
+          "settings": {
+            "icon": "delivery",
+            "label": "Free delivery from S$100",
+            "show": true,
+            "note": ""
+          }
+        },
+        "icon5": {
+          "type": "icon",
+          "settings": {
+            "icon": "promise",
+            "label": "30-day Suits-Your-Skin Promise",
+            "show": true,
+            "note": ""
+          }
+        },
+        "acc1": {
+          "type": "accordion",
+          "settings": {
+            "title": "What it is",
+            "anchor": "",
+            "open": true,
+            "content": "<p>A daily face cream for very dry, flaky skin that feels tight. It's made around juice from the ice plant, a plant that stores water in its leaves, with avocado, almond and sunflower oils and shea, mango and cocoa butters. No perfume is added. It sinks in fast and works under make-up.</p>",
+            "content_face": "",
+            "content_gift": "",
+            "content_giftbody": "",
+            "content_after": "",
+            "note": ""
+          }
+        },
+        "acc2": {
+          "type": "accordion",
+          "settings": {
+            "title": "What's in the box",
+            "anchor": "",
+            "open": false,
+            "content": "",
+            "content_face": "<p><strong>Face Cream only: 1 item</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li></ul>",
+            "content_gift": "<p><strong>The Ice Plant Gift Set: 2 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li></ul>",
+            "content_giftbody": "<p><strong>The Ice Plant Gift Set: Face, Hands and Body: 3 items</strong></p><ul><li>1 × Ice Plant Face Cream, 40ml</li><li>1 × Ice Plant Hand Cream, 50ml</li><li>1 × Ice Plant Body Care Lotion, 145ml</li></ul>",
+            "content_after": "<p>All three products contain peanut oil and sweet almond oil.</p>",
+            "note": "PLACEHOLDER: gift box or gift wrap line, if Lyne offers one"
+          }
+        },
+        "acc3": {
+          "type": "accordion",
+          "settings": {
+            "title": "How to use",
+            "anchor": "",
+            "open": false,
+            "content": "<p>Morning and night, smooth a little over clean face and neck. Use it on its own or under make-up. Reapply when your face feels tight. Try it on a small patch of skin first.</p>",
+            "content_face": "",
+            "content_gift": "",
+            "content_giftbody": "",
+            "content_after": "",
+            "note": "PLACEHOLDER: how long a 40ml tube lasts with daily use, from Lyne"
+          }
+        },
+        "note1": {
+          "type": "note",
+          "settings": {
+            "text": "Option cards add the gift set products together (live prices, line property “Gift set”) until P2-19g adds the variants; then each card switches to its variant by name. No compare-at price shown anywhere. 11.11: both sets 15% off, 11 to 15 Nov, set up when the variants exist."
+          }
+        }
+      },
+      "block_order": [
+        "g1",
+        "g2b",
+        "g2a",
+        "g2c",
+        "g3",
+        "g4",
+        "g5",
+        "g6",
+        "g7",
+        "g8",
+        "pill1",
+        "pill2",
+        "pill3",
+        "opt_face",
+        "opt_gift",
+        "opt_giftbody",
+        "icon1",
+        "icon2",
+        "icon3",
+        "icon4",
+        "icon5",
+        "acc1",
+        "acc2",
+        "acc3",
+        "note1"
+      ],
+      "settings": {
+        "product": "ice-plant-face-cream-40-ml",
+        "eyebrow": "Dr. Hauschka · Face care for very dry, sensitive skin",
+        "title": "Ice Plant Face Cream, 40ml",
+        "body": "<p>A light face cream for very dry, flaky, tight skin, made around ice plant juice, with no perfume added.</p>",
+        "atc_label": "Add to cart",
+        "soldout_label": "Sold out",
+        "under": "<p>Lyne's 30-Day Suits-Your-Skin Promise: if the Face Cream doesn't suit your skin, get S$79 back or store credit. You keep the tube.</p>",
+        "urgency": "Spend S$200 with us within 12 months and get a free 1-hour facial at our International Plaza studio. One per customer.",
+        "show_urgency": true,
+        "small_print": "Contains peanut oil, sweet almond oil, lanolin, alcohol and amyris oil. Full list below.",
+        "sticky": true
+      }
+    },
+    "trust": {
+      "type": "dh-trust-strip",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "text": "NATRUE certified natural cosmetics",
+            "show": true,
+            "note": "Stays off until Lyne confirms the Face Cream sits inside the certification."
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "text": "Made by WALA in Germany",
+            "show": true,
+            "note": ""
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "text": "Dr. Hauschka skincare since 1967",
+            "show": true,
+            "note": ""
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "text": "Official Dr. Hauschka distributor in Singapore",
+            "show": false,
+            "note": "Off until Lyne confirms the wording and proof."
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "background": "white"
+      }
+    },
+    "hook": {
+      "type": "dh-hook",
+      "settings": {
+        "background": "white",
+        "image": "shopify://shop_images/section-03_hook-desktop.webp",
+        "image_mobile": "shopify://shop_images/section-03_hook-mobile.webp",
+        "image_alt": "Dr. Hauschka Ice Plant Face Cream tube beside an ice plant leaf",
+        "eyebrow": "For very dry, sensitive skin that reacts to most creams",
+        "heading": "A face cream your skin can live with",
+        "text": "<p>Aircon, heat and the wrong cream leave very dry skin tight, flaky and stinging. This one is made to help it hold on to water, with no perfume added.</p>",
+        "button_label": "Find your set",
+        "button_link": "",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "problem": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Very dry, sensitive skin struggles to hold on to water. In Singapore it gets worse, with aircon all day and heat and sweat outside. Your face goes tight, then flaky.</p><p>So you try a cream. Some sting. Some smell. Some sit so heavy you can't put make-up on top. One by one, they end up in a drawer.</p><p>Your skin isn't being difficult. Most creams just weren't made for it.</p>"
+          }
+        },
+        "b1": {
+          "type": "button",
+          "settings": {
+            "label": "Find your set",
+            "link": "",
+            "style": "outline",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "b1"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "Why your creams keep ending up in a drawer",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/section-04_problem-drawing.webp",
+        "image_alt": "Line drawing of an open drawer of half-used cream tubes and jars, lids off, one tipped over",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "ice_plant": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>The ice plant grows in dry, salty ground. It survives by storing water in tiny balloon-like cells on its leaves. They glitter like ice, which is how it got its name.</p><p>This cream uses that plant's juice as its third ingredient, after water and jojoba oil. Then it adds avocado, almond and sunflower oils and shea, mango and cocoa butters. Those sit on your skin and help keep the water there.</p><p>No perfume is added. You can read every ingredient further down.</p>"
+          }
+        },
+        "b1": {
+          "type": "button",
+          "settings": {
+            "label": "Try the Face Cream",
+            "link": "",
+            "style": "outline",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "b1"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "It's made around a plant that keeps water in its leaves",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/section-05b_ingredient-order.webp",
+        "image_alt": "A drawn tube with the first three ingredients labelled in order: Water, Jojoba oil, Ice plant juice",
+        "image_2": "shopify://shop_images/Ice_Plant_-_Mesembryanthemum_crystallinum.jpg",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "number": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Ingredients are listed by weight, so only water and jojoba oil come before it.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p1"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "Ice plant juice is the 3rd of 23 ingredients",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/section-06_third-ingredient.webp",
+        "image_alt": "The number 3rd, large, with the ingredient list behind it and the third line highlighted",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "feels": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>It's a light cream. It soaks in quickly with no oily film, so you can put foundation on a few minutes later. The brand calls it a make-up base, and buyers say the same.</p>"
+          }
+        },
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "quote": "My very sensitive skin tolerates this cream excellently, it is absorbed quickly, is odourless and the make-up on top also lasts very well.",
+            "cite": "Birgit B., Germany (translated from German)"
+          }
+        },
+        "b1": {
+          "type": "button",
+          "settings": {
+            "label": "Find your set",
+            "link": "",
+            "style": "outline",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "q1",
+        "b1"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "It sinks in fast, and your make-up sits on top",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/MED_Ice_Plant_Face_Cream_40ml_DE-GB_Application_Texture_Hands_Model_Male_-_1071.jpg",
+        "image_alt": "",
+        "image_2": "shopify://shop_images/Ice_Plant_Face_Cream_Texture_900x900_Webshop.jpg",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "Texture strip image (F1) comes later from Lyne, P2-21b row 29. Text only until then.",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "why_set": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dry air and handwashing work on the backs of your hands too. The Ice Plant Hand Cream is made from the same plant, with no perfume added.</p><p>Buying for someone else? Both sets make an easy gift for anyone with very dry skin.</p>"
+          }
+        },
+        "ph1": {
+          "type": "placeholder",
+          "settings": {
+            "text": "<p>[PLACEHOLDER: gift box or wrap, and the last order date for Christmas delivery]</p>",
+            "show": false
+          }
+        },
+        "cards": {
+          "type": "setcards",
+          "settings": {
+            "name_1": "The Ice Plant Gift Set",
+            "line_1": "Face Cream 40ml (S$79) + Hand Cream 50ml (S$40)",
+            "total_1": "Yours for S$119, with free delivery.",
+            "name_2": "The Ice Plant Gift Set: Face, Hands and Body",
+            "line_2": "Adds the Ice Plant Body Care Lotion 145ml (S$62) for dry arms and legs",
+            "total_2": "Yours for S$181, with free delivery."
+          }
+        },
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "quote": "It is unscented but this doesn't bother me at all, especially when the results are this good!",
+            "cite": "Sarah, on the Ice Plant Hand Cream (ecco-verde.co.uk, UK)"
+          }
+        },
+        "b1": {
+          "type": "button",
+          "settings": {
+            "label": "Choose your gift set",
+            "link": "",
+            "style": "solid",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "ph1",
+        "cards",
+        "q1",
+        "b1"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "Dry skin doesn't stop at your face",
+        "heading_one_line": true,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/section-08_both-sets-v2.webp",
+        "image_alt": "Both Ice Plant gift sets laid out flat",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "how_to": {
+      "type": "dh-media-text",
+      "blocks": {
+        "s1": {
+          "type": "steps",
+          "settings": {
+            "steps": "Cleanse and pat your face dry.|Smooth a little over face and neck.|Wait a minute, then put on make-up if you want to.|Feeling tight by mid-afternoon? Add a little more."
+          }
+        },
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>New to it? Try it on a small patch of skin first.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "p1"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "One cream, morning and night",
+        "heading_one_line": true,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "How-to-use icons come with the licensed icon set (Kennedy). Usage wording to be checked against WALA's own instructions.",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "reviews": {
+      "type": "dh-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "I love how this cream feels.",
+            "cite": "Katherine G., US · Ice Plant Face Cream · drhauschka.com"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "This Ice Plant Face Cream has really helped! I'm happy and will order again.",
+            "cite": "Customer in Alaska, aged 70 to 79 · Ice Plant Face Cream · lovelyskin.com"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "I order it again and again.",
+            "cite": "Birgit B., Germany · Ice Plant Face Cream · violey.com (translated from German)"
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "This cream has a very light, earthy smell.",
+            "cite": "Priscila G., US · Ice Plant Body Care Lotion · drhauschka.com"
+          }
+        },
+        "r5": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "The Ice Plant Body Lotion does an excellent job of hydrating my dry rough legs and feet.",
+            "cite": "Robyn S., US · Ice Plant Body Care Lotion · drhauschka.com"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4",
+        "r5"
+      ],
+      "settings": {
+        "background": "warm",
+        "heading": "Buyers overseas keep ordering it again",
+        "intro": "<p>This cream is new to most of Singapore, so these reviews come from buyers in Germany and the US. Each one names the product it's about.</p>",
+        "note": "PLACEHOLDER: WALA's official testimonials, and Singapore customers' words once they come in",
+        "button_label": "Find your set",
+        "button_link": "",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "whats_in_it": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>You read labels for a reason, so here's the whole list, in the order on the tube:</p>"
+          }
+        },
+        "inci": {
+          "type": "box",
+          "settings": {
+            "text": "<p>Aqua, Simmondsia Chinensis Seed Oil, Mesembryanthemum Crystallinum Juice, Persea Gratissima Oil, Alcohol, Glycerin, Arachis Hypogaea Oil, Cetearyl Alcohol, Prunus Amygdalus Dulcis Oil, Papaver Somniferum Seed Oil, Butyrospermum Parkii Butter, Lanolin, Lysolecithin, Hectorite, Tapioca Starch, Mangifera Indica Seed Butter, Theobroma Cacao Seed Butter, Helianthus Annuus Seed Oil, Chondrus Crispus Extract, Cetearyl Glucoside, Xanthan Gum, Amyris Balsamifera Bark Oil, Rosmarinus Officinalis Leaf Extract.</p>"
+          }
+        },
+        "why": {
+          "type": "placeholder",
+          "settings": {
+            "text": "<p>Why there's alcohol and one oil: The alcohol helps keep the cream fresh without synthetic preservatives. A little amyris oil is added to the alcohol by law, so it can't be drunk.</p>",
+            "show": true
+          }
+        },
+        "know": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Good to know before you buy: it contains peanut oil, sweet almond oil and lanolin. Amyris oil contains eugenol, which some people react to. If you're allergic to any of these, this cream isn't for you.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "inci",
+        "why",
+        "know"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "All 23 ingredients, listed. Nothing added for scent.",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "whats-in-it",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "origin": {
+      "type": "dh-media-text",
+      "blocks": {
+        "p1": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dr. Hauschka creams are made by WALA, in Germany, from plants. The company has made skincare since 1967. In Singapore, Lyne Ong and her team at PamperInc sell it from their International Plaza studio and online.</p>"
+          }
+        },
+        "ph1": {
+          "type": "placeholder",
+          "settings": {
+            "text": "<p>[PLACEHOLDER: “official distributor” wording and proof]</p>",
+            "show": false
+          }
+        },
+        "p2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dr. Hauschka Apricot Day Cream won the “Dry skin” category at Daily Vanity's Beauty Awards 2026. (A different cream from this one, from the same maker.)</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "ph1",
+        "p2"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "Made in Germany since 1967, sold in Singapore by Lyne",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "Photo of Lyne at the International Plaza studio comes later (P2-21b row 21). Text only until then.",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "faq": {
+      "type": "dh-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it fragrance-free?",
+            "answer": "<p>No perfume is added. It does contain a little amyris oil, an essential oil the maker adds to the alcohol (see “What's in it”). Any smell comes from the plants in it. One buyer calls it “a very light, earthy smell”.</p>",
+            "note": ""
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Will it sting?",
+            "answer": "<p>It's made for very dry, sensitive skin, and buyers with sensitive skin say it suits them. Everyone's skin is different, so try a small patch first. If it doesn't suit you within 30 days, Lyne's promise gives you your S$79 back.</p>",
+            "note": ""
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it heavy?",
+            "answer": "<p>It's a light cream that sinks in fast and works under make-up.</p>",
+            "note": "PLACEHOLDER: what Singapore wearers say after a full day in the office"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "S$79 is a lot for one tube. What am I paying for?",
+            "answer": "<p>A face cream that's certified natural, has no added perfume, and is made around ice plant juice. And if it ends up in the drawer like the others, you get your money back.</p>",
+            "note": "PLACEHOLDER: how long a tube lasts (goes after “ice plant juice.”). “Certified natural” waits on NATRUE scope too."
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Natural creams have set my skin off before. Why is this one different?",
+            "answer": "<p>We won't tell you natural means gentle. We can tell you what's in it. No perfume is added, and all 23 ingredients are listed, nut oils included. Read the list, try a small patch, and you still have 30 days to decide.</p>",
+            "note": ""
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Is it the real thing? What about expiry dates?",
+            "answer": "<p>[PLACEHOLDER: official distributor proof, and how batch and expiry dates are shown.]</p>",
+            "note": ""
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Does it have steroids?",
+            "answer": "<p>No. It's a cosmetic face cream. If a doctor has given you a cream for your skin, ask them how to use both.</p>",
+            "note": ""
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How do I get the free facial?",
+            "answer": "<p>Spend S$200 with us within 12 months and you get one free 1-hour facial at our International Plaza studio. We email you a code, and you WhatsApp us to book.</p>",
+            "note": ""
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "How does Lyne's 30-day promise work?",
+            "answer": "<p>If the Face Cream doesn't suit your skin within 30 days of delivery, WhatsApp us a photo of the tube. Choose S$79 store credit or your S$79 back. You don't need to send it back. One claim per customer.</p>",
+            "note": "PLACEHOLDER: WhatsApp number"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "When will it arrive?",
+            "answer": "<p>We pack orders every morning and the courier collects the next working day. Delivery is free from S$100. You can also collect from International Plaza.</p>",
+            "note": ""
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10"
+      ],
+      "settings": {
+        "background": "white",
+        "heading": "FAQ",
+        "open_first": false,
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "final_cta": {
+      "type": "dh-cta",
+      "settings": {
+        "background": "warm",
+        "heading": "If it ends up in the drawer, your S$79 comes back",
+        "text": "<p>From here it goes one of three ways. You carry on as you are and grab whatever's in the drawer when your face goes tight. You keep trying creams one at a time, S$20 here, S$40 there, hoping the next one is the one. Or you try this one for 30 days, and if it ends up in the drawer too, you get your money back.</p>",
+        "button_label": "Find your set",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": "",
+        "button_2_new_tab": false,
+        "under": "Free delivery from S$100 · Free 1-hour facial when you spend S$200",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "buybox",
+    "trust",
+    "hook",
+    "problem",
+    "ice_plant",
+    "number",
+    "feels",
+    "why_set",
+    "how_to",
+    "reviews",
+    "whats_in_it",
+    "origin",
+    "faq",
+    "final_cta"
+  ]
+}

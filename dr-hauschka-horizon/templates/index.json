@@ -1,0 +1,419 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "dh-hero",
+      "blocks": {
+        "slide_1111": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "show": true,
+            "start": "2026-11-11T00:00",
+            "end": "2026-11-15T23:59",
+            "is_h1": true,
+            "image": "shopify://shop_images/IMG-01_slide1-november_desktop-2560x1000.webp",
+            "image_mobile": "shopify://shop_images/IMG-01_slide1-november_mobile-1170x1500.webp",
+            "alt": "",
+            "fallback_products": [
+              "ice-plant-face-cream-40-ml",
+              "ice-plant-hand-cream-50-ml",
+              "ice-plant-body-care-lotion-145-ml"
+            ],
+            "background": "warm",
+            "eyebrow": "11.11 · Wed 11 to Sun 15 Nov",
+            "heading": "15% off both Ice Plant gift sets",
+            "text": "<p>The offer ends at midnight on Sunday 15 November.</p>",
+            "price_collection": "",
+            "price_skip_tag": "",
+            "price_title_has": "",
+            "button_label": "Choose your gift set",
+            "button_link": "/products/ice-plant-face-cream-40-ml?set=gift",
+            "link_label": "",
+            "link_url": "",
+            "note": "Switched off. Tick Show once the 11.11 prices are set up; it then shows only 11 Nov 00:00 to 15 Nov 23:59 (Singapore)."
+          }
+        },
+        "slide_xmas": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "show": true,
+            "start": "",
+            "end": "",
+            "is_h1": true,
+            "image": "shopify://shop_images/BeautifulSkinopenDrh.jpg",
+            "alt": "Dr. Hauschka gift sets",
+            "fallback_products": [
+              "dr-hauschka-calm-gift-set",
+              "dr-hauschka-pure-gift-set",
+              "dr-hauschka-fresh-gift-set"
+            ],
+            "background": "warm",
+            "eyebrow": "Dr. Hauschka Singapore · Christmas gifts",
+            "heading": "Give Dr. Hauschka this Christmas",
+            "text": "<p>Ready-made gift sets of our skincare, from [from_price]. Made in Germany since 1967, and ready to collect at International Plaza or delivered free from S$100.</p>",
+            "price_collection": "gift-sets",
+            "price_skip_tag": "Accessories",
+            "price_title_has": "Set",
+            "button_label": "Shop gift sets",
+            "button_link": "shopify://collections/gift-sets",
+            "link_label": "Or shop by skin",
+            "link_url": "/#shop-by-skin",
+            "note": "IMG-01 (2560 x 1000 and 1170 x 1500) not made yet: gift set store images stand in. From price is live from Gift sets and bundles, ignoring the gift box (tag Accessories) and anything without Set in its title, until P2-19f rebuilds that collection."
+          }
+        },
+        "slide_dec": {
+          "type": "slide",
+          "settings": {
+            "show": true,
+            "start": "2026-10-30T00:00",
+            "end": "2026-11-10T23:59",
+            "is_h1": true,
+            "image": "shopify://shop_images/IMG-01_slide1-november_desktop-2560x1000.webp",
+            "image_mobile": "shopify://shop_images/IMG-01_slide1-november_mobile-1170x1500.webp",
+            "alt": "",
+            "fallback_products": [
+              "dr-hauschka-calm-gift-set",
+              "dr-hauschka-pure-gift-set",
+              "dr-hauschka-fresh-gift-set"
+            ],
+            "background": "pink",
+            "eyebrow": "Christmas · order by [date]",
+            "heading": "Christmas gifts, delivered in time",
+            "text": "<p>Order Dr. Hauschka gift sets by [date] for delivery before Christmas, or collect them at International Plaza.</p>",
+            "price_collection": "",
+            "price_skip_tag": "",
+            "price_title_has": "",
+            "button_label": "Shop gift sets",
+            "button_link": "shopify://collections/gift-sets",
+            "link_label": "",
+            "link_url": "",
+            "note": "DRAFT: needs Lyne's Christmas cut-off (decide by 20 Oct). When it goes on, give the November slide an end date of 2026-11-30T23:59."
+          }
+        },
+        "slide_featured": {
+          "type": "slide",
+          "settings": {
+            "show": true,
+            "start": "",
+            "end": "",
+            "is_h1": false,
+            "image": "shopify://shop_images/IMG-02_slide2-ice-plant_desktop-2560x1000.webp",
+            "image_mobile": "shopify://shop_images/IMG-02_slide2-ice-plant_desktop-2560x1000.webp",
+            "alt": "Dr. Hauschka Ice Plant Face Cream tube beside an ice plant leaf",
+            "fallback_products": [],
+            "background": "white",
+            "eyebrow": "Featured · Ice Plant Face Cream",
+            "heading": "A face cream your skin can live with",
+            "text": "<p>For very dry, sensitive skin that reacts to most creams. It's light, made around ice plant juice, and has no perfume added. Now in two gift sets.</p>",
+            "price_collection": "",
+            "price_skip_tag": "",
+            "price_title_has": "",
+            "button_label": "Shop the Face Cream",
+            "button_link": "/products/ice-plant-face-cream-40-ml?set=gift",
+            "link_label": "",
+            "link_url": "",
+            "note": "IMG-02 reuses the product page hook image (2400 x 940 and 1200 x 1200)."
+          }
+        }
+      },
+      "block_order": [
+        "slide_1111",
+        "slide_xmas",
+        "slide_dec",
+        "slide_featured"
+      ],
+      "settings": {
+        "label": "This month at Dr. Hauschka Singapore",
+        "delay": 8
+      }
+    },
+    "trust_logos": {
+      "type": "dh-logos",
+      "blocks": {
+        "logo_LTBNf8": {
+          "type": "logo",
+          "settings": {
+            "name": "Logo",
+            "image": "shopify://shop_images/Screenshot_58-removebg-preview.png",
+            "show": true
+          }
+        },
+        "l1": {
+          "type": "logo",
+          "settings": {
+            "name": "Takashimaya",
+            "image": "shopify://shop_images/zXns0PMme3qpG2YKAdQpQszcnM0YajSa_1707991635____e4506da4413df56df833f05fecb64ec7-removebg-preview.png",
+            "show": true
+          }
+        },
+        "l2": {
+          "type": "logo",
+          "settings": {
+            "name": "Unity",
+            "image": "shopify://shop_images/images-removebg-preview.png",
+            "show": true
+          }
+        },
+        "n1": {
+          "type": "line",
+          "disabled": true,
+          "settings": {
+            "text": "NATRUE certified natural cosmetics  ·  Daily Vanity Beauty Awards 2026: Apricot Day Cream, \"Dry skin\" winner",
+            "show": true
+          }
+        }
+      },
+      "block_order": [
+        "logo_LTBNf8",
+        "l1",
+        "l2",
+        "n1"
+      ],
+      "settings": {
+        "background": "white",
+        "label": "Singapore shoppers have found us at"
+      }
+    },
+    "best_sellers": {
+      "type": "dh-product-row",
+      "settings": {
+        "background": "white",
+        "heading": "Best sellers",
+        "products": [
+          "facial-toner",
+          "clarifying-toner-100-ml",
+          "soothing-cleansing-milk",
+          "rose-deodorant-50-ml",
+          "night-serum-20-ml",
+          "cleansing-cream",
+          "rose-day-cream-light"
+        ],
+        "max": 6,
+        "button_label": "Add to cart",
+        "link_label": "Shop all",
+        "link_url": "/collections/all?sort_by=best-selling",
+        "note": "Order = units sold, last 90 days (pulled 15 Oct 2026), in stock, no pre-order. Hair Tonic (2nd) stays off until P2-19c removes \"Promotes Hair Growth\". \"Best sellers\" label waits on Lyne (fallback: Customer favourites) as in notion",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "shop_by_skin": {
+      "type": "dh-skin-tiles",
+      "blocks": {
+        "t1": {
+          "type": "tile",
+          "settings": {
+            "title": "Very dry skin",
+            "line": "Feels tight, flakes by the afternoon",
+            "link": "https://drhauschka.sg/collections/very-dry-skin",
+            "image": "shopify://shop_images/DrHauschka-Ice-Plant-Face-Cream-40ml.jpg",
+            "colour": "white"
+          }
+        },
+        "t2": {
+          "type": "tile",
+          "settings": {
+            "title": "Sensitive skin",
+            "line": "Reacts easily to new products",
+            "link": "shopify://collections/redness-sensitive-skin",
+            "image": "shopify://shop_images/Clarifying_Toner_with_Cap.png",
+            "colour": "pink"
+          }
+        },
+        "t3": {
+          "type": "tile",
+          "settings": {
+            "title": "Combination and oily skin",
+            "line": "Shiny in places, dry in others",
+            "link": "https://drhauschka.sg/collections/oil-blemish-control",
+            "image": "shopify://shop_images/BalancingDayLotion50ml.png",
+            "colour": "green"
+          }
+        },
+        "t4": {
+          "type": "tile",
+          "settings": {
+            "title": "Mature skin",
+            "line": "Drier than it used to be",
+            "link": "shopify://collections/mature-skin",
+            "image": "shopify://shop_images/DrHauschka-Regenerating-Day-Cream-Intensive-40ml.jpg",
+            "colour": "beige"
+          }
+        },
+        "t5": {
+          "type": "tile",
+          "settings": {
+            "title": "Blemish-prone skin",
+            "line": "Breaks out easily",
+            "link": "https://drhauschka.sg/collections/blemish-prone-skin",
+            "image": "shopify://shop_images/DrHauschka-Ice-Plant-Face-Cream-40ml.jpg",
+            "colour": "green"
+          }
+        },
+        "t6": {
+          "type": "tile",
+          "settings": {
+            "title": "Gift sets and bundles",
+            "line": "Ready-made sets for every skin",
+            "link": "shopify://collections/gift-sets",
+            "image": "shopify://shop_images/11.jpg",
+            "colour": "pink"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6"
+      ],
+      "settings": {
+        "background": "warm",
+        "heading": "Shop by skin",
+        "anchor": "shop-by-skin",
+        "note": "Tiles link once P2-19f renames and fills each collection (due 21 Oct). Tile images IMG-10 to IMG-15 (900 x 1200) not made yet.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "featured": {
+      "type": "dh-featured-range",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "My very sensitive skin tolerates this cream excellently, it is absorbed quickly, is odourless and the make-up on top also lasts very well.",
+            "cite": "Birgit B., Germany · Ice Plant Face Cream · violey.com (translated from German)",
+            "link": "/products/ice-plant-face-cream-40-ml"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "This Ice Plant Face Cream has really helped! I'm happy and will order again.",
+            "cite": "Customer in Alaska, aged 70 to 79 · Ice Plant Face Cream · lovelyskin.com",
+            "link": "/products/ice-plant-face-cream-40-ml"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "show": true,
+            "quote": "It is unscented but this doesn't bother me at all, especially when the results are this good!",
+            "cite": "Sarah, UK · Ice Plant Hand Cream · ecco-verde.co.uk",
+            "link": "/products/ice-plant-hand-cream-50-ml"
+          }
+        },
+        "set1": {
+          "type": "set",
+          "settings": {
+            "tab": "Face and hands",
+            "product_1": "ice-plant-face-cream-40-ml",
+            "name_1": "Ice Plant Face Cream, 40ml",
+            "product_2": "ice-plant-hand-cream-50-ml",
+            "name_2": "Ice Plant Hand Cream, 50ml",
+            "product_3": "",
+            "name_3": "",
+            "extra_name": "",
+            "extra_price": "",
+            "total": "S$119. Free delivery.",
+            "total_sale": "Was S$119, now S$101.15 for 11.11. Free delivery.",
+            "sale_start": "2026-11-11T00:00",
+            "sale_end": "2026-11-15T23:59",
+            "button_label": "Choose this set",
+            "link": "/products/ice-plant-face-cream-40-ml?set=gift",
+            "image": "shopify://shop_images/gallery-02b_gift-set-v2.webp",
+            "image_alt": "The Ice Plant Gift Set: Face Cream and Hand Cream"
+          }
+        },
+        "set2": {
+          "type": "set",
+          "settings": {
+            "tab": "Face, hands and body",
+            "product_1": "ice-plant-face-cream-40-ml",
+            "name_1": "Ice Plant Face Cream, 40ml",
+            "product_2": "ice-plant-hand-cream-50-ml",
+            "name_2": "Ice Plant Hand Cream, 50ml",
+            "product_3": "ice-plant-body-care-lotion-145-ml",
+            "name_3": "Ice Plant Body Care Lotion, 145ml",
+            "extra_name": "",
+            "extra_price": "",
+            "total": "S$181. Free delivery.",
+            "total_sale": "Was S$181, now S$153.85 for 11.11. Free delivery.",
+            "sale_start": "2026-11-11T00:00",
+            "sale_end": "2026-11-15T23:59",
+            "button_label": "Choose this set",
+            "link": "/products/ice-plant-face-cream-40-ml?set=giftbody",
+            "image": "shopify://shop_images/gallery-02c_face-hands-body-v2.webp",
+            "image_alt": "The Ice Plant Gift Set: Face, Hands and Body"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "set1",
+        "set2"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "Featured",
+        "heading": "Ice Plant: for very dry, sensitive skin",
+        "point_1": "No perfume added",
+        "point_2": "Made around ice plant juice, a plant that keeps water in its leaves. It's the 3rd ingredient, after water and jojoba oil",
+        "point_3": "It sinks in fast, so make-up sits on top",
+        "image": "shopify://shop_images/section-03_hook-mobile.webp",
+        "image_alt": "Dr. Hauschka Ice Plant Face Cream tube beside an ice plant leaf",
+        "more_label": "See everything in the Face Cream",
+        "more_link": "/products/ice-plant-face-cream-40-ml#whats-in-it",
+        "picker_heading": "Pick your gift set",
+        "under": "<p>Dry skin doesn't stop at your face, so both sets pair the Face Cream with the Hand Cream.</p>",
+        "promise": "If the Face Cream doesn't suit your skin within 30 days, Lyne's promise gets you your S$79 back.",
+        "show_promise": true,
+        "sale_line": "11.11: 15% off both gift sets until Sun 15 Nov.",
+        "sale_start": "2026-11-11T00:00",
+        "sale_end": "2026-11-15T23:59",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "brand_band": {
+      "type": "dh-brand-band",
+      "settings": {
+        "background": "warm",
+        "image": "shopify://shop_images/About_Us_S4_-_Damask_rose_harvest_hand_picking_cultivation_partner.webp",
+        "image_alt": "The Dr. Hauschka studio at International Plaza",
+        "heading": "Natural skincare made in Germany since 1967",
+        "text": "<p>Dr. Hauschka is made by WALA, from plants, many of them grown in its own garden. In Singapore, Lyne and her team look after you at our International Plaza studio and here online.</p>",
+        "button_1": "Our story",
+        "link_1": "/pages/about-us",
+        "button_2": "Visit the studio",
+        "link_2": "/pages/store-locator",
+        "note": "IMG-16 (2560 x 1100 and 1170 x 1500) not made yet: the store locator photo stands in."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "trust_logos",
+    "best_sellers",
+    "shop_by_skin",
+    "featured",
+    "brand_band"
+  ]
+}
