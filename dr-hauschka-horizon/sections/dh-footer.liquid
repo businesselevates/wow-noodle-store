@@ -1,0 +1,54 @@
+{%- comment -%}
+  Footer: newsletter sign-up slot (Klaviyo embedded form, pasted in once Lyne's account exists,
+  P1-15b), three link columns from their own menus, and the address. No discount here.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- render 'dh-brand' -%}
+<section class="dh dh-footer" style="--dh-pt: 48px; --dh-pb: 32px; --dh-pt-d: 72px; --dh-pb-d: 40px;">
+  <div class="dh__inner">
+    <div class="dh-footer__grid">
+      <div class="dh-stack">
+        <h2>{{ s.signup_heading }}</h2>
+        {%- if s.signup_line != blank -%}<p>{{ s.signup_line }}</p>{%- endif -%}
+        <div class="dh-footer__signup-slot">{{ s.signup_embed }}</div>
+        {%- if s.signup_embed == blank -%}<p class="dh-ph">Klaviyo embedded form goes here (list "Footer newsletter", no discount flow). Waiting on Lyne's Klaviyo account, P1-15b.</p>{%- endif -%}
+        {%- if s.consent != blank -%}<p class="dh-small">{{ s.consent }}</p>{%- endif -%}
+      </div>
+      {%- for i in (1..3) -%}
+        {%- assign mk = 'menu_' | append: i -%}
+        {%- assign menu = s[mk] -%}
+        {%- if menu != blank and menu.links.size > 0 -%}
+          <nav aria-label="{{ menu.title | escape }}">
+            <h2>{{ menu.title }}</h2>
+            <ul>
+              {%- for link in menu.links -%}
+                <li><a href="{{ link.url }}"{% if link.url contains '/policies/' %} target="_blank" rel="noopener"{% endif %}>{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- if s.address != blank -%}<p class="dh-footer__address">{{ s.address }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "DH: Footer",
+  "tag": "div",
+  "class": "dh-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "signup_heading", "label": "Sign-up heading", "default": "News from the studio" },
+    { "type": "text", "id": "signup_line", "label": "Sign-up line" },
+    { "type": "html", "id": "signup_embed", "label": "Klaviyo embed code", "info": "Paste Klaviyo's embed snippet for the Footer newsletter form." },
+    { "type": "text", "id": "consent", "label": "Consent line" },
+    { "type": "link_list", "id": "menu_1", "label": "Column 1 menu" },
+    { "type": "link_list", "id": "menu_2", "label": "Column 2 menu" },
+    { "type": "link_list", "id": "menu_3", "label": "Column 3 menu" },
+    { "type": "text", "id": "address", "label": "Address line" }
+  ],
+  "presets": [ { "name": "DH: Footer" } ]
+}
+{% endschema %}
