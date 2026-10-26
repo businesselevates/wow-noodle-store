@@ -1,0 +1,278 @@
+{%- comment -%}
+  Media with content, or text only when no image is set. Used for the product page story
+  sections (problem, ice plant, the number, how it feels, why a set, how to use, what's in it,
+  where it comes from) and the About Us page. Based on the HLT One media-text section, restyled
+  for Dr. Hauschka. "Image still to come" holds the image's place in preview only; on the live
+  theme the section falls back to text only until the image is set.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign has_media = false
+  assign pending_media = false
+  if s.image != blank or s.image_2 != blank or s.map_query != blank
+    assign has_media = true
+  elsif s.image_pending != blank
+    assign has_media = true
+    assign pending_media = true
+  endif
+  assign heading_tag = s.heading_tag | default: 'h2'
+  assign heading_class = 'dh-h2'
+  if heading_tag == 'h1'
+    assign heading_class = 'dh-h1'
+  endif
+-%}
+<section class="dh dh--{{ s.background }}{% if s.heading_one_line %} dh-mt-h-one{% endif %}{% if s.heading_size_d > 0 %} dh-mt-h-size{% endif %}"{% if s.anchor != blank %} id="{{ s.anchor | handleize }}"{% endif %} style="--dh-pt: {{ s.padding_top_m }}px; --dh-pb: {{ s.padding_bottom_m }}px; --dh-pt-d: {{ s.padding_top }}px; --dh-pb-d: {{ s.padding_bottom }}px;{% if s.heading_size_d > 0 %} --dh-mt-h-size: {{ s.heading_size_d }}px;{% endif %}">
+  <div class="dh__inner">
+    <div class="dh-mt{% if has_media %} dh-mt--has-media dh-mt--media-{{ s.media_position }}{% if pending_media %} dh-mt--pending-media{% endif %}{% else %} dh-mt--text-only{% if s.centred %} dh-mt--centred{% endif %}{% endif %}">
+      {%- if pending_media -%}
+        <div class="dh-mt__media dh-pending-preview">
+          <div class="dh-imgph"><span class="dh-imgph__label">Image still to come</span><span>{{ s.image_pending }}</span></div>
+        </div>
+      {%- elsif has_media -%}
+        <div class="dh-mt__media">
+          {%- if s.image == blank and s.image_2 == blank -%}
+            <div class="dh-media dh-map">
+              <iframe src="https://www.google.com/maps?q={{ s.map_query | url_encode }}&output=embed" title="{{ s.image_alt | default: s.map_query | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          {%- else -%}
+            <div class="dh-mt__media-pair{% if s.image != blank and s.image_2 != blank %} dh-mt__media-pair--2{% endif %}">
+              {%- for img in (1..2) -%}
+                {%- liquid
+                  if forloop.first
+                    assign im = s.image
+                    assign alt = s.image_alt
+                  else
+                    assign im = s.image_2
+                    assign alt = s.image_2_alt
+                  endif
+                -%}
+                {%- if im != blank -%}
+                  <div class="dh-media dh-media--auto">
+                    {{ im | image_url: width: 1680 | image_tag: widths: '480, 720, 960, 1280, 1680', sizes: '(min-width: 990px) 46vw, 100vw', loading: 'lazy', alt: alt }}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <div class="dh-mt__content dh-stack">
+        {%- if s.eyebrow != blank -%}<p class="dh-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<{{ heading_tag }} class="{{ heading_class }}">{{ s.heading }}</{{ heading_tag }}>{%- endif -%}
+        {%- if s.note != blank -%}<p class="dh-ph">{{ s.note }}</p>{%- endif -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign prev_type = ''
+            unless forloop.first
+              assign prev_index = forloop.index0 | minus: 1
+              assign prev_type = section.blocks[prev_index].type
+            endunless
+            assign next_type = section.blocks[forloop.index].type
+          -%}
+          {%- case block.type -%}
+            {%- when 'text' -%}
+              <div class="dh-rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when 'placeholder' -%}
+              {%- if block.settings.show -%}
+                <div class="dh-rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+              {%- else -%}
+                <p class="dh-ph" {{ block.shopify_attributes }}>Hidden until confirmed: {{ block.settings.text | strip_html }}</p>
+              {%- endif -%}
+            {%- when 'pending' -%}
+              {%- liquid
+                assign b = block.settings
+                assign preview_only = false
+                if b.answer == blank and b.fallback == blank
+                  assign preview_only = true
+                endif
+              -%}
+              {%- if b.style == 'quote' -%}
+                <blockquote class="dh-quote{% if preview_only %} dh-pending-preview{% endif %}" {{ block.shopify_attributes }}>
+                  {%- render 'dh-pending', text: b.text, placeholder: b.placeholder, answer: b.answer, fallback: b.fallback -%}
+                  {%- if b.cite != blank -%}<cite>{{ b.cite }}</cite>{%- endif -%}
+                </blockquote>
+              {%- else -%}
+                <div class="dh-rte{% if preview_only %} dh-pending-preview{% endif %}" {{ block.shopify_attributes }}>
+                  {%- render 'dh-pending', text: b.text, placeholder: b.placeholder, answer: b.answer, fallback: b.fallback -%}
+                </div>
+              {%- endif -%}
+            {%- when 'quote' -%}
+              <blockquote class="dh-quote" {{ block.shopify_attributes }}>
+                <p>“{{ block.settings.quote }}”</p>
+                {%- if block.settings.cite != blank -%}<cite>{{ block.settings.cite }}</cite>{%- endif -%}
+              </blockquote>
+            {%- when 'setcards' -%}
+              <div class="dh-setcards" {{ block.shopify_attributes }}>
+                {%- for i in (1..2) -%}
+                  {%- liquid
+                    if forloop.first
+                      assign n = block.settings.name_1
+                      assign l = block.settings.line_1
+                      assign t = block.settings.total_1
+                    else
+                      assign n = block.settings.name_2
+                      assign l = block.settings.line_2
+                      assign t = block.settings.total_2
+                    endif
+                  -%}
+                  {%- if n != blank -%}
+                    <div class="dh-setcard">
+                      <p class="dh-setcard__name">{{ n }}</p>
+                      {%- if l != blank -%}<p class="dh-setcard__line">{{ l }}</p>{%- endif -%}
+                      {%- if t != blank -%}<p class="dh-setcard__total">{{ t }}</p>{%- endif -%}
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- when 'steps' -%}
+              {%- assign steps = block.settings.steps | replace: '|', '<br />' | newline_to_br | split: '<br />' -%}
+              <ol class="dh-steps" {{ block.shopify_attributes }}>
+                {%- for st in steps -%}{%- assign st = st | strip -%}{%- if st != blank -%}<li><span>{{ st }}</span></li>{%- endif -%}{%- endfor -%}
+              </ol>
+            {%- when 'box' -%}
+              <div class="dh-box dh-rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+            {%- when 'button' -%}
+              {%- comment -%} Buttons next to each other share one row. {%- endcomment -%}
+              {%- if prev_type != 'button' -%}<div class="dh-actions">{%- endif -%}
+              <a class="dh-btn{% if block.settings.style == 'solid' %} dh-btn--solid{% endif %}" href="{{ block.settings.link | default: '#dh-buybox' }}"{% if block.settings.new_tab %} target="_blank" rel="noopener"{% endif %} {{ block.shopify_attributes }}>{{ block.settings.label }}</a>
+              {%- if next_type != 'button' -%}</div>{%- endif -%}
+            {%- when 'note' -%}
+              <p class="dh-ph" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- liquid
+      assign icon_count = 0
+      for block in section.blocks
+        if block.type == 'icon'
+          assign icon_count = icon_count | plus: 1
+        endif
+      endfor
+    -%}
+    {%- if icon_count > 0 -%}
+      <ul class="dh-iconrow" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'icon' -%}
+            <li {{ block.shopify_attributes }}>{% render 'dh-icon', name: block.settings.icon %}<span>{{ block.settings.text }}</span></li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  /* Two images side by side: the first image keeps its own height and sets
+     the row; the second fills a box of exactly that height (trimming its
+     edges a little if its shape differs), so no empty strip is left under a
+     shorter picture. */
+  .dh-mt__media-pair--2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch !important;
+  }
+  .dh-mt__media-pair--2 > .dh-media {
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    align-self: stretch !important;
+    overflow: hidden;
+  }
+  .dh-mt__media-pair--2 > .dh-media:first-child img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .dh-mt__media-pair--2 > .dh-media:last-child { position: relative; }
+  .dh-mt__media-pair--2 > .dh-media:last-child img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover !important;
+    object-position: center;
+  }
+
+  /* Heading width. The theme caps headings at a narrow measure, which broke
+     short titles like "Dry skin doesn't / stop at your face" in two. In this
+     section the heading may use the whole text column. */
+  .dh-mt__content > .dh-h2,
+  .dh-mt__content > .dh-h1 { max-width: none !important; }
+  @media (min-width: 990px) {
+    /* Optional desktop size, so a title can be made to fit on one line. */
+    .dh-mt-h-size .dh-mt__content > .dh-h2,
+    .dh-mt-h-size .dh-mt__content > .dh-h1 { font-size: var(--dh-mt-h-size); }
+    /* 'Keep the heading on one line': no wrapping on desktop. Lower the
+       desktop size if the line runs past the column. Phones still wrap. */
+    .dh-mt-h-one .dh-mt__content > .dh-h2,
+    .dh-mt-h-one .dh-mt__content > .dh-h1 { white-space: nowrap; text-wrap: nowrap; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DH: Media with text",
+  "tag": "div",
+  "class": "dh-section",
+  "settings": [
+    { "type": "select", "id": "background", "label": "Background", "default": "warm", "options": [ { "value": "white", "label": "White" }, { "value": "warm", "label": "Warm grey" }, { "value": "green", "label": "Soft green" } ] },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Heading" },
+    { "type": "checkbox", "id": "heading_one_line", "label": "Keep the heading on one line (desktop)", "default": false, "info": "Phones still wrap. If the line runs too long, lower the size below." },
+    { "type": "range", "id": "heading_size_d", "label": "Heading size, desktop", "min": 0, "max": 64, "step": 2, "unit": "px", "default": 0, "info": "0 uses the theme size." },
+    { "type": "select", "id": "heading_tag", "label": "Heading level", "default": "h2", "options": [ { "value": "h2", "label": "H2" }, { "value": "h1", "label": "H1 (page title, once per page)" } ] },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "1680 x 1260 (4:3). Leave empty for a text-only section." },
+    { "type": "text", "id": "image_alt", "label": "Image alt text" },
+    { "type": "image_picker", "id": "image_2", "label": "Second image" },
+    { "type": "text", "id": "image_2_alt", "label": "Second image alt text" },
+    { "type": "text", "id": "image_pending", "label": "Image still to come", "info": "Describe the missing image. Shows as a grey box in preview only; the live page goes text-only until an image is set." },
+    { "type": "text", "id": "map_query", "label": "Google Map instead of an image", "info": "An address. Used only when no image is set; the image alt text names the map." },
+    { "type": "select", "id": "media_position", "label": "Image on desktop", "default": "left", "options": [ { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" } ] },
+    { "type": "checkbox", "id": "centred", "label": "Centre the text (text-only)", "default": false },
+    { "type": "text", "id": "anchor", "label": "Anchor id", "info": "For links such as #whats-in-it." },
+    { "type": "text", "id": "note", "label": "Editor note", "info": "Shows in the theme editor only, e.g. which image is still waiting." },
+    { "type": "range", "id": "padding_top", "label": "Top padding, desktop", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding, desktop", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_top_m", "label": "Top padding, phones", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 52 },
+    { "type": "range", "id": "padding_bottom_m", "label": "Bottom padding, phones", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 52 }
+  ],
+  "blocks": [
+    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Text</p>" } ] },
+    { "type": "placeholder", "name": "Text waiting on Lyne", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Text</p>" },
+      { "type": "checkbox", "id": "show", "label": "Show on the page", "default": false, "info": "Leave off until the fact is confirmed." }
+    ] },
+    { "type": "pending", "name": "Text with a placeholder", "settings": [
+      { "type": "select", "id": "style", "label": "Style", "default": "text", "options": [ { "value": "text", "label": "Text" }, { "value": "quote", "label": "Quote" } ] },
+      { "type": "richtext", "id": "text", "label": "Text", "default": "<p>[ph]</p>", "info": "[ph] marks where the answer goes." },
+      { "type": "text", "id": "placeholder", "label": "What we are waiting for", "info": "Shows in yellow in preview only." },
+      { "type": "text", "id": "answer", "label": "Answer", "info": "Fill in once confirmed. It replaces [ph] and the line goes live." },
+      { "type": "richtext", "id": "fallback", "label": "Live text while waiting", "info": "What shoppers see until the answer is in. Empty hides the line on the live page." },
+      { "type": "text", "id": "cite", "label": "Who said it (quote style)" }
+    ] },
+    { "type": "quote", "name": "Quote", "settings": [ { "type": "textarea", "id": "quote", "label": "Quote, without quote marks" }, { "type": "text", "id": "cite", "label": "Who said it" } ] },
+    { "type": "setcards", "name": "Two set cards", "settings": [
+      { "type": "text", "id": "name_1", "label": "Card 1 name" }, { "type": "text", "id": "line_1", "label": "Card 1 line" }, { "type": "text", "id": "total_1", "label": "Card 1 total" },
+      { "type": "text", "id": "name_2", "label": "Card 2 name" }, { "type": "text", "id": "line_2", "label": "Card 2 line" }, { "type": "text", "id": "total_2", "label": "Card 2 total" }
+    ] },
+    { "type": "steps", "name": "Numbered steps", "settings": [ { "type": "textarea", "id": "steps", "label": "Steps, one per line (or separated by |)" } ] },
+    { "type": "box", "name": "Boxed text", "settings": [ { "type": "richtext", "id": "text", "label": "Text" } ] },
+    { "type": "button", "name": "Button", "settings": [
+      { "type": "text", "id": "label", "label": "Label", "default": "Find your set" },
+      { "type": "url", "id": "link", "label": "Link", "info": "Empty scrolls to the buy box." },
+      { "type": "select", "id": "style", "label": "Style", "default": "outline", "options": [ { "value": "outline", "label": "Warm grey" }, { "value": "solid", "label": "Dark" } ] },
+      { "type": "checkbox", "id": "new_tab", "label": "Open in a new tab", "default": false }
+    ] },
+    { "type": "icon", "name": "Icon point", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "leaf", "options": [ { "value": "leaf", "label": "Leaf" }, { "value": "no-drop", "label": "Crossed-out drop" }, { "value": "seal", "label": "Seal" }, { "value": "drop", "label": "Drop" }, { "value": "germany", "label": "Factory" }, { "value": "promise", "label": "Shield" }, { "value": "delivery", "label": "Delivery" }, { "value": "no-perfume", "label": "No perfume" } ] },
+      { "type": "text", "id": "text", "label": "Text", "default": "Point" }
+    ] },
+    { "type": "note", "name": "Editor note", "settings": [ { "type": "text", "id": "text", "label": "Note", "info": "Shows in the theme editor only." } ] }
+  ],
+  "presets": [ { "name": "DH: Media with text", "blocks": [ { "type": "text" } ] } ]
+}
+{% endschema %}

@@ -1,0 +1,85 @@
+{%- comment -%}
+  Review cards: star rating, quote, name, product and site as plain text. Each review sets its
+  own number of stars, so a card shows the rating the buyer gave on the site it came from
+  (0 hides the stars). Phones: cards scroll sideways. Based on the HLT One reviews section.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="dh dh--{{ s.background }}" style="--dh-pt-d: {{ s.padding_top }}px; --dh-pb-d: {{ s.padding_bottom }}px;">
+  <div class="dh__inner">
+    <div class="dh__narrow dh-center dh-stack">
+      {%- if s.heading != blank -%}<h2 class="dh-h2">{{ s.heading }}</h2>{%- endif -%}
+      {%- if s.intro != blank -%}<div class="dh-rte">{{ s.intro }}</div>{%- endif -%}
+    </div>
+    <div class="dh-reviews dh-reviews--3">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.show -%}
+          {%- assign stars = block.settings.stars | default: 0 -%}
+          <figure class="dh-review" {{ block.shopify_attributes }}>
+            {%- if stars > 0 -%}
+              <div class="dh-review__stars" role="img" aria-label="{{ stars }} out of 5 stars">
+                {%- for i in (1..5) -%}
+                  <svg class="dh-review__star{% if i > stars %} is-off{% endif %}" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M10 1.5l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L1.4 7.8l6-.8z"/></svg>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+            <blockquote>“{{ block.settings.quote }}”</blockquote>
+            <figcaption><cite>{{ block.settings.cite }}</cite></figcaption>
+          </figure>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- if s.note != blank -%}<p class="dh-ph" style="margin-top:16px">{{ s.note }}</p>{%- endif -%}
+    {%- if s.button_label != blank -%}
+      <div class="dh-actions" style="justify-content:center;margin-top:32px"><a class="dh-btn" href="{{ s.button_link | default: '#dh-buybox' }}">{{ s.button_label }}</a></div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  /* Star row above the quote, in the heading colour, as on the DrinkAid cards. */
+  .dh-review__stars {
+    display: flex;
+    gap: 4px;
+    margin: 0 0 16px;
+    line-height: 0;
+  }
+  .dh-review__star {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    fill: var(--dh-star-color, currentColor);
+  }
+  .dh-review__star.is-off { opacity: 0.2; }
+  .dh-review { color: inherit; }
+  @media (max-width: 749px) {
+    .dh-review__stars { margin-bottom: 12px; gap: 3px; }
+    .dh-review__star { width: 16px; height: 16px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DH: Reviews",
+  "tag": "div",
+  "class": "dh-section",
+  "settings": [
+    { "type": "select", "id": "background", "label": "Background", "default": "white", "options": [ { "value": "white", "label": "White" }, { "value": "warm", "label": "Warm grey" } ] },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Reviews" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "text", "id": "note", "label": "Editor note" },
+    { "type": "text", "id": "button_label", "label": "Button" },
+    { "type": "url", "id": "button_link", "label": "Button link", "info": "Empty scrolls to the buy box." },
+    { "type": "range", "id": "padding_top", "label": "Top padding, desktop", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding, desktop", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 88 }
+  ],
+  "blocks": [
+    { "type": "review", "name": "Review", "settings": [
+      { "type": "checkbox", "id": "show", "label": "Show", "default": true },
+      { "type": "range", "id": "stars", "label": "Stars", "min": 0, "max": 5, "step": 1, "default": 5, "info": "The rating the buyer gave on the source site. 0 hides the stars." },
+      { "type": "textarea", "id": "quote", "label": "Quote, word for word" },
+      { "type": "text", "id": "cite", "label": "Name · product · site" }
+    ] }
+  ],
+  "presets": [ { "name": "DH: Reviews", "blocks": [ { "type": "review" }, { "type": "review" }, { "type": "review" } ] } ]
+}
+{% endschema %}
