@@ -1,0 +1,82 @@
+{%- comment -%}
+  Footer: newsletter sign-up slot (Klaviyo embedded form, pasted in once Lyne's account exists,
+  P1-15b), three link columns from their own menus, and the address. No discount here.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- render 'dh-brand' -%}
+<section class="dh dh-footer" style="--dh-pt: 48px; --dh-pb: 32px; --dh-pt-d: 72px; --dh-pb-d: 40px;">
+  <div class="dh__inner">
+    <div class="dh-footer__grid">
+      <div class="dh-stack">
+        <h2>{{ s.signup_heading }}</h2>
+        {%- if s.signup_line != blank -%}<p>{{ s.signup_line }}</p>{%- endif -%}
+        {%- if s.signup_embed != blank -%}
+          <div class="dh-footer__signup-slot">{{ s.signup_embed }}</div>
+        {%- else -%}
+          {%- comment -%}
+            Shopify's own email sign-up (as Horizon's Email signup block): saves the shopper as a customer
+            with email marketing consent, which Klaviyo picks up once its Shopify sync is on (P2-22h B10).
+          {%- endcomment -%}
+          {%- form 'customer', id: 'dh-footer-signup', class: 'dh-signup' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="dh-signup__msg" role="status">Thanks, you're signed up.</p>
+            {%- else -%}
+              <div class="dh-signup__row">
+                <label class="dh-vh" for="dh-footer-signup-email">Your email</label>
+                <input id="dh-footer-signup-email" class="dh-signup__input" type="email" name="contact[email]" value="{{ form.email }}" placeholder="Your email" autocomplete="email" autocapitalize="off" spellcheck="false" required{% if form.errors %} aria-invalid="true" aria-describedby="dh-footer-signup-error"{% endif %}>
+                <button type="submit" class="dh-btn dh-btn--solid dh-signup__btn">Sign up</button>
+              </div>
+              {%- if form.errors -%}
+                <div id="dh-footer-signup-error" class="dh-signup__msg" role="alert">{{ form.errors | default_errors }}</div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        {%- endif -%}
+        {%- if s.consent != blank -%}<p class="dh-small">{{ s.consent }}</p>{%- endif -%}
+      </div>
+      {%- for i in (1..3) -%}
+        {%- assign mk = 'menu_' | append: i -%}
+        {%- assign menu = s[mk] -%}
+        {%- if menu != blank and menu.links.size > 0 -%}
+          <nav aria-label="{{ menu.title | escape }}">
+            <h2>{{ menu.title }}</h2>
+            <ul>
+              {%- for link in menu.links -%}
+                <li><a href="{{ link.url }}"{% if link.url contains '/policies/' %} target="_blank" rel="noopener"{% endif %}>{{ link.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- if s.address != blank -%}<p class="dh-footer__address">{{ s.address }}</p>{%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dh-signup__row { display: flex; gap: 8px; max-width: 420px; }
+  .dh-signup__input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--dh-ink); background: var(--dh-white); color: var(--dh-ink); font: inherit; font-size: 15px; border-radius: 0; }
+  .dh-signup__btn { min-height: 44px; padding-inline: 18px; }
+  .dh-signup__msg { margin-top: 8px; font-size: 14px; color: var(--dh-ink); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DH: Footer",
+  "tag": "div",
+  "class": "dh-section",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "signup_heading", "label": "Sign-up heading", "default": "News from the studio" },
+    { "type": "text", "id": "signup_line", "label": "Sign-up line" },
+    { "type": "html", "id": "signup_embed", "label": "Klaviyo embed code", "info": "Paste Klaviyo's embed snippet for the Footer newsletter form." },
+    { "type": "text", "id": "consent", "label": "Consent line" },
+    { "type": "link_list", "id": "menu_1", "label": "Column 1 menu" },
+    { "type": "link_list", "id": "menu_2", "label": "Column 2 menu" },
+    { "type": "link_list", "id": "menu_3", "label": "Column 3 menu" },
+    { "type": "text", "id": "address", "label": "Address line" }
+  ],
+  "presets": [ { "name": "DH: Footer" } ]
+}
+{% endschema %}

@@ -1,0 +1,29 @@
+{%- comment -%}
+  Star row above a review quote (P2-22h K1): 14px, brand black #3D3D3D, read out as
+  "Rated 5 out of 5". Only for reviews whose source shows that rating.
+  Accepts: count (0 to 5, default 5; 0 prints nothing)
+{%- endcomment -%}
+{%- assign stars = count | default: 5 -%}
+{%- if stars > 0 -%}
+  <div class="dh-stars" role="img" aria-label="Rated {{ stars }} out of 5">
+    {%- for i in (1..5) -%}
+      <svg class="dh-stars__star{% if i > stars %} is-off{% endif %}" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true" focusable="false"><path d="M10 1.5l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L1.4 7.8l6-.8z"/></svg>
+    {%- endfor -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .dh-stars {
+    display: flex;
+    gap: 3px;
+    line-height: 0;
+  }
+  .dh-stars__star {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    fill: #3d3d3d;
+  }
+  .dh-stars__star.is-off { opacity: 0.2; }
+  .dh-quote .dh-stars { margin-bottom: 10px; }
+{% endstylesheet %}

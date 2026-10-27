@@ -1,0 +1,420 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Dr. Hauschka creams are made by WALA, a company owned by a foundation, from plants it largely grows and harvests by hand. In Singapore, Lyne Ong and her team at PamperInc bring them to you from our studio at International Plaza and online.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "label": "Shop by skin",
+            "link": "/collections",
+            "style": "solid",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "button"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "About Dr. Hauschka Singapore",
+        "heading": "Made in Germany since 1967. Looked after in Singapore by Lyne.",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h1",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "Lyne in the International Plaza studio, shelves of Dr. Hauschka products behind her. Real photo. Full width on mobile.",
+        "map_query": "",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "Section 1. Hero. Image: Lyne's studio photo from Grace, WebP, 1680 x 1260. Fill the alt text. Shop by skin goes to /collections until the Shop by skin menu item (P1-18b) has its own page.",
+        "padding_top": 64,
+        "padding_bottom": 88,
+        "padding_top_m": 24,
+        "padding_bottom_m": 52
+      }
+    },
+    "began": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Elisabeth Sigmund and Rudolf Hauschka started Dr. Hauschka skincare in a small spa town in Swabia, in southern Germany. Their goal, in the brand's own words: \"from chemistry back to nature\".</p><p>More than 50 years on, Dr. Hauschka still makes its creams without mineral oils, silicones, PEGs or synthetic preservatives.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "It started in 1967 with a simple idea: from chemistry back to nature",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/Elisabeth_Sigmund.jpg",
+        "image_alt": "",
+        "image_2": "shopify://shop_images/Dr._Rudolf_Hauschka_Portrait_1961.jpg",
+        "image_2_alt": "",
+        "image_pending": "Archive photo of Elisabeth Sigmund and Rudolf Hauschka, from WALA's brand assets (ask Lyne). If none is available, a photo of the WALA medicinal herb garden.",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "made": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>WALA harvests most of its plants by hand: in its own herb garden, on its farm at the foot of the Swabian Jura, and through partner farms around the world. Many ingredients are organic, and some are grown biodynamically.</p>"
+          }
+        },
+        "icon_1": {
+          "type": "icon",
+          "settings": {
+            "icon": "leaf",
+            "text": "Picked by hand, mostly from WALA's own garden and farm"
+          }
+        },
+        "icon_2": {
+          "type": "icon",
+          "settings": {
+            "icon": "no-drop",
+            "text": "No mineral oils, silicones, PEGs or synthetic preservatives"
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "icon_1",
+        "icon_2"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "Many of the plants come from WALA's own garden and farm",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/Wala_Herb_Garden.jpg",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "WALA herb garden or hand harvest, from WALA's brand assets.",
+        "map_query": "",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "owner": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>WALA is independent and owned by a foundation, so it pays no dividends to shareholders. It puts that money into long-term partnerships with the farmers who grow its plants, including interest-free loans so they can pay fair wages.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "A company owned by a foundation, with no shareholders to pay",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image": "shopify://shop_images/Hamamelis_Harvesting_-_1258.jpg",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "A partner farm or harvest scene from WALA's brand assets.",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "singapore": {
+      "type": "dh-media-text",
+      "blocks": {
+        "distributor": {
+          "type": "pending",
+          "settings": {
+            "style": "text",
+            "text": "<p>Lyne Ong took over Dr. Hauschka in Singapore in 2018. With her husband Kenny Low, she runs PamperInc, the official Dr. Hauschka distributor in Singapore.</p>",
+            "placeholder": "\"the official Dr. Hauschka distributor in Singapore\", once Lyne confirms the wording and the proof",
+            "answer": "",
+            "fallback": "<p>Lyne Ong took over Dr. Hauschka in Singapore in 2018. With her husband Kenny Low, she runs PamperInc.</p>",
+            "cite": ""
+          }
+        },
+        "studio": {
+          "type": "text",
+          "settings": {
+            "text": "<p>You'll find the full range, and Lyne's team, at our studio at 10 Anson Road, #02-12 International Plaza. Come in to try a product on your skin, collect an online order, or book a facial.</p>"
+          }
+        },
+        "quote": {
+          "type": "pending",
+          "settings": {
+            "style": "quote",
+            "text": "<p>“[ph]”</p>",
+            "placeholder": "one or two sentences from Lyne in her own words: why she took on Dr. Hauschka, or what she wants a customer to feel when they walk in. We will collect this from her.",
+            "answer": "",
+            "fallback": "",
+            "cite": "Lyne Ong, PamperInc"
+          }
+        }
+      },
+      "block_order": [
+        "distributor",
+        "studio",
+        "quote"
+      ],
+      "settings": {
+        "background": "warm",
+        "eyebrow": "",
+        "heading": "In Singapore, it's Lyne",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "Lyne and Kenny together, or Lyne with a customer at the studio counter. Real photo.",
+        "map_query": "",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "Section 5. Dr. Hauschka in Singapore. Fill each Answer as Lyne confirms; empty answers never show on the live theme.",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "why": {
+      "type": "dh-points",
+      "blocks": {
+        "p1": {
+          "type": "point",
+          "settings": {
+            "text": "Stock straight from WALA. [ph]",
+            "placeholder": "how batch and expiry dates are shown, and the distributor proof",
+            "answer": "",
+            "fallback": "Stock straight from WALA."
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "text": "Advice before you buy. Message us on WhatsApp or ask at the studio.",
+            "placeholder": "",
+            "answer": "",
+            "fallback": ""
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "text": "Try it on your skin first, at the studio in International Plaza.",
+            "placeholder": "",
+            "answer": "",
+            "fallback": ""
+          }
+        },
+        "p4": {
+          "type": "point",
+          "settings": {
+            "text": "Free delivery from S$100, or collect from International Plaza.",
+            "placeholder": "",
+            "answer": "",
+            "fallback": ""
+          }
+        },
+        "p5": {
+          "type": "point",
+          "settings": {
+            "text": "No packages, no pressure. Buy one thing or nothing.",
+            "placeholder": "no-pressure line for facials and the counter, only if Lyne agrees. Suggested: \"No packages, no pressure. Buy one thing or nothing.\"",
+            "answer": "",
+            "fallback": "No packages, no pressure. Buy one thing or nothing."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5"
+      ],
+      "settings": {
+        "background": "white",
+        "heading": "Why buy Dr. Hauschka here",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "customers": {
+      "type": "dh-video",
+      "settings": {
+        "background": "warm",
+        "heading": "What our customers say",
+        "video": "shopify://files/videos/vizup-gif-6999196a.mp4",
+        "video_label": "",
+        "captions": "",
+        "video_pending": "customer video, only with the customer's written OK. Candidate: the customer who says \"I've been using Dr. Haushka for the last 20 years ... because of the confidence and the consistency and the quality\" (Testimonials folder, IMG_9771).",
+        "text": "<p>Dr. Hauschka Apricot Day Cream won the \"Dry skin\" category at Daily Vanity's Beauty Awards 2026.</p>",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "visit": {
+      "type": "dh-media-text",
+      "blocks": {
+        "address": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>Address</strong><br>10 Anson Road, #02-12 International Plaza, Singapore</p>"
+          }
+        },
+        "hours": {
+          "type": "pending",
+          "settings": {
+            "style": "text",
+            "text": "<p><strong>Opening hours</strong><br/>[ph]</p>",
+            "placeholder": "opening hours from Lyne",
+            "answer": "10 AM - 8 PM",
+            "fallback": "",
+            "cite": ""
+          }
+        },
+        "whatsapp": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>WhatsApp</strong><br/><a href=\"https://wa.me/6597516279\">+65 9751 6279</a></p>"
+          }
+        },
+        "facial": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "label": "Book a facial",
+            "link": "/pages/spa-and-facial-services",
+            "style": "solid",
+            "new_tab": false
+          }
+        },
+        "directions": {
+          "type": "button",
+          "settings": {
+            "label": "Get directions",
+            "link": "https://www.google.com/maps/search/?api=1&query=International+Plaza+10+Anson+Road+Singapore",
+            "style": "outline",
+            "new_tab": true
+          }
+        }
+      },
+      "block_order": [
+        "address",
+        "hours",
+        "whatsapp",
+        "facial",
+        "directions"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "Visit the studio",
+        "heading_one_line": false,
+        "heading_size_d": 0,
+        "heading_tag": "h2",
+        "image_alt": "Google Map showing International Plaza, 10 Anson Road, Singapore",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "International Plaza, 10 Anson Road, Singapore 079903",
+        "media_position": "right",
+        "centred": false,
+        "anchor": "",
+        "note": "",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "cta": {
+      "type": "dh-cta",
+      "settings": {
+        "background": "green",
+        "heading": "Not sure where to start?",
+        "text": "<p>Tell us your skin type on WhatsApp and we'll point you to two or three products to try.</p>",
+        "button_label": "Shop by skin",
+        "button_link": "/collections",
+        "button_2_label": "WhatsApp us",
+        "button_2_link": "https://wa.me/6597516279",
+        "button_2_new_tab": true,
+        "under": "",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "began",
+    "made",
+    "owner",
+    "singapore",
+    "why",
+    "customers",
+    "visit",
+    "cta"
+  ]
+}

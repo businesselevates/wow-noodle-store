@@ -1,0 +1,107 @@
+{%- doc -%}
+  One-tap add-on under the cart lines (task P2-22g, block 4): the product in theme setting
+  "Cart add-on product", or the Ice Plant Hand Cream when none is picked. Shows only while that
+  product is in stock and not already in the cart. The Add button uses dh.js's [data-dh-add]
+  handler, which adds through Horizon's cart events so the drawer stays open and the bar,
+  totals and checkout button re-render in place. Without JavaScript the form posts to /cart/add.
+
+  @example
+  {% render 'dh-cart-addon' %}
+{%- enddoc -%}
+{%- liquid
+  assign addon = settings.dh_cart_addon_product
+  if addon == blank
+    assign addon = all_products['ice-plant-hand-cream-50-ml']
+  endif
+  assign variant = addon.selected_or_first_available_variant
+
+  assign show_addon = false
+  if cart.item_count > 0 and addon != blank and variant.available
+    assign show_addon = true
+    for item in cart.items
+      if item.product_id == addon.id
+        assign show_addon = false
+        break
+      endif
+    endfor
+  endif
+
+  assign addon_title = settings.dh_cart_addon_title | default: addon.title
+-%}
+{%- if show_addon -%}
+  <form
+    class="dh-cart-addon"
+    action="{{ routes.cart_add_url }}"
+    method="post"
+  >
+    <input type="hidden" name="id" value="{{ variant.id }}">
+    <input type="hidden" name="quantity" value="1">
+    <div class="dh-cart-addon__media">
+      {%- assign addon_image = variant.featured_image | default: addon.featured_image -%}
+      {%- if addon_image -%}
+        {{ addon_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', width: 60, height: 60 }}
+      {%- endif -%}
+    </div>
+    <div class="dh-cart-addon__text">
+      <p class="dh-cart-addon__title">{{ addon_title | escape }}</p>
+      <p class="dh-cart-addon__note">
+        {%- if settings.dh_cart_addon_note != blank -%}{{ settings.dh_cart_addon_note | escape }} · {% endif -%}
+        {%- render 'dh-money', cents: variant.price -%}
+      </p>
+    </div>
+    <button
+      type="submit"
+      class="button button-secondary dh-cart-addon__add"
+      data-dh-add="{{ variant.id }}"
+      aria-label="Add {{ addon_title | escape }} to cart"
+    >
+      Add
+    </button>
+  </form>
+{%- endif -%}
+
+{% stylesheet %}
+  .dh-cart-addon {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr) auto;
+    gap: var(--gap-md);
+    align-items: center;
+    margin-block: var(--margin-md) var(--margin-lg);
+    padding: var(--padding-sm);
+    border: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+    background-color: rgb(var(--color-foreground-rgb) / 0.03);
+  }
+
+  .dh-cart-addon__media img {
+    display: block;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+  }
+
+  .dh-cart-addon__title,
+  .dh-cart-addon__note {
+    margin: 0;
+    font-size: var(--font-size--sm);
+    line-height: 1.35;
+  }
+
+  .dh-cart-addon__title {
+    color: var(--color-foreground);
+  }
+
+  .dh-cart-addon__note {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-70));
+  }
+
+  .dh-cart-addon__add {
+    min-height: var(--minimum-touch-target);
+    padding: var(--padding-xs) var(--padding-lg);
+    font-size: var(--font-size--sm);
+  }
+
+  .dh-cart-addon__add.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+{% endstylesheet %}

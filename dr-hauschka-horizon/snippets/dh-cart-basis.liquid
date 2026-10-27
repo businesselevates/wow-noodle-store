@@ -1,0 +1,17 @@
+{%- doc -%}
+  Prints, in cents, the cart amount that counts toward free delivery and the free facial.
+  The progress bar and the delivery row both read it, so they always agree. Theme setting
+  "Count toward free delivery" picks whether discount codes come off first; set it to match
+  what Shopify's "FREE SHIPPING with $100 purchase" rate does at checkout (task P2-22g, note 4).
+
+  @example
+  {%- capture dh_basis -%}{% render 'dh-cart-basis' %}{%- endcapture -%}
+  {%- assign dh_basis = dh_basis | plus: 0 -%}
+{%- enddoc -%}
+{%- liquid
+  if settings.dh_threshold_basis == 'before_discounts'
+    echo cart.original_total_price
+  else
+    echo cart.total_price
+  endif
+-%}

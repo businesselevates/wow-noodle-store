@@ -1,0 +1,40 @@
+/* Dr. Hauschka Singapore: placeholders, icon row, numbered points, map and video (About Us page and any dh-* section that uses them). */
+
+/* Placeholders waiting on Lyne. dh-brand.liquid adds .dh-preview to <html> on any theme that is
+   not the live one, and in the theme editor. Without it (the live theme, or no JavaScript) the
+   placeholder lines stay hidden and the live fallback shows. */
+html:not(.dh-preview):not(.shopify-design-mode) .dh-pending-preview { display: none !important; }
+html.dh-preview .dh-pending-live, html.shopify-design-mode .dh-pending-live { display: none !important; }
+.dh-tag { background: #fff3c4; color: #6b5200; border: 1px dashed #c99a3b; padding: 1px 6px; font-family: system-ui, sans-serif; font-size: .82em; font-style: normal; line-height: 1.5; letter-spacing: 0; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.dh-imgph { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; aspect-ratio: 4 / 3; padding: 24px; border: 2px dashed var(--dh-line); background: var(--dh-warm); text-align: center; font-family: system-ui, sans-serif; font-size: 13px; line-height: 1.45; color: var(--dh-ink-muted); }
+.dh--warm .dh-imgph { background: var(--dh-white); }
+.dh-imgph__label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.dh-imgph--video { aspect-ratio: 16 / 9; }
+/* A section whose image is still to come reads as text-only on the live page. */
+html:not(.dh-preview):not(.shopify-design-mode) .dh-mt--pending-media { grid-template-columns: minmax(0, 1fr); max-width: 820px; margin-inline: auto; }
+
+/* Icon row under a media-with-text section: 3 columns on desktop, stacked on phones. */
+.dh-iconrow { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 14px; }
+@media (min-width: 750px) { .dh-iconrow { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; } }
+@media (min-width: 990px) { .dh-iconrow { margin-top: 56px; } }
+.dh-iconrow li { display: flex; align-items: flex-start; gap: 14px; padding: 18px 20px; background: var(--dh-white); border: 1px solid var(--dh-line); color: var(--dh-ink); font-size: 15px; line-height: 1.45; }
+.dh--white .dh-iconrow li { background: var(--dh-warm); border-color: transparent; }
+.dh-iconrow svg { flex: 0 0 28px; width: 28px; height: 28px; color: var(--dh-ink); }
+@media (min-width: 990px) { .dh-iconrow li { font-size: 16px; } }
+
+/* Numbered points: 2 columns on desktop, one on phones. Hidden points do not take a number. */
+.dh-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: dhpoint; }
+.dh .dh-stack > .dh-points { margin-top: 28px; }
+@media (min-width: 750px) { .dh-points { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; } }
+.dh-points__item { counter-increment: dhpoint; display: grid; grid-template-columns: 38px 1fr; gap: 14px; align-items: start; padding: 18px 20px; background: var(--dh-warm); color: var(--dh-ink); }
+.dh--warm .dh-points__item { background: var(--dh-white); }
+.dh-points__item::before { content: counter(dhpoint); width: 38px; height: 38px; border: 1px solid var(--dh-ink); display: grid; place-items: center; font-family: var(--dh-font-heading); font-size: 20px; color: var(--dh-ink); }
+.dh-points__item > span { padding-top: 6px; }
+
+/* Map in place of an image */
+.dh-map { aspect-ratio: 4 / 3; }
+.dh-map iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* Customer video */
+.dh-video { background: var(--dh-ink); }
+.dh-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: var(--dh-ink); }

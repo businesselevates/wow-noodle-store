@@ -1,0 +1,231 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "dh-campaign-hero",
+      "settings": {
+        "background": "green",
+        "alt": "Six Dr. Hauschka gentle care sets on a soft plain background",
+        "eyebrow": "",
+        "heading": "Cancer Care Support",
+        "text": "<p>Simple care sets for skin that feels drier than it used to, and a little help from us while you need it.</p>",
+        "button_label": "Shop the sets",
+        "button_anchor": "sets",
+        "button_link": "",
+        "note": "",
+        "padding": 64,
+        "padding_m": 32,
+        "image": "shopify://shop_images/IMG-C1_cancer-care_desktop-1920x800.webp",
+        "image_mobile": "shopify://shop_images/IMG-C1_cancer-care_phone-800x1000.webp"
+      }
+    },
+    "intro": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We made this page for people going through cancer treatment, and for the family and friends shopping for them. The sets below are short routines for very dry, tight skin, made from Dr. Hauschka products we stock at our International Plaza studio. Please check with your doctor or nurse before you start anything new on your skin.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text"
+      ],
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "",
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": true,
+        "anchor": "",
+        "note": "",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "padding_top_m": 44,
+        "padding_bottom_m": 44
+      }
+    },
+    "sets": {
+      "type": "dh-collection-grid",
+      "settings": {
+        "background": "warm",
+        "anchor": "sets",
+        "heading": "The sets",
+        "text": "<p>Every set lists what's inside on its own page.</p>",
+        "collection": "gentle-care-sets",
+        "max": 6,
+        "columns": "3",
+        "button_label": "Add to cart",
+        "options_label": "Choose options",
+        "soldout_label": "Sold out",
+        "link_label": "",
+        "link_url": "",
+        "note": "",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "support": {
+      "type": "dh-cta",
+      "settings": {
+        "background": "green",
+        "heading": "Ask us for this month's code",
+        "text": "<p>If you're going through cancer treatment, send us a WhatsApp message and we'll give you this month's code.</p>",
+        "button_label": "Message us on WhatsApp",
+        "button_link": "https://wa.me/6597516279?text=Hi%20can%20I%20have%20the%20code%20for%20the%20Cancer%20Month%20promo%20for%20cancer%20patients%3F",
+        "button_2_label": "",
+        "button_2_link": "",
+        "button_2_new_tab": false,
+        "under": "",
+        "padding_top": 88,
+        "padding_bottom": 88
+      }
+    },
+    "facial": {
+      "type": "dh-media-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Our Signature Facial takes 70 minutes and is done by hand, with no machines, at 10 Anson Road, #02-12 International Plaza. Your first visit is S$98. For women only, by appointment.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "label": "Book a facial",
+            "link": "/pages/spa-and-facial-services",
+            "style": "solid",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "text",
+        "button"
+      ],
+      "disabled": true,
+      "settings": {
+        "background": "white",
+        "eyebrow": "",
+        "heading": "An hour to yourself at our studio",
+        "heading_tag": "h2",
+        "image_alt": "",
+        "image_2_alt": "",
+        "image_pending": "",
+        "map_query": "",
+        "media_position": "left",
+        "centred": false,
+        "anchor": "",
+        "note": "Hidden at launch: switch on when facial booking works (P2-19d step 8). IMG-C2 waiting: studio treatment room photo from Lyne, 1200 x 1200. Keep off if the photo has not arrived.",
+        "padding_top": 88,
+        "padding_bottom": 88,
+        "padding_top_m": 52,
+        "padding_bottom_m": 52
+      }
+    },
+    "faq": {
+      "type": "dh-faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Who is this month's code for?",
+            "answer": "<p>People going through cancer treatment. Send us a WhatsApp message and we'll give it to you.</p>",
+            "note": ""
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Can I use these products during chemotherapy or radiotherapy?",
+            "answer": "<p>We can't give medical advice. Ask your doctor or nurse first. Every product page lists the full ingredients, so you can show them exactly what's in it.</p>",
+            "note": ""
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Do these products contain perfume?",
+            "answer": "<p>Some do, including the Rose Day Cream Light, which contains essential oils. If you'd rather avoid added perfume, ask us about the Ice Plant range, which has none.</p>",
+            "note": ""
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "Can I see the products before I buy?",
+            "answer": "<p>Yes. Our studio is at 10 Anson Road, #02-12 International Plaza, open 10am to 8pm every day.</p>",
+            "note": ""
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "show": true,
+            "question": "What if a set doesn't suit me?",
+            "answer": "<p>Our <a href=\"/policies/refund-policy\" title=\"Refund policy\">returns and exchanges policy</a> explains what we can take back.</p>",
+            "note": ""
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "background": "warm",
+        "heading": "Questions",
+        "open_first": true,
+        "padding_top": 80,
+        "padding_bottom": 56
+      }
+    },
+    "more": {
+      "type": "dh-cta",
+      "settings": {
+        "background": "warm",
+        "heading": "",
+        "text": "",
+        "button_label": "See all promotions",
+        "button_link": "/collections/monthly-specials",
+        "button_2_label": "",
+        "button_2_link": "",
+        "button_2_new_tab": false,
+        "under": "",
+        "padding_top": 0,
+        "padding_bottom": 88
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "sets",
+    "support",
+    "facial",
+    "faq",
+    "more"
+  ]
+}
