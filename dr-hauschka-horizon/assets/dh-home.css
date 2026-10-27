@@ -20,6 +20,8 @@
   .dh-hero__media--fallback img { width: 14%; }
   .dh-hero__content { position: absolute; inset: 0 auto 0 0; width: 44%; padding: 0 0 0 max(var(--dh-gutter), calc((100vw - var(--dh-max)) / 2 + var(--dh-gutter))); display: flex; flex-direction: column; justify-content: center; background: none; }
 }
+/* With one live slide the script sets [hidden]; the flex rule below would otherwise override it. */
+.dh-hero__controls[hidden] { display: none; }
 .dh-hero__controls { position: absolute; left: 0; right: 0; bottom: 18px; display: flex; justify-content: center; align-items: center; gap: 14px; z-index: 2; }
 .dh-hero__arrow { width: 38px; height: 38px; border: 1px solid var(--dh-ink); background: rgba(255, 255, 255, .85); display: grid; place-items: center; cursor: pointer; color: var(--dh-ink); padding: 0; }
 .dh-hero__arrow svg { width: 16px; height: 16px; }
