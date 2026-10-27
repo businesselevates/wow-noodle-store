@@ -33,12 +33,13 @@
 
 <div class="dh-cart-progress">
   <p class="dh-cart-progress__msg" aria-live="polite">
+    {%- comment -%} Copy lives in Theme settings > Cart > Dr Hauschka cart. [gap] becomes the amount still needed. {%- endcomment -%}
     {%- if dh_basis < delivery_at -%}
-      S${{ gap }} more for free delivery
+      {{- settings.dh_bar_msg_delivery | default: 'S$[gap] more for free delivery' | escape | replace: '[gap]', gap -}}
     {%- elsif dh_basis < facial_at -%}
-      ✅ Free delivery. S${{ gap }} more for a free 1-hour facial 🎁
+      {{- settings.dh_bar_msg_facial | default: '✅ Free delivery. S$[gap] more for a free 1-hour facial 🎁' | escape | replace: '[gap]', gap -}}
     {%- else -%}
-      ✅ Free delivery. 🎁 This order earns you a free 1-hour facial. We'll email you how to book.
+      {{- settings.dh_bar_msg_done | default: "✅ Free delivery. 🎁 This order earns you a free 1-hour facial. We'll email you how to book." | escape -}}
     {%- endif -%}
   </p>
   <div
@@ -69,13 +70,18 @@
       <small>{% render 'dh-money', cents: facial_at %}</small>
     </span>
   </div>
-  <p class="dh-cart-progress__fine">One facial per customer.</p>
+  {%- if settings.dh_bar_fine != blank -%}
+    <p class="dh-cart-progress__fine">{{ settings.dh_bar_fine | escape }}</p>
+  {%- endif -%}
 </div>
 {%- endif -%}
 
 {% stylesheet %}
   .dh-cart-progress {
-    padding: var(--padding-md) var(--cart-drawer-padding, var(--padding-md)) var(--padding-sm);
+    /* Never squeezed by the scrolling list below it, and a clear gap before the first line. */
+    flex-shrink: 0;
+    margin-block-end: var(--margin-lg);
+    padding: var(--padding-md) var(--cart-drawer-padding, var(--padding-md)) var(--padding-md);
     background-color: rgb(var(--color-foreground-rgb) / 0.03);
     border-block: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
   }

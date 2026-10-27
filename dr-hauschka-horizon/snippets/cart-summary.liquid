@@ -135,7 +135,7 @@
             {{ cart_discount_form }}
           {% else %}
             <details class="dh-cart-link">
-              <summary class="dh-cart-link__summary cart-primary-typography">Have a discount code?</summary>
+              <summary class="dh-cart-link__summary cart-primary-typography">{{ settings.dh_discount_link_label | default: 'Have a discount code?' | escape }}</summary>
               {{ cart_discount_form }}
             </details>
           {% endif %}
@@ -150,13 +150,13 @@
               open
             {% endif %}
           >
-            <summary class="dh-cart-link__summary cart-primary-typography">Add a note to your order</summary>
+            <summary class="dh-cart-link__summary cart-primary-typography">{{ settings.dh_note_label | default: 'Add a note to your order' | escape }}</summary>
             <div class="cart-note__inner">
               <label
                 for="cart-note"
                 class="visually-hidden"
               >
-                Add a note to your order
+                {{ settings.dh_note_label | default: 'Add a note to your order' | escape }}
               </label>
               <textarea
                 form="cart-form"
@@ -192,7 +192,7 @@
       {%- endif -%}
     {%- endfor -%}
     <span class="cart-totals__item">
-      <span>Delivery (3 to 5 working days)</span>
+      <span>{{ settings.dh_delivery_label | default: 'Delivery (3 to 5 working days)' | escape }}</span>
       <span class="cart-secondary-typography{% if delivery_fee == 0 %} dh-cart-totals__free{% endif %}">
         {%- if delivery_fee == 0 -%}
           Free

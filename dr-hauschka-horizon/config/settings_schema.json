@@ -1585,6 +1585,51 @@
         "default": true
       },
       {
+        "type": "text",
+        "id": "dh_bar_msg_delivery",
+        "label": "Bar message, under free delivery",
+        "info": "[gap] becomes the whole dollars still needed, e.g. 21.",
+        "default": "S$[gap] more for free delivery"
+      },
+      {
+        "type": "text",
+        "id": "dh_bar_msg_facial",
+        "label": "Bar message, free delivery reached",
+        "info": "[gap] becomes the whole dollars still needed for the facial.",
+        "default": "✅ Free delivery. S$[gap] more for a free 1-hour facial 🎁"
+      },
+      {
+        "type": "text",
+        "id": "dh_bar_msg_done",
+        "label": "Bar message, both reached",
+        "default": "✅ Free delivery. 🎁 This order earns you a free 1-hour facial. We'll email you how to book."
+      },
+      {
+        "type": "text",
+        "id": "dh_bar_fine",
+        "label": "Line under the bar",
+        "info": "Leave empty to hide it.",
+        "default": "One facial per customer."
+      },
+      {
+        "type": "text",
+        "id": "dh_delivery_label",
+        "label": "Delivery row label",
+        "default": "Delivery (3 to 5 working days)"
+      },
+      {
+        "type": "text",
+        "id": "dh_discount_link_label",
+        "label": "Discount link",
+        "default": "Have a discount code?"
+      },
+      {
+        "type": "text",
+        "id": "dh_note_label",
+        "label": "Note link",
+        "default": "Add a note to your order"
+      },
+      {
         "type": "number",
         "id": "dh_free_delivery_threshold",
         "label": "Free delivery from (S$)",
